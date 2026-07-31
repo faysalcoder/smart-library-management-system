@@ -1,0 +1,20 @@
+# Railway build configuration for the SLMS Laravel API.
+#
+# Deliberately uses `php artisan serve` rather than a custom nginx + PHP-FPM
+# setup: this is a single-service deployment at university-library scale, and
+# a start command that is easy to reason about and debug beats a marginal
+# concurrency gain from a more complex web-server configuration. Railway's
+# own guides use exactly this pattern for simple Laravel API deployments.
+
+[phases.setup]
+nixPkgs = ["php82", "php82Packages.composer"]
+
+[phases.install]
+cmds = ["composer install --no-dev --optimize-autoloader --no-interaction"]
+
+[start]
+# 1. Run any pending migrations before serving — safe to run on every deploy
+#    since `migrate` only applies migrations that have not already run.
+# 2. Bind to 0.0.0.0 (not 127.0.0.1) and Railway's injected $PORT, or the
+#    container is unreachable from outside despite "working" locally.
+cmd = "php artisan migrate --force --no-interaction && php artisan serve --host=0.0.0.0 --port=$PORT"

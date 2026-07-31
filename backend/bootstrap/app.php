@@ -31,6 +31,14 @@ return Application::configure(basePath: dirname(__DIR__))
             'role' => EnsureUserHasRole::class,
             'perm' => EnsureUserHasPermission::class,
         ]);
+
+        // Trust the platform's edge proxy (Railway / any single-hop PaaS
+        // load balancer sits in front of every request in production). Without
+        // this, $request->ip() returns the proxy's IP for every request, which
+        // silently breaks the per-IP login rate limiter (AppServiceProvider)
+        // and the IP address recorded in the audit log (AuditLogService) —
+        // every request would look like it came from one client.
+        $middleware->trustProxies(at: '*');
     })
     ->withExceptions(function (Exceptions $exceptions) {
         /**
