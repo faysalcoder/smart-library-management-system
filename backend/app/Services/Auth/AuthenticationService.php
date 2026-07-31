@@ -3,19 +3,78 @@
 namespace App\Services\Auth;
 
 use App\Exceptions\DomainException;
+use App\Models\Role;
 use App\Models\User;
+use App\Services\Member\StudentService;
 use App\Services\System\AuditLogService;
 use App\Services\System\SettingService;
 use App\Support\AuditAction;
+use App\Support\Roles;
 use App\Support\Status;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Str;
 
 class AuthenticationService
 {
     public function __construct(
         private AuditLogService $audit,
         private SettingService $settings,
+        private StudentService $students,
     ) {}
+
+    /**
+     * Public self-registration for students. Creates the login account and
+     * the linked member profile together, then signs the student straight in
+     * — matching login()'s return shape so the client handles both the same
+     * way.
+     *
+     * @return array{user: User, token: string}
+     */
+    public function register(array $data): array
+    {
+        $user = DB::transaction(function () use ($data) {
+            $studentRoleId = Role::where('name', Roles::STUDENT)->value('role_id');
+
+            $user = User::create([
+                'username' => $this->uniqueUsernameFromEmail($data['email']),
+                'email' => $data['email'],
+                'full_name' => $data['full_name'],
+                'password' => Hash::make($data['password']),
+                'role_id' => $studentRoleId,
+                'status' => Status::USER_ACTIVE,
+                'must_change_password' => false,
+            ]);
+
+            $this->students->registerSelf($user, $data);
+
+            return $user;
+        });
+
+        $user->forceFill(['last_login_at' => now()])->save();
+
+        $token = $user->createToken('slms-web', ['*'])->plainTextToken;
+
+        $this->audit->record($user, AuditAction::LOGIN_SUCCESS, 'user', $user->user_id, 'Signed in after registration');
+
+        return ['user' => $user->fresh(['role.permissions', 'student']), 'token' => $token];
+    }
+
+    /** Derives a unique login username from an email's local part. */
+    private function uniqueUsernameFromEmail(string $email): string
+    {
+        $base = Str::slug(Str::before($email, '@'), '.');
+        $base = $base !== '' ? $base : 'student';
+        $candidate = $base;
+        $suffix = 1;
+
+        while (User::where('username', $candidate)->exists()) {
+            $suffix++;
+            $candidate = "{$base}{$suffix}";
+        }
+
+        return $candidate;
+    }
 
     /**
      * FR-01 — authenticate and issue a Sanctum access token.

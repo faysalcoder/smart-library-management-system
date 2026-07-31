@@ -6,12 +6,16 @@ use App\Exceptions\DomainException;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreBookRequest;
 use App\Http\Requests\UpdateBookRequest;
+use App\Http\Requests\UploadImageRequest;
 use App\Http\Resources\BookCopyResource;
 use App\Http\Resources\BookResource;
 use App\Models\Book;
 use App\Models\BookCopy;
 use App\Services\Catalog\BookCatalogService;
 use App\Services\Catalog\BookSearchService;
+use App\Services\System\AuditLogService;
+use App\Services\System\SupabaseStorageService;
+use App\Support\AuditAction;
 use App\Support\Status;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -22,6 +26,8 @@ class BookController extends Controller
     public function __construct(
         private BookCatalogService $catalog,
         private BookSearchService $search,
+        private SupabaseStorageService $storage,
+        private AuditLogService $audit,
     ) {}
 
     /** GET /api/books — FR-02 / FR-06 */
@@ -86,6 +92,26 @@ class BookController extends Controller
         $this->catalog->delete($book, $request->user());
 
         return $this->ok(null, 'Book deleted.');
+    }
+
+    /** POST /api/books/{book}/cover — multipart image upload */
+    public function uploadCover(UploadImageRequest $request, Book $book): JsonResponse
+    {
+        $previous = $book->cover_image;
+        $url = $this->storage->upload($request->file('image'), 'covers');
+
+        $book->update(['cover_image' => $url]);
+        $this->storage->delete($previous);
+
+        $this->audit->record(
+            $request->user(),
+            AuditAction::BOOK_UPDATED,
+            'book',
+            $book->book_id,
+            "Updated cover image for \"{$book->title}\""
+        );
+
+        return $this->ok(new BookResource($book->fresh(['category', 'author', 'publisher'])), 'Cover image updated.');
     }
 
     // ---- Copies ----------------------------------------------------------

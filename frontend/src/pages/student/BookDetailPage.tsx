@@ -79,9 +79,17 @@ export default function BookDetailPage() {
         <div className="space-y-6 lg:col-span-2">
           <Card>
             <div className="flex flex-col gap-6 sm:flex-row">
-              <span className="flex h-[200px] w-[140px] shrink-0 items-center justify-center self-center rounded-xl bg-surface-container text-on-surface-variant sm:self-start">
-                <Icon name="book_2" className="text-[48px]" />
-              </span>
+              {book.cover_image ? (
+                <img
+                  src={book.cover_image}
+                  alt=""
+                  className="h-[200px] w-[140px] shrink-0 self-center rounded-xl object-cover sm:self-start"
+                />
+              ) : (
+                <span className="flex h-[200px] w-[140px] shrink-0 items-center justify-center self-center rounded-xl bg-surface-container text-on-surface-variant sm:self-start">
+                  <Icon name="book_2" className="text-[48px]" />
+                </span>
+              )}
 
               <dl className="min-w-0 flex-1 grid gap-4 sm:grid-cols-2">
                 <Detail label="ISBN" value={book.isbn} mono />
@@ -257,9 +265,17 @@ export default function BookDetailPage() {
                 to={`/books/${item.book_id}`}
                 className="group flex gap-3 rounded-xl border border-outline-variant p-3 transition-all hover:border-primary-container hover:shadow-card"
               >
-                <span className="flex h-[84px] w-[60px] shrink-0 items-center justify-center rounded-lg bg-surface-container text-on-surface-variant">
-                  <Icon name="book_2" className="text-[22px]" />
-                </span>
+                {item.cover_image ? (
+                  <img
+                    src={item.cover_image}
+                    alt=""
+                    className="h-[84px] w-[60px] shrink-0 rounded-lg object-cover"
+                  />
+                ) : (
+                  <span className="flex h-[84px] w-[60px] shrink-0 items-center justify-center rounded-lg bg-surface-container text-on-surface-variant">
+                    <Icon name="book_2" className="text-[22px]" />
+                  </span>
+                )}
 
                 <div className="flex min-w-0 flex-1 flex-col">
                   <p className="line-clamp-2 text-body-md font-medium text-on-surface group-hover:text-primary">

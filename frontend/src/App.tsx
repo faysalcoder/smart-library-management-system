@@ -8,11 +8,13 @@ import { Spinner, EmptyState, Button } from '@/components/ui';
 import { useAuth } from '@/store/auth';
 
 import LoginPage from '@/pages/auth/LoginPage';
+import RegisterPage from '@/pages/auth/RegisterPage';
 import DashboardPage from '@/pages/DashboardPage';
 import SearchPage from '@/pages/student/SearchPage';
 import BookDetailPage from '@/pages/student/BookDetailPage';
 import MyLoansPage from '@/pages/student/MyLoansPage';
 import MyFinesPage from '@/pages/student/MyFinesPage';
+import MyProfilePage from '@/pages/student/MyProfilePage';
 import IssueBookPage from '@/pages/librarian/IssueBookPage';
 import ReturnBookPage from '@/pages/librarian/ReturnBookPage';
 import ReceiptPage from '@/pages/librarian/ReceiptPage';
@@ -90,6 +92,7 @@ function AppRoutes() {
   return (
     <Routes>
       <Route path="/login" element={<LoginPage />} />
+      <Route path="/register" element={<RegisterPage />} />
 
       {/* The printable receipt renders outside the app shell. */}
       <Route
@@ -131,6 +134,7 @@ function AppRoutes() {
         {/* Student self-service */}
         <Route path="my/loans" element={<MyLoansPage />} />
         <Route path="my/fines" element={<MyFinesPage />} />
+        <Route path="my/profile" element={<MyProfilePage />} />
 
         {/* Circulation */}
         <Route

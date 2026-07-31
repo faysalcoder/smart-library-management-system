@@ -81,6 +81,7 @@ export interface Author {
   name: string;
   nationality: string | null;
   biography: string | null;
+  photo: string | null;
   books_count: number;
 }
 
@@ -92,6 +93,7 @@ export interface Publisher {
   contact_email: string | null;
   contact_phone: string | null;
   website: string | null;
+  logo: string | null;
   books_count: number;
 }
 

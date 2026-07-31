@@ -309,9 +309,17 @@ export default function SearchPage() {
                     to={`/books/${book.book_id}`}
                     className="group flex gap-4 rounded-xl border border-outline-variant bg-surface-container-lowest p-4 shadow-card transition-all hover:border-primary-container hover:shadow-dropdown"
                   >
-                    <span className="flex h-[112px] w-20 shrink-0 items-center justify-center rounded-lg bg-surface-container text-on-surface-variant">
-                      <Icon name="book_2" className="text-[28px]" />
-                    </span>
+                    {book.cover_image ? (
+                      <img
+                        src={book.cover_image}
+                        alt=""
+                        className="h-[112px] w-20 shrink-0 rounded-lg object-cover"
+                      />
+                    ) : (
+                      <span className="flex h-[112px] w-20 shrink-0 items-center justify-center rounded-lg bg-surface-container text-on-surface-variant">
+                        <Icon name="book_2" className="text-[28px]" />
+                      </span>
+                    )}
 
                     <div className="flex min-w-0 flex-1 flex-col">
                       <h3 className="line-clamp-2 text-body-lg font-semibold text-on-surface group-hover:text-primary">

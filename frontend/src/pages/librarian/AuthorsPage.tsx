@@ -8,6 +8,7 @@ import {
   EmptyState,
   Field,
   Icon,
+  ImageUpload,
   Input,
   Modal,
   PageHeader,
@@ -176,9 +177,17 @@ export default function AuthorsPage() {
                     >
                       <td className="px-4 py-3">
                         <div className="flex items-center gap-2">
-                          <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-secondary-container text-on-secondary-container">
-                            <Icon name="person" className="text-[18px]" />
-                          </span>
+                          {author.photo ? (
+                            <img
+                              src={author.photo}
+                              alt=""
+                              className="h-8 w-8 shrink-0 rounded-full object-cover"
+                            />
+                          ) : (
+                            <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-secondary-container text-on-secondary-container">
+                              <Icon name="person" className="text-[18px]" />
+                            </span>
+                          )}
                           <span className="font-medium text-on-surface">{author.name}</span>
                         </div>
                       </td>
@@ -255,6 +264,24 @@ export default function AuthorsPage() {
       >
         <div className="space-y-4">
           {formError && <Alert tone="danger">{formError}</Alert>}
+
+          {editing ? (
+            <ImageUpload
+              label="Photo"
+              value={editing.photo}
+              shape="circle"
+              hint="JPEG, PNG or WebP, up to 5 MB."
+              onUpload={async (file) => {
+                const updated = await authorApi.uploadPhoto(editing.author_id, file);
+                toast.success('Photo updated.');
+                setEditing(updated);
+                refresh();
+                return updated;
+              }}
+            />
+          ) : (
+            <Alert tone="info">Add the author first, then you can upload a photo.</Alert>
+          )}
 
           <Field label="Full name" htmlFor="name" required error={err('name')}>
             <Input

@@ -8,6 +8,7 @@ use App\Http\Controllers\Api\CategoryController;
 use App\Http\Controllers\Api\CirculationController;
 use App\Http\Controllers\Api\DashboardController;
 use App\Http\Controllers\Api\FineController;
+use App\Http\Controllers\Api\ProfileController;
 use App\Http\Controllers\Api\PublisherController;
 use App\Http\Controllers\Api\ReportController;
 use App\Http\Controllers\Api\SettingController;
@@ -31,6 +32,10 @@ use Illuminate\Support\Facades\Route;
 Route::post('/auth/login', [AuthController::class, 'login'])
     ->middleware('throttle:login')
     ->name('auth.login');
+
+Route::post('/auth/register', [AuthController::class, 'register'])
+    ->middleware('throttle:login')
+    ->name('auth.register');
 
 Route::get('/health', fn () => response()->json([
     'ok' => true,
@@ -71,6 +76,7 @@ Route::middleware(['auth:sanctum', 'throttle:api'])->group(function () {
         Route::post('/books', [BookController::class, 'store']);
         Route::put('/books/{book}', [BookController::class, 'update']);
         Route::delete('/books/{book}', [BookController::class, 'destroy']);
+        Route::post('/books/{book}/cover', [BookController::class, 'uploadCover']);
     });
 
     Route::middleware('perm:'.P::COPY_MANAGE)->group(function () {
@@ -90,12 +96,14 @@ Route::middleware(['auth:sanctum', 'throttle:api'])->group(function () {
         Route::post('/authors', [AuthorController::class, 'store']);
         Route::put('/authors/{author}', [AuthorController::class, 'update']);
         Route::delete('/authors/{author}', [AuthorController::class, 'destroy']);
+        Route::post('/authors/{author}/photo', [AuthorController::class, 'uploadPhoto']);
     });
 
     Route::middleware('perm:'.P::PUBLISHER_MANAGE)->group(function () {
         Route::post('/publishers', [PublisherController::class, 'store']);
         Route::put('/publishers/{publisher}', [PublisherController::class, 'update']);
         Route::delete('/publishers/{publisher}', [PublisherController::class, 'destroy']);
+        Route::post('/publishers/{publisher}/logo', [PublisherController::class, 'uploadLogo']);
     });
 
     // Members (FR-07) ---------------------------------------------------------
@@ -139,6 +147,8 @@ Route::middleware(['auth:sanctum', 'throttle:api'])->group(function () {
     Route::middleware('role:'.R::STUDENT)->group(function () {
         Route::get('/my/loans', [CirculationController::class, 'myLoans']);
         Route::get('/my/fines', [FineController::class, 'myFines']);
+        Route::get('/my/profile', [ProfileController::class, 'show']);
+        Route::put('/my/profile', [ProfileController::class, 'update']);
     });
 
     // Fines (FR-05) -----------------------------------------------------------

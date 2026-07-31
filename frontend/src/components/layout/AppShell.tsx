@@ -34,6 +34,7 @@ const NAV: NavGroup[] = [
     items: [
       { to: '/my/loans', label: 'My Loans', icon: 'menu_book', roles: ['student'] },
       { to: '/my/fines', label: 'My Fines', icon: 'payments', roles: ['student'] },
+      { to: '/my/profile', label: 'My Account', icon: 'manage_accounts', roles: ['student'] },
     ],
   },
   {

@@ -8,6 +8,7 @@ import {
   CardHeader,
   Field,
   Icon,
+  ImageUpload,
   Input,
   Modal,
   PageHeader,
@@ -184,6 +185,31 @@ export default function BookFormPage() {
       <form onSubmit={handleSubmit} className="space-y-4">
         <Card>
           <CardHeader title="Bibliographic details" icon="menu_book" />
+
+          {isEdit && book ? (
+            <div className="mb-5 flex items-start gap-4">
+              <ImageUpload
+                label="Cover image"
+                value={book.cover_image}
+                shape="portrait"
+                hint="JPEG, PNG or WebP, up to 5 MB."
+                onUpload={async (file: File) => {
+                  const updated = await bookApi.uploadCover(book.book_id, file);
+                  toast.success('Cover image updated.');
+                  queryClient.setQueryData(['book', id], (prev: typeof bookPayload) =>
+                    prev ? { ...prev, book: updated } : prev,
+                  );
+                  return updated;
+                }}
+              />
+            </div>
+          ) : (
+            !isEdit && (
+              <div className="mb-5">
+                <Alert tone="info">Save the book first, then you can add a cover image.</Alert>
+              </div>
+            )
+          )}
 
           <div className="grid gap-4 sm:grid-cols-2">
             <Field label="ISBN" htmlFor="isbn" required error={err('isbn')}>

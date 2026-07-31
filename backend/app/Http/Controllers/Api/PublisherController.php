@@ -4,8 +4,10 @@ namespace App\Http\Controllers\Api;
 
 use App\Exceptions\DomainException;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\UploadImageRequest;
 use App\Models\Publisher;
 use App\Services\System\AuditLogService;
+use App\Services\System\SupabaseStorageService;
 use App\Support\AuditAction;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -16,7 +18,10 @@ use Illuminate\Validation\Rule;
  */
 class PublisherController extends Controller
 {
-    public function __construct(private AuditLogService $audit) {}
+    public function __construct(
+        private AuditLogService $audit,
+        private SupabaseStorageService $storage,
+    ) {}
 
     /** GET /api/publishers */
     public function index(Request $request): JsonResponse
@@ -130,6 +135,26 @@ class PublisherController extends Controller
         return $this->ok(null, 'Publisher deleted.');
     }
 
+    /** POST /api/publishers/{publisher}/logo — multipart image upload */
+    public function uploadLogo(UploadImageRequest $request, Publisher $publisher): JsonResponse
+    {
+        $previous = $publisher->logo;
+        $url = $this->storage->upload($request->file('image'), 'publishers');
+
+        $publisher->update(['logo' => $url]);
+        $this->storage->delete($previous);
+
+        $this->audit->record(
+            $request->user(),
+            AuditAction::PUBLISHER_UPDATED,
+            'publisher',
+            $publisher->publisher_id,
+            "Updated logo for \"{$publisher->name}\""
+        );
+
+        return $this->ok($this->present($publisher->fresh()->loadCount('books')), 'Logo updated.');
+    }
+
     private function present(Publisher $publisher): array
     {
         return [
@@ -139,6 +164,7 @@ class PublisherController extends Controller
             'contact_email' => $publisher->contact_email,
             'contact_phone' => $publisher->contact_phone,
             'website' => $publisher->website,
+            'logo' => $publisher->logo,
             'books_count' => $publisher->books_count ?? 0,
         ];
     }

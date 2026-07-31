@@ -1,5 +1,5 @@
 import { useState, type FormEvent } from 'react';
-import { Navigate, useNavigate } from 'react-router-dom';
+import { Link, Navigate, useNavigate } from 'react-router-dom';
 import { Alert, Button, Field, Icon, Input } from '@/components/ui';
 import { toApiError } from '@/lib/api';
 import { useAuth } from '@/store/auth';
@@ -34,12 +34,6 @@ export default function LoginPage() {
     } finally {
       setSubmitting(false);
     }
-  };
-
-  const fillDemo = (name: string) => {
-    setUsername(name);
-    setPassword('Password123');
-    setError(null);
   };
 
   return (
@@ -162,34 +156,12 @@ export default function LoginPage() {
             </Button>
           </form>
 
-          {/* Demo accounts — seeded by the backend for evaluation. */}
-          <div className="mt-8 rounded-xl border border-outline-variant bg-surface-container-low p-4">
-            <p className="mb-2 flex items-center gap-1.5 text-label-md uppercase tracking-wide text-on-surface-variant">
-              <Icon name="key" className="text-[14px]" />
-              Demo accounts
-            </p>
-            <div className="grid grid-cols-2 gap-2">
-              {[
-                ['admin', 'Administrator'],
-                ['librarian', 'Librarian'],
-                ['student', 'Student'],
-                ['management', 'Management'],
-              ].map(([name, label]) => (
-                <button
-                  key={name}
-                  type="button"
-                  onClick={() => fillDemo(name)}
-                  className="rounded-lg border border-outline-variant bg-surface-container-lowest px-3 py-2 text-left transition-colors hover:border-primary-container"
-                >
-                  <span className="block font-mono text-data-mono text-primary">{name}</span>
-                  <span className="block text-[11px] text-on-surface-variant">{label}</span>
-                </button>
-              ))}
-            </div>
-            <p className="mt-2 text-[11px] text-on-surface-variant">
-              Password for all demo accounts: <span className="font-mono">Password123</span>
-            </p>
-          </div>
+          <p className="mt-6 text-center text-body-md text-on-surface-variant">
+            New student?{' '}
+            <Link to="/register" className="font-semibold text-primary hover:underline">
+              Create an account
+            </Link>
+          </p>
 
           <p className="mt-6 text-center text-body-sm text-on-surface-variant">
             Library support: ext. 214

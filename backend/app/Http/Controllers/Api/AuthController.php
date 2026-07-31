@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\ChangePasswordRequest;
 use App\Http\Requests\LoginRequest;
+use App\Http\Requests\RegisterRequest;
 use App\Http\Resources\UserResource;
 use App\Services\Auth\AuthenticationService;
 use Illuminate\Http\JsonResponse;
@@ -27,6 +28,18 @@ class AuthController extends Controller
             'token' => $result['token'],
             'token_type' => 'Bearer',
         ], 'Signed in successfully.');
+    }
+
+    /** POST /api/auth/register — public student self-registration. */
+    public function register(RegisterRequest $request): JsonResponse
+    {
+        $result = $this->auth->register($request->validated());
+
+        return $this->created([
+            'user' => new UserResource($result['user']),
+            'token' => $result['token'],
+            'token_type' => 'Bearer',
+        ], 'Account created. Welcome to the library!');
     }
 
     /** POST /api/auth/logout */

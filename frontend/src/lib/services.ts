@@ -23,6 +23,18 @@ import type {
 } from '@/types';
 
 // ---------------------------------------------------------------------------
+// Image uploads (book covers, author photos, publisher logos)
+// ---------------------------------------------------------------------------
+
+const MULTIPART = { headers: { 'Content-Type': 'multipart/form-data' } };
+
+function toImageForm(file: File): FormData {
+  const form = new FormData();
+  form.append('image', file);
+  return form;
+}
+
+// ---------------------------------------------------------------------------
 // Dashboard
 // ---------------------------------------------------------------------------
 
@@ -76,6 +88,9 @@ export const bookApi = {
   removeCopy: (copyId: number) => request<null>(http.delete(`/copies/${copyId}`)),
   lookupBarcode: (barcode: string) =>
     request<BookCopy>(http.get(`/copies/lookup/${encodeURIComponent(barcode)}`)),
+
+  uploadCover: (bookId: number, file: File) =>
+    request<Book>(http.post(`/books/${bookId}/cover`, toImageForm(file), MULTIPART)),
 };
 
 /**
@@ -102,6 +117,8 @@ export const authorApi = {
   update: (id: number, payload: Partial<Author>) =>
     request<Author>(http.put(`/authors/${id}`, payload)),
   remove: (id: number) => request<null>(http.delete(`/authors/${id}`)),
+  uploadPhoto: (id: number, file: File) =>
+    request<Author>(http.post(`/authors/${id}/photo`, toImageForm(file), MULTIPART)),
 };
 
 /** DFD Level-0 "Publisher Management". */
@@ -126,6 +143,8 @@ export const publisherApi = {
   update: (id: number, payload: Partial<Publisher>) =>
     request<Publisher>(http.put(`/publishers/${id}`, payload)),
   remove: (id: number) => request<null>(http.delete(`/publishers/${id}`)),
+  uploadLogo: (id: number, file: File) =>
+    request<Publisher>(http.post(`/publishers/${id}/logo`, toImageForm(file), MULTIPART)),
 };
 
 export const categoryApi = {
@@ -223,6 +242,23 @@ export const fineApi = {
     request<{ fines: Fine[]; summary: { outstanding: number; paid: number; count: number } }>(
       http.get('/my/fines'),
     ),
+};
+
+// ---------------------------------------------------------------------------
+// Self-service profile (student account maintenance)
+// ---------------------------------------------------------------------------
+
+export interface ProfileUpdatePayload {
+  full_name: string;
+  email: string;
+  phone?: string;
+  department: string;
+}
+
+export const profileApi = {
+  get: () => request<Student>(http.get('/my/profile')),
+  update: (payload: ProfileUpdatePayload) =>
+    request<Student>(http.put('/my/profile', payload)),
 };
 
 // ---------------------------------------------------------------------------

@@ -8,6 +8,7 @@ import {
   EmptyState,
   Field,
   Icon,
+  ImageUpload,
   Input,
   Modal,
   PageHeader,
@@ -176,9 +177,17 @@ export default function PublishersPage() {
                     >
                       <td className="px-4 py-3">
                         <div className="flex items-center gap-2">
-                          <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-tertiary-fixed text-on-tertiary-fixed">
-                            <Icon name="apartment" className="text-[18px]" />
-                          </span>
+                          {publisher.logo ? (
+                            <img
+                              src={publisher.logo}
+                              alt=""
+                              className="h-8 w-8 shrink-0 rounded-lg object-cover"
+                            />
+                          ) : (
+                            <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-tertiary-fixed text-on-tertiary-fixed">
+                              <Icon name="apartment" className="text-[18px]" />
+                            </span>
+                          )}
                           <div className="min-w-0">
                             <span className="block font-medium text-on-surface">
                               {publisher.name}
@@ -280,6 +289,24 @@ export default function PublishersPage() {
       >
         <div className="space-y-4">
           {formError && <Alert tone="danger">{formError}</Alert>}
+
+          {editing ? (
+            <ImageUpload
+              label="Logo"
+              value={editing.logo}
+              shape="square"
+              hint="JPEG, PNG or WebP, up to 5 MB."
+              onUpload={async (file) => {
+                const updated = await publisherApi.uploadLogo(editing.publisher_id, file);
+                toast.success('Logo updated.');
+                setEditing(updated);
+                refresh();
+                return updated;
+              }}
+            />
+          ) : (
+            <Alert tone="info">Add the publisher first, then you can upload a logo.</Alert>
+          )}
 
           <Field label="Publisher name" htmlFor="name" required error={err('name')}>
             <Input

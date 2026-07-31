@@ -16,7 +16,7 @@ class Author extends Model
 
     protected $primaryKey = 'author_id';
 
-    protected $fillable = ['name', 'nationality', 'biography'];
+    protected $fillable = ['name', 'nationality', 'biography', 'photo'];
 
     public function books(): HasMany
     {

@@ -16,7 +16,7 @@ class Publisher extends Model
 
     protected $primaryKey = 'publisher_id';
 
-    protected $fillable = ['name', 'address', 'contact_email', 'contact_phone', 'website'];
+    protected $fillable = ['name', 'address', 'contact_email', 'contact_phone', 'website', 'logo'];
 
     public function books(): HasMany
     {

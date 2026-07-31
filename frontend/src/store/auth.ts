@@ -2,6 +2,15 @@ import { create } from 'zustand';
 import { http, request, tokenStore } from '@/lib/api';
 import type { PublicSettings, RoleName, User } from '@/types';
 
+export interface RegisterPayload {
+  full_name: string;
+  email: string;
+  phone?: string;
+  department: string;
+  password: string;
+  password_confirmation: string;
+}
+
 interface AuthState {
   user: User | null;
   settings: PublicSettings | null;
@@ -9,6 +18,7 @@ interface AuthState {
   loading: boolean;
 
   login: (username: string, password: string) => Promise<User>;
+  register: (payload: RegisterPayload) => Promise<User>;
   logout: () => Promise<void>;
   restore: () => Promise<void>;
   loadSettings: () => Promise<void>;
@@ -25,6 +35,19 @@ export const useAuth = create<AuthState>((set, get) => ({
   async login(username, password) {
     const result = await request<{ user: User; token: string }>(
       http.post('/auth/login', { username, password }),
+    );
+
+    tokenStore.set(result.token);
+    set({ user: result.user });
+
+    await get().loadSettings();
+
+    return result.user;
+  },
+
+  async register(payload) {
+    const result = await request<{ user: User; token: string }>(
+      http.post('/auth/register', payload),
     );
 
     tokenStore.set(result.token);

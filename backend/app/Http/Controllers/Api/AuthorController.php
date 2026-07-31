@@ -4,8 +4,10 @@ namespace App\Http\Controllers\Api;
 
 use App\Exceptions\DomainException;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\UploadImageRequest;
 use App\Models\Author;
 use App\Services\System\AuditLogService;
+use App\Services\System\SupabaseStorageService;
 use App\Support\AuditAction;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -17,7 +19,10 @@ use Illuminate\Validation\Rule;
  */
 class AuthorController extends Controller
 {
-    public function __construct(private AuditLogService $audit) {}
+    public function __construct(
+        private AuditLogService $audit,
+        private SupabaseStorageService $storage,
+    ) {}
 
     /** GET /api/authors */
     public function index(Request $request): JsonResponse
@@ -127,6 +132,26 @@ class AuthorController extends Controller
         return $this->ok(null, 'Author deleted.');
     }
 
+    /** POST /api/authors/{author}/photo — multipart image upload */
+    public function uploadPhoto(UploadImageRequest $request, Author $author): JsonResponse
+    {
+        $previous = $author->photo;
+        $url = $this->storage->upload($request->file('image'), 'authors');
+
+        $author->update(['photo' => $url]);
+        $this->storage->delete($previous);
+
+        $this->audit->record(
+            $request->user(),
+            AuditAction::AUTHOR_UPDATED,
+            'author',
+            $author->author_id,
+            "Updated photo for \"{$author->name}\""
+        );
+
+        return $this->ok($this->present($author->fresh()->loadCount('books')), 'Photo updated.');
+    }
+
     private function present(Author $author): array
     {
         return [
@@ -134,6 +159,7 @@ class AuthorController extends Controller
             'name' => $author->name,
             'nationality' => $author->nationality,
             'biography' => $author->biography,
+            'photo' => $author->photo,
             'books_count' => $author->books_count ?? 0,
         ];
     }

@@ -11,6 +11,8 @@ final class AuditAction
     public const ACCOUNT_LOCKED = 'ACCOUNT_LOCKED';
 
     public const USER_CREATED = 'USER_CREATED';
+    public const USER_SELF_REGISTERED = 'USER_SELF_REGISTERED';
+    public const PROFILE_UPDATED = 'PROFILE_UPDATED';
     public const USER_UPDATED = 'USER_UPDATED';
     public const USER_DISABLED = 'USER_DISABLED';
     public const PASSWORD_RESET = 'PASSWORD_RESET';

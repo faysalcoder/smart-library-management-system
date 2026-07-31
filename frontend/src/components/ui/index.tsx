@@ -1,6 +1,8 @@
 import clsx from 'clsx';
 import {
   forwardRef,
+  useRef,
+  useState,
   type ButtonHTMLAttributes,
   type InputHTMLAttributes,
   type ReactNode,
@@ -556,6 +558,137 @@ export function Pagination({
           <Icon name="chevron_right" className="text-[18px]" />
         </Button>
       </div>
+    </div>
+  );
+}
+
+// ---------------------------------------------------------------------------
+// Image upload — click or drag-and-drop, with a preview and inline progress.
+// Shared by book covers, author photos and publisher logos.
+// ---------------------------------------------------------------------------
+
+interface ImageUploadProps {
+  label: string;
+  value: string | null;
+  /** Performs the actual upload (the caller owns the mutation/toast). */
+  onUpload: (file: File) => Promise<unknown>;
+  shape?: 'square' | 'circle' | 'portrait';
+  hint?: string;
+  disabled?: boolean;
+}
+
+export function ImageUpload({
+  label,
+  value,
+  onUpload,
+  shape = 'square',
+  hint,
+  disabled,
+}: ImageUploadProps) {
+  const inputRef = useRef<HTMLInputElement>(null);
+  const [dragOver, setDragOver] = useState(false);
+  const [uploading, setUploading] = useState(false);
+  const [localError, setLocalError] = useState<string | null>(null);
+
+  const shapeClass = {
+    square: 'aspect-square rounded-xl w-28',
+    circle: 'aspect-square rounded-full w-28',
+    portrait: 'aspect-[3/4] rounded-lg w-24',
+  }[shape];
+
+  const handleFile = async (file?: File | null) => {
+    if (!file || disabled) return;
+    setLocalError(null);
+
+    if (!file.type.startsWith('image/')) {
+      setLocalError('Choose an image file.');
+      return;
+    }
+    if (file.size > 5 * 1024 * 1024) {
+      setLocalError('Images must be 5 MB or smaller.');
+      return;
+    }
+
+    setUploading(true);
+    try {
+      await onUpload(file);
+    } catch {
+      setLocalError('Upload failed — please try again.');
+    } finally {
+      setUploading(false);
+      if (inputRef.current) inputRef.current.value = '';
+    }
+  };
+
+  return (
+    <div>
+      <p className="mb-1.5 text-label-md uppercase tracking-wide text-on-surface-variant">
+        {label}
+      </p>
+
+      <div
+        role="button"
+        tabIndex={0}
+        aria-label={value ? `Change ${label.toLowerCase()}` : `Upload ${label.toLowerCase()}`}
+        className={clsx(
+          'relative flex cursor-pointer flex-col items-center justify-center overflow-hidden border-2 border-dashed border-outline-variant bg-surface-container-low text-on-surface-variant transition-colors hover:border-primary-container focus-visible:outline-none',
+          shapeClass,
+          dragOver && 'border-primary-container bg-primary-container/10',
+          disabled && 'pointer-events-none opacity-50',
+        )}
+        onClick={() => inputRef.current?.click()}
+        onKeyDown={(e) => {
+          if (e.key === 'Enter' || e.key === ' ') {
+            e.preventDefault();
+            inputRef.current?.click();
+          }
+        }}
+        onDragOver={(e) => {
+          e.preventDefault();
+          setDragOver(true);
+        }}
+        onDragLeave={() => setDragOver(false)}
+        onDrop={(e) => {
+          e.preventDefault();
+          setDragOver(false);
+          void handleFile(e.dataTransfer.files?.[0]);
+        }}
+      >
+        {value ? (
+          <img src={value} alt="" className="h-full w-full object-cover" />
+        ) : (
+          <div className="flex flex-col items-center gap-1 p-3 text-center">
+            <Icon name="add_photo_alternate" className="text-[22px]" />
+            <span className="text-[10px] leading-tight">Click or drop</span>
+          </div>
+        )}
+
+        {uploading && (
+          <div className="absolute inset-0 flex items-center justify-center bg-black/40">
+            <span className="h-6 w-6 animate-spin rounded-full border-2 border-white border-t-transparent" />
+          </div>
+        )}
+
+        {value && !uploading && (
+          <div className="absolute inset-0 flex items-center justify-center bg-black/0 opacity-0 transition-opacity hover:bg-black/40 hover:opacity-100">
+            <Icon name="edit" className="text-[20px] text-white" />
+          </div>
+        )}
+      </div>
+
+      <input
+        ref={inputRef}
+        type="file"
+        accept="image/jpeg,image/png,image/webp"
+        className="hidden"
+        disabled={disabled}
+        onChange={(e) => void handleFile(e.target.files?.[0])}
+      />
+
+      {hint && !localError && (
+        <p className="mt-1 max-w-[140px] text-[11px] text-on-surface-variant">{hint}</p>
+      )}
+      {localError && <p className="mt-1 max-w-[140px] text-[11px] text-danger">{localError}</p>}
     </div>
   );
 }
