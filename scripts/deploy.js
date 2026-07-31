@@ -148,7 +148,12 @@ function main() {
 
   if (!flag('skip-backend')) {
     section('Redeploying backend (Railway)');
-    run('railway up', 'npx', ['--yes', '@railway/cli', 'up', '--detach'], BACKEND);
+    run(
+      'railway up',
+      'npx',
+      ['--yes', '@railway/cli', 'up', '--service', 'slms-backend', '--detach'],
+      BACKEND
+    );
   } else {
     console.log('\n(--skip-backend given — leaving Railway as-is)');
   }
