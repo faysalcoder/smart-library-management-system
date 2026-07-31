@@ -1,0 +1,409 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Add / Edit Book | WUB Library</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&amp;family=JetBrains+Mono:wght@500&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "surface-variant": "#e1e2ed",
+                        "surface-container-lowest": "#ffffff",
+                        "inverse-on-surface": "#f0f0fb",
+                        "surface-dim": "#d9d9e5",
+                        "surface": "#faf8ff",
+                        "primary-fixed-dim": "#b4c5ff",
+                        "secondary-fixed": "#d3e4fe",
+                        "on-secondary-container": "#54647a",
+                        "tertiary": "#943700",
+                        "surface-container": "#ededf9",
+                        "surface-container-highest": "#e1e2ed",
+                        "primary-container": "#2563eb",
+                        "on-primary-fixed": "#00174b",
+                        "on-secondary-fixed-variant": "#38485d",
+                        "error-container": "#ffdad6",
+                        "on-primary-fixed-variant": "#003ea8",
+                        "on-error-container": "#93000a",
+                        "secondary-container": "#d0e1fb",
+                        "tertiary-container": "#bc4800",
+                        "surface-bright": "#faf8ff",
+                        "inverse-primary": "#b4c5ff",
+                        "on-surface-variant": "#434655",
+                        "on-surface": "#191b23",
+                        "on-tertiary": "#ffffff",
+                        "on-error": "#ffffff",
+                        "on-background": "#191b23",
+                        "background": "#faf8ff",
+                        "on-secondary-fixed": "#0b1c30",
+                        "outline": "#737686",
+                        "surface-container-low": "#f3f3fe",
+                        "outline-variant": "#c3c6d7",
+                        "tertiary-fixed-dim": "#ffb596",
+                        "on-tertiary-fixed-variant": "#7d2d00",
+                        "secondary-fixed-dim": "#b7c8e1",
+                        "primary": "#004ac6",
+                        "surface-tint": "#0053db",
+                        "on-tertiary-fixed": "#360f00",
+                        "primary-fixed": "#dbe1ff",
+                        "on-secondary": "#ffffff",
+                        "surface-container-high": "#e7e7f3",
+                        "on-primary-container": "#eeefff",
+                        "inverse-surface": "#2e3039",
+                        "error": "#ba1a1a",
+                        "tertiary-fixed": "#ffdbcd",
+                        "on-primary": "#ffffff",
+                        "on-tertiary-container": "#ffede6",
+                        "secondary": "#505f76"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "stack-lg": "1.5rem",
+                        "margin-desktop": "2rem",
+                        "stack-sm": "0.5rem",
+                        "gutter": "1.5rem",
+                        "margin-mobile": "1rem",
+                        "stack-md": "1rem",
+                        "container-max": "1440px"
+                    },
+                    "fontFamily": {
+                        "body-sm": ["Inter"],
+                        "label-md": ["Inter"],
+                        "headline-lg": ["Inter"],
+                        "data-mono": ["JetBrains Mono"],
+                        "body-md": ["Inter"],
+                        "headline-md": ["Inter"],
+                        "headline-xl": ["Inter"],
+                        "body-lg": ["Inter"]
+                    },
+                    "fontSize": {
+                        "body-sm": ["13px", {"lineHeight": "18px", "fontWeight": "400"}],
+                        "label-md": ["12px", {"lineHeight": "16px", "fontWeight": "600"}],
+                        "headline-lg": ["24px", {"lineHeight": "32px", "letterSpacing": "-0.01em", "fontWeight": "600"}],
+                        "data-mono": ["13px", {"lineHeight": "16px", "fontWeight": "500"}],
+                        "body-md": ["14px", {"lineHeight": "20px", "fontWeight": "400"}],
+                        "headline-md": ["20px", {"lineHeight": "28px", "fontWeight": "600"}],
+                        "headline-xl": ["30px", {"lineHeight": "38px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                        "body-lg": ["16px", {"lineHeight": "24px", "fontWeight": "400"}]
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        body {
+            background-color: #F8FAFC;
+        }
+        .form-input-focus:focus {
+            outline: none;
+            border-color: #2563EB;
+            box-shadow: 0 0 0 3px #DBEAFE;
+        }
+    </style>
+</head>
+<body class="bg-background text-on-surface">
+<!-- SideNavBar (Shared Component) -->
+<aside class="w-[240px] h-screen fixed left-0 top-0 bg-surface border-r border-outline-variant flex flex-col p-stack-md gap-stack-sm z-50">
+<div class="mb-stack-lg">
+<h1 class="font-headline-md text-headline-md font-bold text-primary">WUB Library</h1>
+<p class="font-body-md text-body-md opacity-70">SLMS Admin</p>
+</div>
+<nav class="flex flex-col gap-1">
+<a class="flex items-center gap-3 px-4 py-3 text-on-surface-variant hover:bg-surface-container-low transition-colors rounded-lg font-body-md text-body-md" href="#">
+<span class="material-symbols-outlined">dashboard</span> Overview
+            </a>
+<a class="flex items-center gap-3 px-4 py-3 bg-secondary-container text-on-secondary-container rounded-lg font-bold font-body-md text-body-md" href="#">
+<span class="material-symbols-outlined">menu_book</span> Books
+            </a>
+<a class="flex items-center gap-3 px-4 py-3 text-on-surface-variant hover:bg-surface-container-low transition-colors rounded-lg font-body-md text-body-md" href="#">
+<span class="material-symbols-outlined">group</span> Members
+            </a>
+<a class="flex items-center gap-3 px-4 py-3 text-on-surface-variant hover:bg-surface-container-low transition-colors rounded-lg font-body-md text-body-md" href="#">
+<span class="material-symbols-outlined">admin_panel_settings</span> Management
+            </a>
+<a class="flex items-center gap-3 px-4 py-3 text-on-surface-variant hover:bg-surface-container-low transition-colors rounded-lg font-body-md text-body-md" href="#">
+<span class="material-symbols-outlined">settings</span> Settings
+            </a>
+</nav>
+</aside>
+<!-- TopNavBar (Shared Component) -->
+<header class="h-[64px] fixed top-0 right-0 left-[240px] z-40 bg-white border-b border-outline-variant flex justify-between items-center px-gutter w-full">
+<div class="flex items-center gap-4 flex-1">
+<div class="relative max-w-md w-full">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-outline">search</span>
+<input class="w-full pl-10 pr-12 py-2 bg-surface-container-low rounded-lg border border-outline-variant font-body-md text-body-md form-input-focus" placeholder="Global search... ⌘F" type="text"/>
+<span class="absolute right-3 top-1/2 -translate-y-1/2 font-data-mono text-label-md text-outline px-1.5 py-0.5 border border-outline-variant rounded">⌘F</span>
+</div>
+</div>
+<div class="flex items-center gap-2">
+<button class="hover:bg-surface-container-low rounded-full p-2 transition-all duration-200">
+<span class="material-symbols-outlined text-on-surface-variant">notifications</span>
+</button>
+<button class="hover:bg-surface-container-low rounded-full p-2 transition-all duration-200">
+<span class="material-symbols-outlined text-on-surface-variant">qr_code_scanner</span>
+</button>
+<button class="hover:bg-surface-container-low rounded-full p-2 transition-all duration-200">
+<span class="material-symbols-outlined text-on-surface-variant">help_outline</span>
+</button>
+<div class="h-8 w-8 rounded-full ml-2 overflow-hidden border border-outline-variant">
+<img class="w-full h-full object-cover" data-alt="A professional headshot of a librarian in a clean, modern workspace, featuring soft natural lighting and a scholarly atmosphere. The style is bright and high-key with a focus on professional integrity, mirroring the World University of Bangladesh's corporate and modern aesthetic." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAJT7a30STtnOmFo-qTf31U4VrJYulYXRp1GcJg_eLlMALQpieKCEP_Uhcqbm-AqQ6MICzcCsd8zfq8Bc3bBd6PD54I7WxzuDMHtzCwzBsLZ0yJtsrf6SfM3GaItHwe4MDQwGYgmb8P5FYvwh-mO97EtsylRjlmvQhDCRzJwXOuYGvKtNTX7LQ0Yp3_vehY2EpfpcbsjOoaOELsD7gSN2sl4cXS7oink8PTgXlTpm8ZrCQzlp7hw2QHOw"/>
+</div>
+</div>
+</header>
+<!-- Main Content -->
+<main class="ml-[240px] pt-[64px] pb-[80px] min-h-screen">
+<div class="max-w-container-max mx-auto p-gutter space-y-gutter">
+<!-- Breadcrumbs & Header -->
+<div class="flex flex-col gap-2">
+<nav class="flex items-center gap-2 text-label-md font-label-md text-on-surface-variant">
+<a class="hover:text-primary" href="#">Catalog</a>
+<span class="material-symbols-outlined text-[14px]">chevron_right</span>
+<span class="text-primary font-bold">Add New Book</span>
+</nav>
+<div class="flex items-center gap-4">
+<h2 class="font-headline-xl text-headline-xl text-on-surface">Book Registration</h2>
+<span class="px-3 py-1 bg-surface-container-highest text-on-surface-variant text-label-md font-label-md rounded-full">S-12 System</span>
+</div>
+</div>
+<!-- Two-Column Form -->
+<div class="grid grid-cols-1 lg:grid-cols-3 gap-gutter">
+<!-- Column 1: Bibliographic Data (Spans 2) -->
+<div class="lg:col-span-2 space-y-gutter">
+<div class="bg-white border border-outline-variant rounded-xl p-stack-lg">
+<div class="flex items-center gap-2 mb-6 text-primary">
+<span class="material-symbols-outlined">description</span>
+<h3 class="font-headline-md text-headline-md">Bibliographic Information</h3>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-stack-md">
+<div class="flex flex-col gap-1.5">
+<label class="font-label-md text-label-md text-on-surface-variant">ISBN-13</label>
+<input class="border border-outline-variant rounded-lg p-2.5 font-body-md text-body-md form-input-focus" placeholder="978-3-16-148410-0" type="text"/>
+</div>
+<div class="flex flex-col gap-1.5">
+<label class="font-label-md text-label-md text-on-surface-variant">Title</label>
+<input class="border border-outline-variant rounded-lg p-2.5 font-body-md text-body-md form-input-focus" placeholder="The Principles of Academic Excellence" type="text"/>
+</div>
+<div class="flex flex-col gap-1.5">
+<label class="font-label-md text-label-md text-on-surface-variant">Author</label>
+<input class="border border-outline-variant rounded-lg p-2.5 font-body-md text-body-md form-input-focus" placeholder="Dr. S.M. Mostafa Al-Mamun" type="text"/>
+</div>
+<div class="flex flex-col gap-1.5">
+<label class="font-label-md text-label-md text-on-surface-variant">Publisher</label>
+<input class="border border-outline-variant rounded-lg p-2.5 font-body-md text-body-md form-input-focus" placeholder="WUB Press" type="text"/>
+</div>
+<div class="flex flex-col gap-1.5">
+<label class="font-label-md text-label-md text-on-surface-variant">Publication Year</label>
+<input class="border border-outline-variant rounded-lg p-2.5 font-body-md text-body-md form-input-focus" placeholder="2024" type="number"/>
+</div>
+<div class="flex flex-col gap-1.5">
+<label class="font-label-md text-label-md text-on-surface-variant">Language</label>
+<select class="border border-outline-variant rounded-lg p-2.5 font-body-md text-body-md form-input-focus bg-white">
+<option>English</option>
+<option>Bengali</option>
+<option>Arabic</option>
+</select>
+</div>
+<div class="md:col-span-2 flex flex-col gap-1.5">
+<label class="font-label-md text-label-md text-on-surface-variant">Abstract / Description</label>
+<textarea class="border border-outline-variant rounded-lg p-2.5 font-body-md text-body-md form-input-focus" placeholder="Brief summary of the book content..." rows="4"></textarea>
+</div>
+</div>
+</div>
+</div>
+<!-- Column 2: Library Data -->
+<div class="space-y-gutter">
+<!-- Library Controls Card -->
+<div class="bg-white border border-outline-variant rounded-xl p-stack-lg">
+<div class="flex items-center gap-2 mb-6 text-primary">
+<span class="material-symbols-outlined">shelves</span>
+<h3 class="font-headline-md text-headline-md">Library Data</h3>
+</div>
+<div class="space-y-4">
+<div class="flex flex-col gap-1.5">
+<label class="font-label-md text-label-md text-on-surface-variant">Category</label>
+<select class="border border-outline-variant rounded-lg p-2.5 font-body-md text-body-md form-input-focus bg-white">
+<option>Computer Science</option>
+<option>Civil Engineering</option>
+<option>Business Administration</option>
+<option>English Literature</option>
+</select>
+</div>
+<div class="flex flex-col gap-1.5">
+<label class="font-label-md text-label-md text-on-surface-variant">Shelf / Location</label>
+<input class="border border-outline-variant rounded-lg p-2.5 font-body-md text-body-md form-input-focus" placeholder="B-24-S02" type="text"/>
+</div>
+<div class="flex flex-col gap-1.5">
+<label class="font-label-md text-label-md text-on-surface-variant">Classification (DDC)</label>
+<input class="border border-outline-variant rounded-lg p-2.5 font-body-md text-body-md form-input-focus" placeholder="004.01" type="text"/>
+</div>
+</div>
+</div>
+<!-- Cover Upload Card -->
+<div class="bg-white border border-outline-variant rounded-xl p-stack-lg">
+<div class="flex items-center gap-2 mb-4 text-primary">
+<span class="material-symbols-outlined">image</span>
+<h3 class="font-headline-md text-headline-md">Book Cover</h3>
+</div>
+<div class="relative aspect-[3/4] rounded-lg border-2 border-dashed border-outline-variant bg-surface overflow-hidden group cursor-pointer flex flex-col items-center justify-center text-on-surface-variant p-4">
+<span class="material-symbols-outlined text-4xl mb-2">upload_file</span>
+<p class="font-label-md text-label-md text-center">Drag and drop or click to upload cover image</p>
+<p class="text-[10px] opacity-60 mt-2">JPG, PNG up to 5MB</p>
+<!-- Image overlay for preview simulation -->
+<div class="absolute inset-0 opacity-10 group-hover:opacity-20 transition-opacity">
+<img class="w-full h-full object-cover" data-alt="A clean, minimalist book cover template with a modern typography layout and academic style. The cover should suggest a high-quality university publication from the World University of Bangladesh library system, using subtle blue and white tones with a structured grid design." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCZSdx0ksUi1c1oxLGPUgZqjoWb_p36KHpnCvJ_FyWzA_LU2U_lTYfgpf4Tzv8qT0yQFr2z2eXibw10yGGU7kS4rXfe-p5WHjieTA1OD0fPqBeRS53eWQojj3wtkU2-TaDIj5qSdicRaa6FzxOIaI7hsNxLnBZkurRAP2_CpGWWH2MYaQPTIBdMtXeXGrrq_c8PxofBVzcfXDgbL9Zkiq321r9o7eJEpYX73rA-9I01-HpSTV766kpA2A"/>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Copies Management Panel -->
+<div class="bg-white border border-outline-variant rounded-xl overflow-hidden shadow-sm">
+<div class="p-stack-lg border-b border-outline-variant flex justify-between items-center bg-surface-container-lowest">
+<div class="flex items-center gap-2 text-primary">
+<span class="material-symbols-outlined">content_copy</span>
+<h3 class="font-headline-md text-headline-md">Physical Copies Management</h3>
+</div>
+<button class="flex items-center gap-2 bg-primary text-on-primary px-4 py-2 rounded-lg font-label-md text-label-md transition hover:opacity-90 active:scale-95">
+<span class="material-symbols-outlined text-[20px]">add</span> Add Copy
+                    </button>
+</div>
+<div class="overflow-x-auto">
+<table class="w-full border-collapse">
+<thead class="bg-surface text-on-surface-variant font-label-md text-label-md uppercase tracking-wider">
+<tr>
+<th class="px-gutter py-4 text-left font-semibold">Accession No.</th>
+<th class="px-gutter py-4 text-left font-semibold">Call Number</th>
+<th class="px-gutter py-4 text-left font-semibold">Status</th>
+<th class="px-gutter py-4 text-left font-semibold">Condition</th>
+<th class="px-gutter py-4 text-left font-semibold">Date Added</th>
+<th class="px-gutter py-4 text-right font-semibold">Actions</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-outline-variant font-body-md text-body-md text-on-surface">
+<tr class="hover:bg-surface-container-low transition-colors group">
+<td class="px-gutter py-4 font-data-mono">WUB-L-2024-001</td>
+<td class="px-gutter py-4">CS-2024-01-A</td>
+<td class="px-gutter py-4">
+<span class="px-2.5 py-0.5 rounded-full text-xs font-semibold bg-green-100 text-green-800">Available</span>
+</td>
+<td class="px-gutter py-4 text-on-surface-variant">Excellent</td>
+<td class="px-gutter py-4 text-on-surface-variant">Oct 12, 2023</td>
+<td class="px-gutter py-4 text-right">
+<button class="p-1.5 hover:bg-surface-container-high rounded-full text-outline hover:text-primary transition-colors">
+<span class="material-symbols-outlined">edit</span>
+</button>
+<button class="p-1.5 hover:bg-error-container/20 rounded-full text-outline hover:text-error transition-colors">
+<span class="material-symbols-outlined">delete</span>
+</button>
+</td>
+</tr>
+<tr class="hover:bg-surface-container-low transition-colors group">
+<td class="px-gutter py-4 font-data-mono">WUB-L-2024-002</td>
+<td class="px-gutter py-4">CS-2024-01-B</td>
+<td class="px-gutter py-4">
+<span class="px-2.5 py-0.5 rounded-full text-xs font-semibold bg-blue-100 text-blue-800">Checked Out</span>
+</td>
+<td class="px-gutter py-4 text-on-surface-variant">Good</td>
+<td class="px-gutter py-4 text-on-surface-variant">Oct 14, 2023</td>
+<td class="px-gutter py-4 text-right">
+<button class="p-1.5 hover:bg-surface-container-high rounded-full text-outline hover:text-primary transition-colors">
+<span class="material-symbols-outlined">edit</span>
+</button>
+<button class="p-1.5 hover:bg-error-container/20 rounded-full text-outline hover:text-error transition-colors">
+<span class="material-symbols-outlined">delete</span>
+</button>
+</td>
+</tr>
+<tr class="hover:bg-surface-container-low transition-colors group">
+<td class="px-gutter py-4 font-data-mono">WUB-L-2024-003</td>
+<td class="px-gutter py-4">CS-2024-01-C</td>
+<td class="px-gutter py-4">
+<span class="px-2.5 py-0.5 rounded-full text-xs font-semibold bg-yellow-100 text-yellow-800">Damaged</span>
+</td>
+<td class="px-gutter py-4 text-on-surface-variant">Requires Repair</td>
+<td class="px-gutter py-4 text-on-surface-variant">Nov 01, 2023</td>
+<td class="px-gutter py-4 text-right">
+<button class="p-1.5 hover:bg-surface-container-high rounded-full text-outline hover:text-primary transition-colors">
+<span class="material-symbols-outlined">edit</span>
+</button>
+<button class="p-1.5 hover:bg-error-container/20 rounded-full text-outline hover:text-error transition-colors">
+<span class="material-symbols-outlined">delete</span>
+</button>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+</main>
+<!-- Footer (Shared Component) -->
+<footer class="ml-[240px] p-stack-md border-t border-outline-variant flex justify-between items-center bg-surface-container-lowest w-[calc(100%-240px)] mb-[80px]">
+<div class="flex items-center gap-4">
+<span class="font-label-md text-label-md uppercase tracking-wider text-secondary">© 2024 World University of Bangladesh - Library Management System</span>
+</div>
+<div class="flex gap-gutter">
+<a class="font-body-sm text-body-sm text-on-secondary-container hover:underline opacity-80 hover:opacity-100" href="#">Privacy Policy</a>
+<a class="font-body-sm text-body-sm text-on-secondary-container hover:underline opacity-80 hover:opacity-100" href="#">Support</a>
+<a class="font-body-sm text-body-sm text-on-secondary-container hover:underline opacity-80 hover:opacity-100" href="#">System Status</a>
+</div>
+</footer>
+<!-- Sticky Action Footer -->
+<div class="fixed bottom-0 right-0 left-[240px] h-[80px] bg-white border-t border-outline-variant shadow-[0_-4px_12px_rgba(0,0,0,0.05)] px-gutter flex items-center justify-between z-40">
+<div class="flex items-center gap-4">
+<div class="flex items-center gap-2">
+<span class="h-10 w-10 bg-primary-container text-on-primary-container rounded flex items-center justify-center">
+<span class="material-symbols-outlined">local_library</span>
+</span>
+<div>
+<p class="font-label-md text-label-md text-on-surface leading-tight">La librería</p>
+<p class="text-[10px] text-on-surface-variant font-body-sm uppercase">Global Catalog Identifier</p>
+</div>
+</div>
+</div>
+<div class="flex items-center gap-3">
+<button class="px-6 py-2.5 border border-outline text-on-surface-variant font-label-md text-label-md rounded-lg hover:bg-surface-container-low transition active:scale-95">
+                Cancel
+            </button>
+<button class="px-8 py-2.5 bg-primary text-on-primary font-label-md text-label-md rounded-lg hover:bg-primary-container shadow-md transition-all active:scale-95 flex items-center gap-2">
+<span class="material-symbols-outlined text-[20px]">save</span> Save Book
+            </button>
+</div>
+</div>
+<!-- Micro-interaction Script -->
+<script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // Shadow header on scroll
+            window.addEventListener('scroll', () => {
+                const header = document.querySelector('header');
+                if (window.scrollY > 0) {
+                    header.classList.add('shadow-sm');
+                } else {
+                    header.classList.remove('shadow-sm');
+                }
+            });
+
+            // Focus search bar on CMD+F
+            window.addEventListener('keydown', (e) => {
+                if ((e.metaKey || e.ctrlKey) && e.key === 'f') {
+                    e.preventDefault();
+                    document.querySelector('input[type="text"]').focus();
+                }
+            });
+        });
+    </script>
+</body></html>

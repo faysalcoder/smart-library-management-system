@@ -1,0 +1,536 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>WUB Library | Book Search</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&amp;family=JetBrains+Mono:wght@500&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "surface-variant": "#e1e2ed",
+                    "surface-container-lowest": "#ffffff",
+                    "inverse-on-surface": "#f0f0fb",
+                    "surface-dim": "#d9d9e5",
+                    "surface": "#faf8ff",
+                    "primary-fixed-dim": "#b4c5ff",
+                    "secondary-fixed": "#d3e4fe",
+                    "on-secondary-container": "#54647a",
+                    "tertiary": "#943700",
+                    "surface-container": "#ededf9",
+                    "surface-container-highest": "#e1e2ed",
+                    "primary-container": "#2563eb",
+                    "on-primary-fixed": "#00174b",
+                    "on-secondary-fixed-variant": "#38485d",
+                    "error-container": "#ffdad6",
+                    "on-primary-fixed-variant": "#003ea8",
+                    "on-error-container": "#93000a",
+                    "secondary-container": "#d0e1fb",
+                    "tertiary-container": "#bc4800",
+                    "surface-bright": "#faf8ff",
+                    "inverse-primary": "#b4c5ff",
+                    "on-surface-variant": "#434655",
+                    "on-surface": "#191b23",
+                    "on-tertiary": "#ffffff",
+                    "on-error": "#ffffff",
+                    "on-background": "#191b23",
+                    "background": "#faf8ff",
+                    "on-secondary-fixed": "#0b1c30",
+                    "outline": "#737686",
+                    "surface-container-low": "#f3f3fe",
+                    "outline-variant": "#c3c6d7",
+                    "tertiary-fixed-dim": "#ffb596",
+                    "on-tertiary-fixed-variant": "#7d2d00",
+                    "secondary-fixed-dim": "#b7c8e1",
+                    "primary": "#004ac6",
+                    "surface-tint": "#0053db",
+                    "on-tertiary-fixed": "#360f00",
+                    "primary-fixed": "#dbe1ff",
+                    "on-secondary": "#ffffff",
+                    "surface-container-high": "#e7e7f3",
+                    "on-primary-container": "#eeefff",
+                    "inverse-surface": "#2e3039",
+                    "error": "#ba1a1a",
+                    "tertiary-fixed": "#ffdbcd",
+                    "on-primary": "#ffffff",
+                    "on-tertiary-container": "#ffede6",
+                    "secondary": "#505f76"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.25rem",
+                    "lg": "0.5rem",
+                    "xl": "0.75rem",
+                    "full": "9999px"
+            },
+            "spacing": {
+                    "stack-lg": "1.5rem",
+                    "margin-desktop": "2rem",
+                    "stack-sm": "0.5rem",
+                    "gutter": "1.5rem",
+                    "margin-mobile": "1rem",
+                    "stack-md": "1rem",
+                    "container-max": "1440px"
+            },
+            "fontFamily": {
+                    "body-sm": ["Inter"],
+                    "label-md": ["Inter"],
+                    "headline-lg": ["Inter"],
+                    "data-mono": ["JetBrains Mono"],
+                    "body-md": ["Inter"],
+                    "headline-md": ["Inter"],
+                    "headline-xl": ["Inter"],
+                    "body-lg": ["Inter"]
+            },
+            "fontSize": {
+                    "body-sm": ["13px", {"lineHeight": "18px", "fontWeight": "400"}],
+                    "label-md": ["12px", {"lineHeight": "16px", "fontWeight": "600"}],
+                    "headline-lg": ["24px", {"lineHeight": "32px", "letterSpacing": "-0.01em", "fontWeight": "600"}],
+                    "data-mono": ["13px", {"lineHeight": "16px", "fontWeight": "500"}],
+                    "body-md": ["14px", {"lineHeight": "20px", "fontWeight": "400"}],
+                    "headline-md": ["20px", {"lineHeight": "28px", "fontWeight": "600"}],
+                    "headline-xl": ["30px", {"lineHeight": "38px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                    "body-lg": ["16px", {"lineHeight": "24px", "fontWeight": "400"}]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .search-hero-gradient {
+            background: linear-gradient(135deg, #004ac6 0%, #2563eb 100%);
+        }
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 4px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #c3c6d7;
+            border-radius: 10px;
+        }
+    </style>
+</head>
+<body class="bg-background text-on-surface font-body-md min-h-screen">
+<!-- Side Navigation Shell -->
+<aside class="w-[240px] h-screen fixed left-0 top-0 border-r border-outline-variant bg-surface flex flex-col p-stack-md gap-stack-sm z-50">
+<div class="mb-stack-lg">
+<h1 class="font-headline-md text-headline-md font-bold text-primary">WUB Library</h1>
+<p class="font-label-md text-label-md text-on-surface-variant">SLMS Admin</p>
+</div>
+<nav class="flex flex-col gap-1">
+<a class="flex items-center gap-3 px-3 py-2 text-on-surface-variant hover:bg-surface-container-low transition-colors rounded-lg" href="#">
+<span class="material-symbols-outlined">dashboard</span>
+<span class="font-body-md">Overview</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 bg-secondary-container text-on-secondary-container rounded-lg font-bold" href="#">
+<span class="material-symbols-outlined">menu_book</span>
+<span class="font-body-md">Books</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 text-on-surface-variant hover:bg-surface-container-low transition-colors rounded-lg" href="#">
+<span class="material-symbols-outlined">group</span>
+<span class="font-body-md">Members</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 text-on-surface-variant hover:bg-surface-container-low transition-colors rounded-lg" href="#">
+<span class="material-symbols-outlined">admin_panel_settings</span>
+<span class="font-body-md">Management</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 text-on-surface-variant hover:bg-surface-container-low transition-colors rounded-lg" href="#">
+<span class="material-symbols-outlined">settings</span>
+<span class="font-body-md">Settings</span>
+</a>
+</nav>
+</aside>
+<!-- Main Content Canvas -->
+<main class="ml-[240px] flex flex-col min-h-screen">
+<!-- Top Navigation Shell -->
+<header class="h-[64px] fixed top-0 right-0 left-[240px] z-40 bg-white border-b border-outline-variant flex justify-between items-center px-gutter">
+<div class="flex items-center gap-4 flex-1">
+<span class="font-headline-sm text-headline-sm font-black text-on-surface">La librería</span>
+</div>
+<div class="flex items-center gap-2">
+<button class="hover:bg-surface-container-low rounded-full p-2 text-on-surface-variant">
+<span class="material-symbols-outlined">notifications</span>
+</button>
+<button class="hover:bg-surface-container-low rounded-full p-2 text-on-surface-variant">
+<span class="material-symbols-outlined">qr_code_scanner</span>
+</button>
+<button class="hover:bg-surface-container-low rounded-full p-2 text-on-surface-variant">
+<span class="material-symbols-outlined">help_outline</span>
+</button>
+<div class="ml-4 flex items-center gap-3 border-l pl-4 border-outline-variant">
+<div class="w-8 h-8 rounded-full overflow-hidden border border-outline-variant">
+<img class="w-full h-full object-cover" data-alt="A professional headshot of a female librarian in her late 30s, wearing glasses and a smart-casual blazer. The background is a brightly lit, modern academic library with soft-focus books. The lighting is clean and professional, matching a high-end corporate administrative interface with a blue and white color scheme." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAEgQF0mRR5q-O1RqqeL3PJc1s5MfuqEsL-oLtuKuBx6PN-hWZb6weRHMfUnvV58gv_2vppQgBKtAR5TLnkKPFqnes4ABJ3gJ04A-eh9VIFxedXRBv8HoUCzXCsfZC7npQcMSLpbl0LohHiPahJQykdc6iU-U2375qqDkfxDiv2MDSQ0Tx5Cra20ztWwNUWsDFL3py8wZGC6kXSYM-85eXvx9TN0fdyCFw7Hbk7xhzibgN6Kj5SA_M4bA"/>
+</div>
+</div>
+</div>
+</header>
+<!-- Page Content -->
+<div class="mt-[64px] flex-1 flex flex-col">
+<!-- Search Hero Section -->
+<section class="search-hero-gradient p-10 text-white relative overflow-hidden">
+<div class="relative z-10 max-w-4xl mx-auto flex flex-col items-center text-center gap-6">
+<h2 class="font-headline-xl text-headline-xl">What are you looking for today?</h2>
+<div class="w-full max-w-2xl relative">
+<div class="absolute left-6 top-1/2 -translate-y-1/2 text-primary">
+<span class="material-symbols-outlined text-[28px]">search</span>
+</div>
+<input class="w-full h-14 pl-16 pr-20 rounded-full text-on-surface border-none shadow-xl font-body-lg focus:ring-4 focus:ring-primary-container/30 transition-all" placeholder="Search by title, author, ISBN, or keywords..." type="text" value="database"/>
+<div class="absolute right-4 top-1/2 -translate-y-1/2 px-3 py-1 bg-surface-container rounded font-data-mono text-label-md text-on-surface-variant border border-outline-variant">
+                            ⌘F
+                        </div>
+</div>
+<div class="flex flex-wrap justify-center gap-3">
+<button class="px-4 py-2 rounded-full bg-white text-primary font-label-md shadow-sm border border-transparent hover:bg-primary-container hover:text-white transition-all">All</button>
+<button class="px-4 py-2 rounded-full bg-primary-fixed-dim/20 text-white font-label-md border border-white/30 hover:bg-white/10 transition-all">Available Now</button>
+<button class="px-4 py-2 rounded-full bg-primary-fixed-dim/20 text-white font-label-md border border-white/30 hover:bg-white/10 transition-all">Newly Added</button>
+<button class="px-4 py-2 rounded-full bg-primary-fixed-dim/20 text-white font-label-md border border-white/30 hover:bg-white/10 transition-all">Most Borrowed</button>
+</div>
+</div>
+<!-- Abstract Pattern Background -->
+<div class="absolute inset-0 opacity-10 pointer-events-none">
+<div class="absolute top-0 left-0 w-64 h-64 bg-white rounded-full -translate-x-1/2 -translate-y-1/2 blur-3xl"></div>
+<div class="absolute bottom-0 right-0 w-96 h-96 bg-primary-fixed rounded-full translate-x-1/3 translate-y-1/3 blur-3xl"></div>
+</div>
+</section>
+<!-- Results Section with Sidebar -->
+<div class="flex-1 flex px-gutter py-8 max-w-container-max mx-auto w-full gap-gutter">
+<!-- Filter Sidebar (280px) -->
+<aside class="w-[280px] flex-shrink-0 flex flex-col gap-8">
+<div>
+<h3 class="font-label-md text-label-md uppercase tracking-wider text-on-surface-variant mb-4">Categories</h3>
+<div class="flex flex-col gap-2">
+<label class="flex items-center gap-3 group cursor-pointer">
+<input class="rounded border-outline text-primary focus:ring-primary w-5 h-5" type="checkbox"/>
+<span class="font-body-md text-on-surface group-hover:text-primary transition-colors">Computer Science</span>
+<span class="ml-auto font-data-mono text-body-sm text-outline">124</span>
+</label>
+<label class="flex items-center gap-3 group cursor-pointer">
+<input checked="" class="rounded border-outline text-primary focus:ring-primary w-5 h-5" type="checkbox"/>
+<span class="font-body-md text-primary font-bold">Databases</span>
+<span class="ml-auto font-data-mono text-body-sm text-outline">48</span>
+</label>
+<label class="flex items-center gap-3 group cursor-pointer">
+<input class="rounded border-outline text-primary focus:ring-primary w-5 h-5" type="checkbox"/>
+<span class="font-body-md text-on-surface group-hover:text-primary transition-colors">Artificial Intelligence</span>
+<span class="ml-auto font-data-mono text-body-sm text-outline">32</span>
+</label>
+<label class="flex items-center gap-3 group cursor-pointer">
+<input class="rounded border-outline text-primary focus:ring-primary w-5 h-5" type="checkbox"/>
+<span class="font-body-md text-on-surface group-hover:text-primary transition-colors">Software Engineering</span>
+<span class="ml-auto font-data-mono text-body-sm text-outline">86</span>
+</label>
+</div>
+</div>
+<div class="border-t border-outline-variant pt-6">
+<h3 class="font-label-md text-label-md uppercase tracking-wider text-on-surface-variant mb-4">Availability</h3>
+<div class="space-y-3">
+<label class="flex items-center gap-3">
+<input class="text-primary focus:ring-primary" name="avail" type="radio"/>
+<span class="font-body-md">In Library (Physical)</span>
+</label>
+<label class="flex items-center gap-3">
+<input checked="" class="text-primary focus:ring-primary" name="avail" type="radio"/>
+<span class="font-body-md">Digital/E-Book</span>
+</label>
+</div>
+</div>
+<div class="border-t border-outline-variant pt-6">
+<h3 class="font-label-md text-label-md uppercase tracking-wider text-on-surface-variant mb-4">Author</h3>
+<div class="relative mb-3">
+<span class="material-symbols-outlined absolute left-2 top-1/2 -translate-y-1/2 text-outline text-[18px]">search</span>
+<input class="w-full h-9 pl-8 pr-3 bg-surface-container-low border-none rounded-lg text-body-sm focus:ring-2 focus:ring-primary/20" placeholder="Filter authors..." type="text"/>
+</div>
+<div class="max-h-48 overflow-y-auto custom-scrollbar space-y-2">
+<label class="flex items-center gap-3">
+<input class="rounded border-outline text-primary" type="checkbox"/>
+<span class="text-body-sm">C.J. Date</span>
+</label>
+<label class="flex items-center gap-3">
+<input class="rounded border-outline text-primary" type="checkbox"/>
+<span class="text-body-sm">Abraham Silberschatz</span>
+</label>
+<label class="flex items-center gap-3">
+<input class="rounded border-outline text-primary" type="checkbox"/>
+<span class="text-body-sm">Raghu Ramakrishnan</span>
+</label>
+<label class="flex items-center gap-3">
+<input class="rounded border-outline text-primary" type="checkbox"/>
+<span class="text-body-sm">Jeffrey Ullman</span>
+</label>
+</div>
+</div>
+</aside>
+<!-- Main Results Grid -->
+<div class="flex-1 flex flex-col gap-6">
+<!-- Toolbar -->
+<div class="flex items-center justify-between bg-surface-container-lowest p-4 rounded-xl border border-outline-variant">
+<div>
+<span class="font-bold text-on-surface">348</span>
+<span class="text-on-surface-variant">results for</span>
+<span class="italic font-bold text-primary">"database"</span>
+</div>
+<div class="flex items-center gap-4">
+<div class="flex items-center gap-2 text-body-sm">
+<span class="text-on-surface-variant">Sort by:</span>
+<select class="border-none bg-transparent font-bold text-primary focus:ring-0 cursor-pointer">
+<option>Most Relevant</option>
+<option>Newest Arrivals</option>
+<option>Highest Rated</option>
+<option>Title (A-Z)</option>
+</select>
+</div>
+<div class="h-6 w-px bg-outline-variant mx-2"></div>
+<div class="flex gap-1">
+<button class="p-1 rounded bg-secondary-container text-on-secondary-container">
+<span class="material-symbols-outlined">grid_view</span>
+</button>
+<button class="p-1 rounded text-outline hover:bg-surface-container-low">
+<span class="material-symbols-outlined">view_list</span>
+</button>
+</div>
+</div>
+</div>
+<!-- Book Grid (3-column) -->
+<div class="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-gutter">
+<!-- Book Card 1 -->
+<div class="bg-white rounded-xl border border-outline-variant overflow-hidden flex flex-col hover:shadow-lg transition-all group">
+<div class="h-64 bg-surface-container relative">
+<img class="w-full h-full object-cover" data-alt="A premium book cover design for 'Database System Concepts' by Abraham Silberschatz. The cover features abstract blue geometric patterns and clean white modern typography. The lighting is studio-quality, highlighting the texture of a high-quality hardcover book. The overall aesthetic is professional, academic, and modern, fitting a high-end university library theme." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBjzJHAsqSKjm5KtWVUAtv8OIKPahvAdfURd_keHwK2oKuIc5tQWgkptfL7VnBmN91PSHps1UaWMDIIDpsSsveOmZbsk9p2GMBWatjfOvx62NvkT4U6dRS70hRsF4nnT2VBtE3gOEhi4Rfje6QzISElnL0oa9T_fApjMqIh9ywPp-_PDjgtIq8uXARo_E2rv5Ug1mZ1Nm8lroPDD6EgisntlOtI_qaAIoHhL_fUgbp02wa3QI4QoSHK6Q"/>
+<div class="absolute top-3 right-3">
+<button class="bg-white/90 backdrop-blur p-2 rounded-full shadow-sm text-outline hover:text-error transition-colors">
+<span class="material-symbols-outlined">favorite</span>
+</button>
+</div>
+<div class="absolute bottom-3 left-3 flex gap-2">
+<span class="px-2 py-1 bg-primary text-white text-[10px] font-bold rounded-md uppercase tracking-wider">Bestseller</span>
+</div>
+</div>
+<div class="p-5 flex flex-col flex-1 gap-3">
+<div class="flex justify-between items-start gap-2">
+<h4 class="font-headline-md text-headline-md text-on-surface line-clamp-2 leading-tight">Database System Concepts</h4>
+<div class="flex items-center gap-1 shrink-0">
+<span class="w-2 h-2 rounded-full bg-emerald-500"></span>
+<span class="text-[11px] font-bold text-emerald-700 uppercase">Available</span>
+</div>
+</div>
+<p class="text-on-surface-variant font-body-md">Abraham Silberschatz, Henry F. Korth</p>
+<div class="mt-auto pt-4 border-t border-outline-variant flex justify-between items-center">
+<span class="px-3 py-1 bg-secondary-container text-on-secondary-container rounded-full text-label-md font-bold">Textbook</span>
+<button class="text-primary font-bold hover:underline flex items-center gap-1 group/btn">
+                                        Details
+                                        <span class="material-symbols-outlined text-[18px] group-hover/btn:translate-x-1 transition-transform">arrow_forward</span>
+</button>
+</div>
+</div>
+</div>
+<!-- Book Card 2 -->
+<div class="bg-white rounded-xl border border-outline-variant overflow-hidden flex flex-col hover:shadow-lg transition-all group">
+<div class="h-64 bg-surface-container relative">
+<img class="w-full h-full object-cover" data-alt="The cover of 'Designing Data-Intensive Applications' by Martin Kleppmann, showing a detailed vintage illustration of a wild boar. The design is in the style of O'Reilly media covers with a clean white background and bold black lettering. The image reflects a modern classic in software engineering literature, with a sophisticated, professional aesthetic." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDWZoMJ-O_5HHA04qTBp8nQk7LX-Od6FVTThptT-r3FtCbZKlPbD_rbxu8FZJvjwc0wgY5c4ixa0KdW-DYzncqSBsH5x3q3diTaPNJcjNt84-3NiRs3gM4P_An_DsvqEM0j7QYipNNVQNH2c3fCxWpSkpe_Fd4263l3CGAzlc3BSYy8JxQuJDXR5kNBjFHHR3Wp-X2DSXuzhTRtk_dI_7gFgRrNwd9hhiAsYKKP4pWrBPl4A3-13Un7VQ"/>
+<div class="absolute top-3 right-3">
+<button class="bg-white/90 backdrop-blur p-2 rounded-full shadow-sm text-outline hover:text-error transition-colors">
+<span class="material-symbols-outlined">favorite</span>
+</button>
+</div>
+</div>
+<div class="p-5 flex flex-col flex-1 gap-3">
+<div class="flex justify-between items-start gap-2">
+<h4 class="font-headline-md text-headline-md text-on-surface line-clamp-2 leading-tight">Designing Data-Intensive Applications</h4>
+<div class="flex items-center gap-1 shrink-0">
+<span class="w-2 h-2 rounded-full bg-amber-500"></span>
+<span class="text-[11px] font-bold text-amber-700 uppercase">Waitlist</span>
+</div>
+</div>
+<p class="text-on-surface-variant font-body-md">Martin Kleppmann</p>
+<div class="mt-auto pt-4 border-t border-outline-variant flex justify-between items-center">
+<span class="px-3 py-1 bg-surface-container-high text-on-surface-variant rounded-full text-label-md font-bold">Engineering</span>
+<button class="text-primary font-bold hover:underline flex items-center gap-1 group/btn">
+                                        Details
+                                        <span class="material-symbols-outlined text-[18px] group-hover/btn:translate-x-1 transition-transform">arrow_forward</span>
+</button>
+</div>
+</div>
+</div>
+<!-- Book Card 3 -->
+<div class="bg-white rounded-xl border border-outline-variant overflow-hidden flex flex-col hover:shadow-lg transition-all group">
+<div class="h-64 bg-surface-container relative">
+<img class="w-full h-full object-cover" data-alt="A sleek book cover for 'NoSQL Distilled' by Pramod Sadalage. The cover design is minimalist, using a combination of charcoal grey and vibrant yellow accents. Professional typography and a subtle pattern of nodes and connections symbolize database networking. The visual style is contemporary and technical, perfect for a high-end academic repository." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBZyY40DY_wX8yOrO-6vzM-KZQT_Ugjzp2xP9qvXzY13FtWUWzsrfjbHK0V7LUZPeiwTNUgBpoxRpTLWscdF7Uk15xmjnoX9B_lchXRMS_Tga09Wjsu9VKHOV2_MDiQbbL5Ibi926TSzxnrHNAmpIRVe2NgusWqzSdoHPoW6hwC2mnJVpVeKNZdV-wEuvFVfA0I21j4Uq_r3Lez_zmeHR9ff7SuNZEz2q05MEI34Sw0Yab-MGCT-BxqMw"/>
+<div class="absolute top-3 right-3">
+<button class="bg-white/90 backdrop-blur p-2 rounded-full shadow-sm text-outline hover:text-error transition-colors">
+<span class="material-symbols-outlined">favorite</span>
+</button>
+</div>
+<div class="absolute bottom-3 left-3 flex gap-2">
+<span class="px-2 py-1 bg-tertiary text-white text-[10px] font-bold rounded-md uppercase tracking-wider">New</span>
+</div>
+</div>
+<div class="p-5 flex flex-col flex-1 gap-3">
+<div class="flex justify-between items-start gap-2">
+<h4 class="font-headline-md text-headline-md text-on-surface line-clamp-2 leading-tight">NoSQL Distilled: A Brief Guide</h4>
+<div class="flex items-center gap-1 shrink-0">
+<span class="w-2 h-2 rounded-full bg-emerald-500"></span>
+<span class="text-[11px] font-bold text-emerald-700 uppercase">Available</span>
+</div>
+</div>
+<p class="text-on-surface-variant font-body-md">Pramod Sadalage, Martin Fowler</p>
+<div class="mt-auto pt-4 border-t border-outline-variant flex justify-between items-center">
+<span class="px-3 py-1 bg-secondary-container text-on-secondary-container rounded-full text-label-md font-bold">Reference</span>
+<button class="text-primary font-bold hover:underline flex items-center gap-1 group/btn">
+                                        Details
+                                        <span class="material-symbols-outlined text-[18px] group-hover/btn:translate-x-1 transition-transform">arrow_forward</span>
+</button>
+</div>
+</div>
+</div>
+<!-- More Book Cards (Repeated Pattern) -->
+<!-- Book Card 4 -->
+<div class="bg-white rounded-xl border border-outline-variant overflow-hidden flex flex-col hover:shadow-lg transition-all group">
+<div class="h-64 bg-surface-container relative">
+<img class="w-full h-full object-cover" data-alt="Technical book cover for 'Database Systems: The Complete Book' by Hector Garcia-Molina. Dark professional cover with high-contrast metallic lettering. 3D rendered abstract architecture elements suggesting structural integrity. Professional light-mode UI context." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDciKPVOtdL7wGClswn4umWd2DT35xFbTITe8swQKjoD_44KdkVY-5V9t4fBFcFaJkpvM6A5cBi9GOd3M9C1vIpfIyEWVSVgceMSOCzc1ySCSJejNLSzUPFTcX3uiKWDoWAKRpkZY3zMCWaXHHjWwMLk3DHoBSwFcN6VA49sY3vHqrwu4NR1S2-9H5BhPkaLq8w5OFEf4rq0MQbwSJAITEgE15y0EDWSjF5WUeVnSiZE8Dc1WC14L_l2Q"/>
+<div class="absolute top-3 right-3">
+<button class="bg-white/90 backdrop-blur p-2 rounded-full shadow-sm text-outline hover:text-error transition-colors">
+<span class="material-symbols-outlined">favorite</span>
+</button>
+</div>
+</div>
+<div class="p-5 flex flex-col flex-1 gap-3">
+<div class="flex justify-between items-start gap-2">
+<h4 class="font-headline-md text-headline-md text-on-surface line-clamp-2 leading-tight">Database Systems: The Complete Book</h4>
+<div class="flex items-center gap-1 shrink-0">
+<span class="w-2 h-2 rounded-full bg-emerald-500"></span>
+<span class="text-[11px] font-bold text-emerald-700 uppercase">Available</span>
+</div>
+</div>
+<p class="text-on-surface-variant font-body-md">Hector Garcia-Molina</p>
+<div class="mt-auto pt-4 border-t border-outline-variant flex justify-between items-center">
+<span class="px-3 py-1 bg-secondary-container text-on-secondary-container rounded-full text-label-md font-bold">Textbook</span>
+<button class="text-primary font-bold hover:underline flex items-center gap-1 group/btn">
+                                        Details
+                                        <span class="material-symbols-outlined text-[18px] group-hover/btn:translate-x-1 transition-transform">arrow_forward</span>
+</button>
+</div>
+</div>
+</div>
+<!-- Book Card 5 -->
+<div class="bg-white rounded-xl border border-outline-variant overflow-hidden flex flex-col hover:shadow-lg transition-all group">
+<div class="h-64 bg-surface-container relative">
+<img class="w-full h-full object-cover" data-alt="Cover for 'SQL Performance Explained' by Markus Winand. Clean, modern typography on a solid blue background with a subtle speedometer graphic. Modern, fast-paced technical aesthetic with professional lighting and clean lines." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCljsDGTrqbXmVk3btawnsnqtfWds0X8OZwaoUbt3wyXwfZsUZGWc2lO3GkfjTdxWs_VNpzwqU58fM8K3mkISPrkmqDjj-L61hZz9ZC-azn8kh4bFbvqmsUeBjV9jBGnn6xySgBA0AjMg-ySnk-KFMIK_MsU25Oj3b7yuiCnRPEzwKDYfuxwtnKDDtXj1PmxJvBTova1XZ9BUihzB7s8kJ5RrmQxt3uxrhIbSs5b798cY73s-oej9okyg"/>
+<div class="absolute top-3 right-3">
+<button class="bg-white/90 backdrop-blur p-2 rounded-full shadow-sm text-outline hover:text-error transition-colors">
+<span class="material-symbols-outlined">favorite</span>
+</button>
+</div>
+</div>
+<div class="p-5 flex flex-col flex-1 gap-3">
+<div class="flex justify-between items-start gap-2">
+<h4 class="font-headline-md text-headline-md text-on-surface line-clamp-2 leading-tight">SQL Performance Explained</h4>
+<div class="flex items-center gap-1 shrink-0">
+<span class="w-2 h-2 rounded-full bg-amber-500"></span>
+<span class="text-[11px] font-bold text-amber-700 uppercase">Waitlist</span>
+</div>
+</div>
+<p class="text-on-surface-variant font-body-md">Markus Winand</p>
+<div class="mt-auto pt-4 border-t border-outline-variant flex justify-between items-center">
+<span class="px-3 py-1 bg-surface-container-high text-on-surface-variant rounded-full text-label-md font-bold">Guide</span>
+<button class="text-primary font-bold hover:underline flex items-center gap-1 group/btn">
+                                        Details
+                                        <span class="material-symbols-outlined text-[18px] group-hover/btn:translate-x-1 transition-transform">arrow_forward</span>
+</button>
+</div>
+</div>
+</div>
+<!-- Book Card 6 -->
+<div class="bg-white rounded-xl border border-outline-variant overflow-hidden flex flex-col hover:shadow-lg transition-all group">
+<div class="h-64 bg-surface-container relative">
+<img class="w-full h-full object-cover" data-alt="Book cover for 'Fundamentals of Database Systems' by Ramez Elmasri. Minimalist white cover with a complex circuit-board inspired diagram in primary blue. High-end technical publishing aesthetic, very clean and academic." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDzsUlyc7o2_p8pUGsyY-aog0Fg8lL99oeMOcL5vGAsFjMcxuUuDvoX6flfjfImg-e_Rkkz1G5Q8UU05mP7zTdJcyKx7li-RJ_gWrGEeHdD8SGjKKNbufjikEhpwEm8QXvHtNAZBk-GGqQ3wCz0Ue02uSY7TjeijAzBQFFJ8p2CRBmQDNI-WQENu508lAld_mWHF7v5hetNK8RIYxKhEXMei0LH0vC6v2967U1ZSKzG00NSM_h7Jq8qoA"/>
+<div class="absolute top-3 right-3">
+<button class="bg-white/90 backdrop-blur p-2 rounded-full shadow-sm text-outline hover:text-error transition-colors">
+<span class="material-symbols-outlined">favorite</span>
+</button>
+</div>
+</div>
+<div class="p-5 flex flex-col flex-1 gap-3">
+<div class="flex justify-between items-start gap-2">
+<h4 class="font-headline-md text-headline-md text-on-surface line-clamp-2 leading-tight">Fundamentals of Database Systems</h4>
+<div class="flex items-center gap-1 shrink-0">
+<span class="w-2 h-2 rounded-full bg-emerald-500"></span>
+<span class="text-[11px] font-bold text-emerald-700 uppercase">Available</span>
+</div>
+</div>
+<p class="text-on-surface-variant font-body-md">Ramez Elmasri, Shamkant Navathe</p>
+<div class="mt-auto pt-4 border-t border-outline-variant flex justify-between items-center">
+<span class="px-3 py-1 bg-secondary-container text-on-secondary-container rounded-full text-label-md font-bold">Textbook</span>
+<button class="text-primary font-bold hover:underline flex items-center gap-1 group/btn">
+                                        Details
+                                        <span class="material-symbols-outlined text-[18px] group-hover/btn:translate-x-1 transition-transform">arrow_forward</span>
+</button>
+</div>
+</div>
+</div>
+</div>
+<!-- Pagination -->
+<div class="flex justify-center items-center gap-2 mt-8 py-4">
+<button class="w-10 h-10 flex items-center justify-center rounded-lg border border-outline-variant hover:bg-surface-container-low transition-colors">
+<span class="material-symbols-outlined">chevron_left</span>
+</button>
+<button class="w-10 h-10 flex items-center justify-center rounded-lg bg-primary text-white font-bold">1</button>
+<button class="w-10 h-10 flex items-center justify-center rounded-lg border border-outline-variant hover:bg-surface-container-low transition-colors font-bold">2</button>
+<button class="w-10 h-10 flex items-center justify-center rounded-lg border border-outline-variant hover:bg-surface-container-low transition-colors font-bold">3</button>
+<span class="px-2 text-outline">...</span>
+<button class="w-10 h-10 flex items-center justify-center rounded-lg border border-outline-variant hover:bg-surface-container-low transition-colors font-bold">12</button>
+<button class="w-10 h-10 flex items-center justify-center rounded-lg border border-outline-variant hover:bg-surface-container-low transition-colors">
+<span class="material-symbols-outlined">chevron_right</span>
+</button>
+</div>
+</div>
+</div>
+</div>
+<!-- Footer Shell -->
+<footer class="ml-[240px] p-stack-md bg-surface-container-lowest border-t border-outline-variant flex justify-between items-center w-full mt-auto">
+<div>
+<span class="font-label-md text-label-md uppercase tracking-wider text-secondary">© 2024 WORLD UNIVERSITY OF BANGLADESH - LIBRARY MANAGEMENT SYSTEM</span>
+</div>
+<div class="flex gap-6">
+<a class="text-on-secondary-container font-body-sm hover:underline" href="#">Privacy Policy</a>
+<a class="text-on-secondary-container font-body-sm hover:underline" href="#">Support</a>
+<a class="text-on-secondary-container font-body-sm hover:underline" href="#">System Status</a>
+</div>
+</footer>
+</main>
+<!-- Interactive FAB (Only for main landing, but kept for context if needed) -->
+<!-- Suppressed on Search Result per instructions, but available for interaction demo if triggered -->
+<script>
+        // Micro-interactions and Lightweight atmospheric effects
+        document.addEventListener('DOMContentLoaded', () => {
+            const cards = document.querySelectorAll('.group');
+            cards.forEach(card => {
+                card.addEventListener('mouseenter', () => {
+                    card.style.transform = 'translateY(-4px)';
+                });
+                card.addEventListener('mouseleave', () => {
+                    card.style.transform = 'translateY(0)';
+                });
+            });
+
+            // Search Bar Focus Effect
+            const searchInput = document.querySelector('input[type="text"]');
+            searchInput.addEventListener('focus', () => {
+                searchInput.parentElement.classList.add('scale-[1.02]');
+                searchInput.parentElement.style.transition = 'all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1)';
+            });
+            searchInput.addEventListener('blur', () => {
+                searchInput.parentElement.classList.remove('scale-[1.02]');
+            });
+        });
+    </script>
+</body></html>

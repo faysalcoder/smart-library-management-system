@@ -1,0 +1,452 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Role &amp; Permission Matrix - La librería</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=JetBrains+Mono:wght@500&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+            vertical-align: middle;
+        }
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #e2e8f0;
+            border-radius: 10px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+            background: #cbd5e1;
+        }
+        .matrix-table-sticky-col {
+            position: sticky;
+            left: 0;
+            z-index: 20;
+            background-color: inherit;
+        }
+        .matrix-table-sticky-header {
+            position: sticky;
+            top: 0;
+            z-index: 30;
+        }
+    </style>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "surface-container-lowest": "#ffffff",
+                        "on-primary": "#ffffff",
+                        "on-secondary-container": "#54647a",
+                        "on-primary-fixed-variant": "#003ea8",
+                        "surface-tint": "#0053db",
+                        "primary-fixed-dim": "#b4c5ff",
+                        "secondary": "#505f76",
+                        "primary": "#004ac6",
+                        "tertiary-fixed": "#ffdbcd",
+                        "secondary-fixed": "#d3e4fe",
+                        "on-secondary-fixed": "#0b1c30",
+                        "inverse-primary": "#b4c5ff",
+                        "secondary-container": "#d0e1fb",
+                        "error": "#ba1a1a",
+                        "on-tertiary-fixed": "#360f00",
+                        "surface": "#faf8ff",
+                        "on-surface": "#191b23",
+                        "secondary-fixed-dim": "#b7c8e1",
+                        "on-secondary-fixed-variant": "#38485d",
+                        "surface-variant": "#e1e2ed",
+                        "surface-container-highest": "#e1e2ed",
+                        "on-background": "#191b23",
+                        "surface-container-high": "#e7e7f3",
+                        "on-primary-container": "#eeefff",
+                        "surface-bright": "#faf8ff",
+                        "inverse-on-surface": "#f0f0fb",
+                        "primary-fixed": "#dbe1ff",
+                        "on-surface-variant": "#434655",
+                        "on-error": "#ffffff",
+                        "primary-container": "#2563eb",
+                        "outline-variant": "#c3c6d7",
+                        "on-secondary": "#ffffff",
+                        "surface-container": "#ededf9",
+                        "surface-dim": "#d9d9e5",
+                        "tertiary-fixed-dim": "#ffb596",
+                        "tertiary": "#943700",
+                        "on-tertiary": "#ffffff",
+                        "background": "#faf8ff",
+                        "tertiary-container": "#bc4800",
+                        "inverse-surface": "#2e3039",
+                        "outline": "#737686",
+                        "on-primary-fixed": "#00174b",
+                        "error-container": "#ffdad6",
+                        "surface-container-low": "#f3f3fe",
+                        "on-tertiary-container": "#ffede6",
+                        "on-tertiary-fixed-variant": "#7d2d00",
+                        "on-error-container": "#93000a"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "container-max": "1440px",
+                        "stack-lg": "1.5rem",
+                        "gutter": "1.5rem",
+                        "stack-sm": "0.5rem",
+                        "margin-desktop": "2rem",
+                        "stack-md": "1rem",
+                        "margin-mobile": "1rem"
+                    },
+                    "fontFamily": {
+                        "headline-xl": ["Inter"],
+                        "headline-md": ["Inter"],
+                        "headline-lg": ["Inter"],
+                        "body-md": ["Inter"],
+                        "data-mono": ["JetBrains Mono"],
+                        "label-md": ["Inter"],
+                        "body-lg": ["Inter"],
+                        "body-sm": ["Inter"]
+                    },
+                    "fontSize": {
+                        "headline-xl": ["30px", {"lineHeight": "38px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                        "headline-md": ["20px", {"lineHeight": "28px", "fontWeight": "600"}],
+                        "headline-lg": ["24px", {"lineHeight": "32px", "letterSpacing": "-0.01em", "fontWeight": "600"}],
+                        "body-md": ["14px", {"lineHeight": "20px", "fontWeight": "400"}],
+                        "data-mono": ["13px", {"lineHeight": "16px", "fontWeight": "500"}],
+                        "label-md": ["12px", {"lineHeight": "16px", "fontWeight": "600"}],
+                        "body-lg": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                        "body-sm": ["13px", {"lineHeight": "18px", "fontWeight": "400"}]
+                    }
+                },
+            },
+        }
+    </script>
+</head>
+<body class="bg-surface text-on-surface font-body-md overflow-hidden h-screen flex">
+<!-- SideNavBar Anchor -->
+<nav class="bg-surface-container-lowest dark:bg-inverse-surface border-r border-outline-variant dark:border-outline w-[240px] h-screen fixed left-0 top-0 flex flex-col h-full py-gutter px-stack-md z-50">
+<div class="mb-10 flex items-center gap-3">
+<div class="w-10 h-10 bg-primary rounded-lg flex items-center justify-center">
+<span class="material-symbols-outlined text-white" style="font-variation-settings: 'FILL' 1;">account_balance</span>
+</div>
+<div>
+<h1 class="text-headline-md font-headline-md text-primary dark:text-primary-fixed-dim">La librería</h1>
+<p class="text-[10px] uppercase tracking-widest text-on-surface-variant opacity-70">WUB Library System</p>
+</div>
+</div>
+<div class="space-y-1 flex-1 overflow-y-auto custom-scrollbar">
+<a class="flex items-center gap-3 px-4 py-3 rounded-lg text-on-surface-variant dark:text-surface-variant hover:bg-surface-container dark:hover:bg-surface-container-high transition-colors active:scale-95 duration-150" href="#">
+<span class="material-symbols-outlined" data-icon="dashboard">dashboard</span>
+<span class="font-body-md">Overview</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 rounded-lg text-on-surface-variant dark:text-surface-variant hover:bg-surface-container dark:hover:bg-surface-container-high transition-colors active:scale-95 duration-150" href="#">
+<span class="material-symbols-outlined" data-icon="menu_book">menu_book</span>
+<span class="font-body-md">Books</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 rounded-lg text-on-surface-variant dark:text-surface-variant hover:bg-surface-container dark:hover:bg-surface-container-high transition-colors active:scale-95 duration-150" href="#">
+<span class="material-symbols-outlined" data-icon="group">group</span>
+<span class="font-body-md">Members</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 rounded-lg text-primary dark:text-primary-fixed-dim bg-secondary-container dark:bg-on-secondary-fixed-variant font-bold transition-colors active:scale-95 duration-150" href="#">
+<span class="material-symbols-outlined" data-icon="admin_panel_settings" style="font-variation-settings: 'FILL' 1;">admin_panel_settings</span>
+<span class="font-body-md">Management</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 rounded-lg text-on-surface-variant dark:text-surface-variant hover:bg-surface-container dark:hover:bg-surface-container-high transition-colors active:scale-95 duration-150" href="#">
+<span class="material-symbols-outlined" data-icon="settings">settings</span>
+<span class="font-body-md">Settings</span>
+</a>
+</div>
+<div class="mt-auto pt-6 border-t border-outline-variant">
+<div class="flex items-center gap-3 px-2">
+<img class="w-10 h-10 rounded-full border border-outline-variant" data-alt="A professional librarian's profile photo in a bright academic setting, high quality portrait, natural lighting, professional attire." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCIALVZONeQ2mbmJYiNtiEZt0yerpHzMYnin101Il2KJU0bDFDMz2Uj0yUUpR_-5J6f2Qy1ER02kMYheMCjDy8wcOOtNkK6JZ1hFn2yutyvf8SfJVlMpxQRFQdrUIQMCndmakuydej31lFuz4U4ljJeNdPypFHjW46nojCeP0l0G7xdAmDlUuqnd3yqXXwmT2OySenhzgY5QUoweDr6MXmcYDsEo6VeuPMRl9y5qqzghCf7cRmPoM8Lqg"/>
+<div class="flex-1 overflow-hidden">
+<p class="text-label-md font-bold truncate">Dr. Ahmed Rahman</p>
+<p class="text-[10px] text-on-surface-variant truncate">Chief Librarian</p>
+</div>
+</div>
+</div>
+</nav>
+<!-- Main Content Shell -->
+<main class="ml-[240px] flex-1 flex flex-col h-screen overflow-hidden">
+<!-- TopNavBar Anchor -->
+<header class="h-[64px] bg-surface-container-lowest dark:bg-surface-dim border-b border-outline-variant dark:border-outline flex justify-between items-center px-gutter w-full z-40">
+<div class="flex items-center flex-1 max-w-xl">
+<div class="relative w-full group">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-on-surface-variant opacity-60">search</span>
+<input class="w-full bg-surface-container border border-outline-variant rounded-lg pl-10 pr-4 py-2 font-data-mono text-sm focus:ring-2 focus:ring-primary focus:border-transparent transition-all outline-none" placeholder="Search system settings... (⌘F)" type="text"/>
+</div>
+</div>
+<div class="flex items-center gap-4 ml-gutter">
+<button class="w-10 h-10 flex items-center justify-center rounded-full hover:bg-surface-container transition-colors relative">
+<span class="material-symbols-outlined" data-icon="notifications">notifications</span>
+<span class="absolute top-2 right-2 w-2 h-2 bg-error rounded-full"></span>
+</button>
+<button class="w-10 h-10 flex items-center justify-center rounded-full hover:bg-surface-container transition-colors">
+<span class="material-symbols-outlined" data-icon="help_outline">help_outline</span>
+</button>
+<div class="h-8 w-[1px] bg-outline-variant mx-2"></div>
+<button class="bg-primary text-on-primary px-5 py-2 rounded-lg font-label-md flex items-center gap-2 shadow-sm hover:opacity-90 active:scale-95 transition-all">
+<span class="material-symbols-outlined text-[18px]">save</span>
+                    Save Changes
+                </button>
+</div>
+</header>
+<!-- Canvas Container -->
+<div class="flex-1 overflow-y-auto p-gutter custom-scrollbar bg-surface">
+<div class="max-w-container-max mx-auto space-y-6 pb-24">
+<!-- Page Header & Info -->
+<div class="flex flex-col gap-1">
+<div class="flex items-center gap-2 text-primary font-bold">
+<span class="material-symbols-outlined text-sm">security</span>
+<span class="text-[12px] uppercase tracking-wider">Access Control</span>
+</div>
+<h2 class="text-headline-xl font-headline-xl">Role &amp; Permission Matrix</h2>
+</div>
+<!-- Instructional Alert -->
+<div class="bg-secondary-container/30 border border-secondary-container rounded-xl p-4 flex gap-4 items-start">
+<div class="p-2 bg-secondary-container rounded-lg">
+<span class="material-symbols-outlined text-on-secondary-fixed-variant">info</span>
+</div>
+<div class="flex-1">
+<h4 class="font-bold text-on-secondary-fixed">System Configuration Notice</h4>
+<p class="text-body-md text-on-secondary-fixed-variant mt-1">Define access levels for each system role. Changes apply to all users assigned to the modified role. Please verify constraints before saving.</p>
+</div>
+</div>
+<!-- Permission Matrix Table -->
+<div class="bg-surface-container-lowest border border-outline-variant rounded-xl overflow-hidden shadow-sm">
+<div class="overflow-x-auto custom-scrollbar">
+<table class="w-full text-left border-collapse min-w-[800px]">
+<thead class="bg-surface-container-low matrix-table-sticky-header border-b border-outline-variant">
+<tr>
+<th class="p-4 bg-surface-container-low matrix-table-sticky-col z-40 border-r border-outline-variant w-1/3">
+<div class="flex items-center justify-between">
+<span class="text-label-md uppercase text-on-surface-variant font-bold">Permissions Module</span>
+<span class="material-symbols-outlined text-on-surface-variant text-[16px]">filter_list</span>
+</div>
+</th>
+<th class="p-4 text-center">
+<div class="flex flex-col items-center">
+<span class="material-symbols-outlined text-primary mb-1">local_library</span>
+<span class="text-label-md font-bold">Librarian</span>
+</div>
+</th>
+<th class="p-4 text-center">
+<div class="flex flex-col items-center">
+<span class="material-symbols-outlined text-primary mb-1">admin_panel_settings</span>
+<span class="text-label-md font-bold">Administrator</span>
+</div>
+</th>
+<th class="p-4 text-center">
+<div class="flex flex-col items-center">
+<span class="material-symbols-outlined text-primary mb-1">corporate_fare</span>
+<span class="text-label-md font-bold">Management</span>
+</div>
+</th>
+<th class="p-4 text-center">
+<div class="flex flex-col items-center">
+<span class="material-symbols-outlined text-primary mb-1">school</span>
+<span class="text-label-md font-bold">Student</span>
+</div>
+</th>
+</tr>
+</thead>
+<tbody>
+<!-- Circulation Group -->
+<tr class="bg-surface-container/20">
+<td class="px-4 py-2 text-[11px] font-bold uppercase tracking-widest text-primary/80 border-y border-outline-variant" colspan="5">
+                                        Circulation
+                                    </td>
+</tr>
+<tr class="hover:bg-surface-container-low transition-colors border-b border-outline-variant/30">
+<td class="p-4 matrix-table-sticky-col border-r border-outline-variant">
+<div class="font-bold">Issue Book</div>
+<div class="text-[12px] text-on-surface-variant">Authorize new loan requests</div>
+</td>
+<td class="p-4 text-center"><input checked="" class="rounded border-outline-variant text-primary focus:ring-primary h-5 w-5" type="checkbox"/></td>
+<td class="p-4 text-center"><input checked="" class="rounded border-outline-variant text-primary focus:ring-primary h-5 w-5" type="checkbox"/></td>
+<td class="p-4 text-center"><input checked="" class="rounded border-outline-variant text-primary focus:ring-primary h-5 w-5" type="checkbox"/></td>
+<td class="p-4 text-center"><input class="rounded border-outline-variant bg-surface-variant opacity-30 h-5 w-5 cursor-not-allowed" disabled="" type="checkbox"/></td>
+</tr>
+<tr class="hover:bg-surface-container-low transition-colors border-b border-outline-variant/30">
+<td class="p-4 matrix-table-sticky-col border-r border-outline-variant">
+<div class="font-bold">Return Book</div>
+<div class="text-[12px] text-on-surface-variant">Process inventory check-ins</div>
+</td>
+<td class="p-4 text-center"><input checked="" class="rounded border-outline-variant text-primary focus:ring-primary h-5 w-5" type="checkbox"/></td>
+<td class="p-4 text-center"><input checked="" class="rounded border-outline-variant text-primary focus:ring-primary h-5 w-5" type="checkbox"/></td>
+<td class="p-4 text-center"><input checked="" class="rounded border-outline-variant text-primary focus:ring-primary h-5 w-5" type="checkbox"/></td>
+<td class="p-4 text-center"><input class="rounded border-outline-variant bg-surface-variant opacity-30 h-5 w-5 cursor-not-allowed" disabled="" type="checkbox"/></td>
+</tr>
+<tr class="hover:bg-surface-container-low transition-colors border-b border-outline-variant/30">
+<td class="p-4 matrix-table-sticky-col border-r border-outline-variant">
+<div class="font-bold">View Loans</div>
+<div class="text-[12px] text-on-surface-variant">Access global circulation records</div>
+</td>
+<td class="p-4 text-center"><input checked="" class="rounded border-outline-variant text-primary focus:ring-primary h-5 w-5" type="checkbox"/></td>
+<td class="p-4 text-center"><input checked="" class="rounded border-outline-variant text-primary focus:ring-primary h-5 w-5" type="checkbox"/></td>
+<td class="p-4 text-center"><input checked="" class="rounded border-outline-variant text-primary focus:ring-primary h-5 w-5" type="checkbox"/></td>
+<td class="p-4 text-center"><input checked="" class="rounded border-outline-variant text-primary focus:ring-primary h-5 w-5" type="checkbox"/></td>
+</tr>
+<!-- Catalog Group -->
+<tr class="bg-surface-container/20">
+<td class="px-4 py-2 text-[11px] font-bold uppercase tracking-widest text-primary/80 border-y border-outline-variant" colspan="5">
+                                        Catalog
+                                    </td>
+</tr>
+<tr class="hover:bg-surface-container-low transition-colors border-b border-outline-variant/30">
+<td class="p-4 matrix-table-sticky-col border-r border-outline-variant">
+<div class="font-bold">Add/Edit Books</div>
+<div class="text-[12px] text-on-surface-variant">Modify metadata and inventory levels</div>
+</td>
+<td class="p-4 text-center"><input checked="" class="rounded border-outline-variant text-primary focus:ring-primary h-5 w-5" type="checkbox"/></td>
+<td class="p-4 text-center"><input checked="" class="rounded border-outline-variant text-primary focus:ring-primary h-5 w-5" type="checkbox"/></td>
+<td class="p-4 text-center"><input class="rounded border-outline-variant text-primary focus:ring-primary h-5 w-5" type="checkbox"/></td>
+<td class="p-4 text-center"><input class="rounded border-outline-variant bg-surface-variant opacity-30 h-5 w-5 cursor-not-allowed" disabled="" type="checkbox"/></td>
+</tr>
+<tr class="hover:bg-surface-container-low transition-colors border-b border-outline-variant/30">
+<td class="p-4 matrix-table-sticky-col border-r border-outline-variant">
+<div class="font-bold">Delete Books</div>
+<div class="text-[12px] text-on-surface-variant">Permanent removal from system</div>
+</td>
+<td class="p-4 text-center"><input class="rounded border-outline-variant text-primary focus:ring-primary h-5 w-5" type="checkbox"/></td>
+<td class="p-4 text-center"><input checked="" class="rounded border-outline-variant text-primary focus:ring-primary h-5 w-5" type="checkbox"/></td>
+<td class="p-4 text-center"><input class="rounded border-outline-variant text-primary focus:ring-primary h-5 w-5" type="checkbox"/></td>
+<td class="p-4 text-center"><input class="rounded border-outline-variant bg-surface-variant opacity-30 h-5 w-5 cursor-not-allowed" disabled="" type="checkbox"/></td>
+</tr>
+<!-- Members Group -->
+<tr class="bg-surface-container/20">
+<td class="px-4 py-2 text-[11px] font-bold uppercase tracking-widest text-primary/80 border-y border-outline-variant" colspan="5">
+                                        Members
+                                    </td>
+</tr>
+<tr class="hover:bg-surface-container-low transition-colors border-b border-outline-variant/30">
+<td class="p-4 matrix-table-sticky-col border-r border-outline-variant">
+<div class="font-bold">Add/Edit Students</div>
+<div class="text-[12px] text-on-surface-variant">Register new users and update IDs</div>
+</td>
+<td class="p-4 text-center"><input checked="" class="rounded border-outline-variant text-primary focus:ring-primary h-5 w-5" type="checkbox"/></td>
+<td class="p-4 text-center"><input checked="" class="rounded border-outline-variant text-primary focus:ring-primary h-5 w-5" type="checkbox"/></td>
+<td class="p-4 text-center"><input checked="" class="rounded border-outline-variant text-primary focus:ring-primary h-5 w-5" type="checkbox"/></td>
+<td class="p-4 text-center"><input class="rounded border-outline-variant bg-surface-variant opacity-30 h-5 w-5 cursor-not-allowed" disabled="" type="checkbox"/></td>
+</tr>
+<tr class="hover:bg-surface-container-low transition-colors border-b border-outline-variant/30">
+<td class="p-4 matrix-table-sticky-col border-r border-outline-variant">
+<div class="font-bold">View Profiles</div>
+<div class="text-[12px] text-on-surface-variant">Read-only access to member data</div>
+</td>
+<td class="p-4 text-center"><input checked="" class="rounded border-outline-variant text-primary focus:ring-primary h-5 w-5" type="checkbox"/></td>
+<td class="p-4 text-center"><input checked="" class="rounded border-outline-variant text-primary focus:ring-primary h-5 w-5" type="checkbox"/></td>
+<td class="p-4 text-center"><input checked="" class="rounded border-outline-variant text-primary focus:ring-primary h-5 w-5" type="checkbox"/></td>
+<td class="p-4 text-center"><input checked="" class="rounded border-outline-variant text-primary focus:ring-primary h-5 w-5" type="checkbox"/></td>
+</tr>
+<!-- Administration Group -->
+<tr class="bg-surface-container/20">
+<td class="px-4 py-2 text-[11px] font-bold uppercase tracking-widest text-primary/80 border-y border-outline-variant" colspan="5">
+                                        Administration
+                                    </td>
+</tr>
+<tr class="hover:bg-surface-container-low transition-colors border-b border-outline-variant/30">
+<td class="p-4 matrix-table-sticky-col border-r border-outline-variant">
+<div class="font-bold">System Settings</div>
+<div class="text-[12px] text-on-surface-variant">Global app and backend configurations</div>
+</td>
+<td class="p-4 text-center"><input class="rounded border-outline-variant text-primary focus:ring-primary h-5 w-5" type="checkbox"/></td>
+<td class="p-4 text-center"><input checked="" class="rounded border-outline-variant text-primary focus:ring-primary h-5 w-5" type="checkbox"/></td>
+<td class="p-4 text-center"><input class="rounded border-outline-variant text-primary focus:ring-primary h-5 w-5" type="checkbox"/></td>
+<td class="p-4 text-center"><input class="rounded border-outline-variant bg-surface-variant opacity-30 h-5 w-5 cursor-not-allowed" disabled="" type="checkbox"/></td>
+</tr>
+<tr class="hover:bg-surface-container-low transition-colors border-b border-outline-variant/30">
+<td class="p-4 matrix-table-sticky-col border-r border-outline-variant">
+<div class="font-bold">Audit Logs</div>
+<div class="text-[12px] text-on-surface-variant">View action history and security events</div>
+</td>
+<td class="p-4 text-center"><input class="rounded border-outline-variant text-primary focus:ring-primary h-5 w-5" type="checkbox"/></td>
+<td class="p-4 text-center"><input checked="" class="rounded border-outline-variant text-primary focus:ring-primary h-5 w-5" type="checkbox"/></td>
+<td class="p-4 text-center"><input checked="" class="rounded border-outline-variant text-primary focus:ring-primary h-5 w-5" type="checkbox"/></td>
+<td class="p-4 text-center"><input class="rounded border-outline-variant bg-surface-variant opacity-30 h-5 w-5 cursor-not-allowed" disabled="" type="checkbox"/></td>
+</tr>
+<tr class="hover:bg-surface-container-low transition-colors">
+<td class="p-4 matrix-table-sticky-col border-r border-outline-variant">
+<div class="font-bold">User Management</div>
+<div class="text-[12px] text-on-surface-variant">Manage staff accounts and permissions</div>
+</td>
+<td class="p-4 text-center"><input class="rounded border-outline-variant text-primary focus:ring-primary h-5 w-5" type="checkbox"/></td>
+<td class="p-4 text-center"><input checked="" class="rounded border-outline-variant text-primary focus:ring-primary h-5 w-5" type="checkbox"/></td>
+<td class="p-4 text-center"><input class="rounded border-outline-variant text-primary focus:ring-primary h-5 w-5" type="checkbox"/></td>
+<td class="p-4 text-center"><input class="rounded border-outline-variant bg-surface-variant opacity-30 h-5 w-5 cursor-not-allowed" disabled="" type="checkbox"/></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="flex justify-between items-center py-4">
+<div class="flex items-center gap-2 text-on-surface-variant">
+<span class="material-symbols-outlined text-[20px]">history</span>
+<span class="text-body-sm">Last updated: Oct 24, 2024 at 11:42 AM by Admin</span>
+</div>
+<button class="flex items-center gap-2 border border-primary text-primary px-5 py-2 rounded-lg font-label-md hover:bg-primary/5 active:scale-95 transition-all">
+<span class="material-symbols-outlined text-[18px]">restart_alt</span>
+                        Reset to Defaults
+                    </button>
+</div>
+</div>
+</div>
+<!-- Footer Anchor -->
+<footer class="bg-surface-container-low dark:bg-surface-container-high border-t border-outline-variant dark:border-outline flex justify-between items-center py-4 px-gutter z-40">
+<div class="flex items-center gap-4">
+<p class="font-label-md text-label-md font-bold text-on-surface">© 2024 World University of Bangladesh - Library Management System</p>
+</div>
+<div class="flex items-center gap-6">
+<a class="font-body-sm text-body-sm text-on-surface-variant hover:text-primary transition-opacity opacity-80 hover:opacity-100 underline decoration-primary/20 hover:decoration-primary" href="#">Privacy Policy</a>
+<a class="font-body-sm text-body-sm text-on-surface-variant hover:text-primary transition-opacity opacity-80 hover:opacity-100 underline decoration-primary/20 hover:decoration-primary" href="#">Terms of Service</a>
+<a class="font-body-sm text-body-sm text-on-surface-variant hover:text-primary transition-opacity opacity-80 hover:opacity-100 underline decoration-primary/20 hover:decoration-primary" href="#">Support</a>
+</div>
+</footer>
+</main>
+<!-- Success Toast Notification (JS Simulation) -->
+<div class="fixed bottom-20 left-1/2 -translate-x-1/2 bg-inverse-surface text-inverse-on-surface px-6 py-3 rounded-xl shadow-xl flex items-center gap-3 transform translate-y-24 opacity-0 transition-all duration-300 z-[100]" id="saveToast">
+<span class="material-symbols-outlined text-primary-fixed">check_circle</span>
+<span class="font-body-md">Permissions updated successfully for 4 roles.</span>
+</div>
+<script>
+        // Simple micro-interaction for the Save Changes button
+        const saveBtn = document.querySelector('button.bg-primary');
+        const toast = document.getElementById('saveToast');
+
+        saveBtn.addEventListener('click', () => {
+            saveBtn.innerHTML = '<span class="material-symbols-outlined animate-spin">sync</span> Saving...';
+            saveBtn.disabled = true;
+            
+            setTimeout(() => {
+                saveBtn.innerHTML = '<span class="material-symbols-outlined text-[18px]">save</span> Save Changes';
+                saveBtn.disabled = false;
+                
+                // Show toast
+                toast.classList.remove('translate-y-24', 'opacity-0');
+                
+                setTimeout(() => {
+                    toast.classList.add('translate-y-24', 'opacity-0');
+                }, 3000);
+            }, 1500);
+        });
+
+        // Add keyboard shortcut simulation (Cmd+F focus search)
+        document.addEventListener('keydown', (e) => {
+            if ((e.metaKey || e.ctrlKey) && e.key === 'f') {
+                e.preventDefault();
+                document.querySelector('input[type="text"]').focus();
+            }
+        });
+    </script>
+</body></html>

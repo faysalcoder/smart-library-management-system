@@ -1,0 +1,453 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Audit Log Viewer - WUB Library Management System</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&amp;family=JetBrains+Mono:wght@400;500&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "inverse-primary": "#b4c5ff",
+                        "secondary": "#505f76",
+                        "on-tertiary-fixed": "#360f00",
+                        "on-secondary-fixed-variant": "#38485d",
+                        "on-error-container": "#93000a",
+                        "surface-container-high": "#e7e7f3",
+                        "surface-container-low": "#f3f3fe",
+                        "background": "#faf8ff",
+                        "surface-dim": "#d9d9e5",
+                        "surface-container-highest": "#e1e2ed",
+                        "tertiary": "#943700",
+                        "inverse-on-surface": "#f0f0fb",
+                        "surface-bright": "#faf8ff",
+                        "on-primary-fixed-variant": "#003ea8",
+                        "secondary-fixed": "#d3e4fe",
+                        "on-surface-variant": "#434655",
+                        "on-error": "#ffffff",
+                        "surface-variant": "#e1e2ed",
+                        "secondary-container": "#d0e1fb",
+                        "on-background": "#191b23",
+                        "surface": "#faf8ff",
+                        "on-tertiary": "#ffffff",
+                        "tertiary-container": "#bc4800",
+                        "surface-container-lowest": "#ffffff",
+                        "on-tertiary-container": "#ffede6",
+                        "on-primary": "#ffffff",
+                        "error-container": "#ffdad6",
+                        "error": "#ba1a1a",
+                        "on-primary-fixed": "#00174b",
+                        "on-tertiary-fixed-variant": "#7d2d00",
+                        "primary-container": "#2563eb",
+                        "tertiary-fixed": "#ffdbcd",
+                        "surface-tint": "#0053db",
+                        "tertiary-fixed-dim": "#ffb596",
+                        "surface-container": "#ededf9",
+                        "on-secondary-fixed": "#0b1c30",
+                        "primary-fixed-dim": "#b4c5ff",
+                        "on-primary-container": "#eeefff",
+                        "secondary-fixed-dim": "#b7c8e1",
+                        "inverse-surface": "#2e3039",
+                        "outline": "#737686",
+                        "on-secondary-container": "#54647a",
+                        "on-surface": "#191b23",
+                        "primary-fixed": "#dbe1ff",
+                        "primary": "#004ac6",
+                        "on-secondary": "#ffffff",
+                        "outline-variant": "#c3c6d7"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "stack-lg": "1.5rem",
+                        "margin-desktop": "2rem",
+                        "stack-sm": "0.5rem",
+                        "stack-md": "1rem",
+                        "margin-mobile": "1rem",
+                        "container-max": "1440px",
+                        "gutter": "1.5rem"
+                    },
+                    "fontFamily": {
+                        "data-mono": ["JetBrains Mono"],
+                        "headline-lg": ["Inter"],
+                        "body-lg": ["Inter"],
+                        "headline-md": ["Inter"],
+                        "label-md": ["Inter"],
+                        "body-sm": ["Inter"],
+                        "headline-xl": ["Inter"],
+                        "body-md": ["Inter"]
+                    },
+                    "fontSize": {
+                        "data-mono": ["13px", {"lineHeight": "16px", "fontWeight": "500"}],
+                        "headline-lg": ["24px", {"lineHeight": "32px", "letterSpacing": "-0.01em", "fontWeight": "600"}],
+                        "body-lg": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                        "headline-md": ["20px", {"lineHeight": "28px", "fontWeight": "600"}],
+                        "label-md": ["12px", {"lineHeight": "16px", "fontWeight": "600"}],
+                        "body-sm": ["13px", {"lineHeight": "18px", "fontWeight": "400"}],
+                        "headline-xl": ["30px", {"lineHeight": "38px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                        "body-md": ["14px", {"lineHeight": "20px", "fontWeight": "400"}]
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        body { font-family: 'Inter', sans-serif; }
+        .custom-scrollbar::-webkit-scrollbar { width: 6px; height: 6px; }
+        .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: #c3c6d7; border-radius: 10px; }
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover { background: #737686; }
+    </style>
+</head>
+<body class="bg-surface text-on-surface">
+<!-- SideNavBar Anchor -->
+<aside class="w-[240px] h-screen fixed left-0 top-0 bg-surface border-r border-outline-variant flex flex-col p-stack-md gap-stack-sm z-50">
+<div class="mb-stack-lg px-2">
+<h1 class="font-headline-md text-headline-md font-bold text-primary">WUB Library</h1>
+<p class="font-label-md text-on-surface-variant opacity-70">SLMS Admin</p>
+</div>
+<nav class="flex-1 flex flex-col gap-1">
+<a class="flex items-center gap-3 p-3 text-on-surface-variant hover:bg-surface-container-low transition-colors rounded-lg font-body-md text-body-md" href="#">
+<span class="material-symbols-outlined">dashboard</span> Overview
+            </a>
+<a class="flex items-center gap-3 p-3 text-on-surface-variant hover:bg-surface-container-low transition-colors rounded-lg font-body-md text-body-md" href="#">
+<span class="material-symbols-outlined">menu_book</span> Books
+            </a>
+<a class="flex items-center gap-3 p-3 text-on-surface-variant hover:bg-surface-container-low transition-colors rounded-lg font-body-md text-body-md" href="#">
+<span class="material-symbols-outlined">group</span> Members
+            </a>
+<!-- Active Navigation Logic: "Management" (closest match for Audit Logs) -->
+<a class="flex items-center gap-3 p-3 bg-secondary-container text-on-secondary-container rounded-lg font-bold font-body-md text-body-md" href="#">
+<span class="material-symbols-outlined">admin_panel_settings</span> Management
+            </a>
+<a class="flex items-center gap-3 p-3 text-on-surface-variant hover:bg-surface-container-low transition-colors rounded-lg font-body-md text-body-md" href="#">
+<span class="material-symbols-outlined">settings</span> Settings
+            </a>
+</nav>
+<div class="mt-auto pt-stack-md border-t border-outline-variant">
+<div class="flex items-center gap-3 px-2">
+<div class="w-10 h-10 rounded-full bg-primary-fixed-dim flex items-center justify-center text-on-primary-fixed font-bold">AL</div>
+<div>
+<p class="font-label-md text-on-surface leading-tight">Admin Librarian</p>
+<p class="text-[10px] text-on-surface-variant">System Master</p>
+</div>
+</div>
+</div>
+</aside>
+<!-- TopNavBar Anchor -->
+<header class="h-[64px] fixed top-0 right-0 left-[240px] bg-white border-b border-outline-variant z-40 flex justify-between items-center px-gutter w-full">
+<div class="flex items-center gap-4 flex-1">
+<div class="relative w-full max-w-xl">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-outline">search</span>
+<input class="w-full bg-surface-container-low border-none rounded-lg pl-10 pr-12 py-2 font-body-md text-body-md focus:ring-2 focus:ring-primary/20" placeholder="Search Audit Logs... (⌘F)" type="text"/>
+<span class="absolute right-3 top-1/2 -translate-y-1/2 font-data-mono text-[10px] text-outline border border-outline-variant rounded px-1 px-1.5">⌘F</span>
+</div>
+</div>
+<div class="flex items-center gap-2">
+<button class="p-2 text-on-surface-variant hover:bg-surface-container-low rounded-full transition-all">
+<span class="material-symbols-outlined">notifications</span>
+</button>
+<button class="p-2 text-on-surface-variant hover:bg-surface-container-low rounded-full transition-all">
+<span class="material-symbols-outlined">qr_code_scanner</span>
+</button>
+<button class="p-2 text-on-surface-variant hover:bg-surface-container-low rounded-full transition-all">
+<span class="material-symbols-outlined">help_outline</span>
+</button>
+<div class="w-px h-6 bg-outline-variant mx-2"></div>
+<img class="w-8 h-8 rounded-full border border-outline-variant" data-alt="A professional headshot of a female librarian in her 40s wearing glasses and a formal white shirt, set against a blurred background of a modern academic library with rows of mahogany bookshelves and soft morning light. The portrait style is crisp, authoritative, and clean-cut, matching a corporate administrative UI." src="https://lh3.googleusercontent.com/aida-public/AB6AXuATwNUeElsvDjkBTYsqFlj448Lxu3FEqEbzawfT3Tq8iL6UahxAEWa-hhrb99E3-suhzIkim08Gs_a0EFxnmNSIHJe5zxJQLu_M214I3rCFAQr3W_oJDwT6-Xq1gCPXP6neGFJGVEgNDWg4XobClZYFJQuAVqVBB_B_s-q8W922Ube6TyWHLHp9L9_H6OexUfgKtefvbPvveQyECFT90ljbQ0vuxmvdWBpjpjGiw90Et0NsFkhIc_z82w"/>
+</div>
+</header>
+<!-- Main Content Canvas -->
+<main class="ml-[240px] pt-[64px] min-h-screen flex flex-col">
+<div class="p-gutter flex-1 bg-background">
+<!-- Breadcrumbs & Header Actions -->
+<div class="flex justify-between items-end mb-stack-lg">
+<div>
+<nav class="flex items-center gap-2 text-on-surface-variant mb-2">
+<span class="font-label-md text-label-md">Management</span>
+<span class="material-symbols-outlined text-[16px]">chevron_right</span>
+<span class="font-label-md text-label-md text-primary">Audit Log Viewer</span>
+</nav>
+<h2 class="font-headline-lg text-headline-lg text-on-surface">System Events Audit</h2>
+</div>
+<div class="flex gap-stack-sm">
+<button class="flex items-center gap-2 px-4 py-2 border border-outline text-on-surface rounded-lg font-label-md hover:bg-surface-container transition-colors">
+<span class="material-symbols-outlined text-[18px]">download</span> Export CSV
+                    </button>
+<button class="flex items-center gap-2 px-4 py-2 bg-primary text-on-primary rounded-lg font-label-md hover:brightness-110 shadow-sm transition-all active:scale-95">
+<span class="material-symbols-outlined text-[18px]">refresh</span> Refresh Logs
+                    </button>
+</div>
+</div>
+<!-- Advanced Filters Bento Row -->
+<div class="grid grid-cols-12 gap-4 mb-stack-lg">
+<div class="col-span-12 lg:col-span-4 bg-white p-4 rounded-xl border border-outline-variant flex flex-col gap-3">
+<div class="flex items-center gap-2 text-on-surface-variant">
+<span class="material-symbols-outlined text-[20px]">calendar_today</span>
+<span class="font-label-md">Date Range Selection</span>
+</div>
+<div class="flex gap-2">
+<input class="flex-1 bg-surface-container-lowest border-outline-variant rounded-lg font-body-sm p-2 focus:ring-primary" type="date"/>
+<input class="flex-1 bg-surface-container-lowest border-outline-variant rounded-lg font-body-sm p-2 focus:ring-primary" type="date"/>
+</div>
+</div>
+<div class="col-span-12 md:col-span-6 lg:col-span-4 bg-white p-4 rounded-xl border border-outline-variant flex flex-col gap-3">
+<div class="flex items-center gap-2 text-on-surface-variant">
+<span class="material-symbols-outlined text-[20px]">person_search</span>
+<span class="font-label-md">Filter by User Role</span>
+</div>
+<div class="flex gap-2">
+<select class="w-full bg-surface-container-lowest border-outline-variant rounded-lg font-body-sm p-2 focus:ring-primary">
+<option>All Roles</option>
+<option>Administrator</option>
+<option>Librarian</option>
+<option>Guest/Public</option>
+</select>
+</div>
+</div>
+<div class="col-span-12 md:col-span-6 lg:col-span-4 bg-white p-4 rounded-xl border border-outline-variant flex flex-col gap-3">
+<div class="flex items-center gap-2 text-on-surface-variant">
+<span class="material-symbols-outlined text-[20px]">category</span>
+<span class="font-label-md">Event Type</span>
+</div>
+<div class="flex gap-2">
+<select class="w-full bg-surface-container-lowest border-outline-variant rounded-lg font-body-sm p-2 focus:ring-primary">
+<option>All Events</option>
+<option>Auth (Login/Logout)</option>
+<option>Circulation (Issue/Return)</option>
+<option>System Config</option>
+<option>Security Alerts</option>
+</select>
+</div>
+</div>
+</div>
+<!-- Audit Table Section -->
+<div class="bg-white rounded-xl border border-outline-variant shadow-sm overflow-hidden flex flex-col">
+<!-- Table Header Toolset -->
+<div class="px-6 py-4 border-b border-outline-variant bg-surface-container-lowest flex justify-between items-center">
+<div class="flex items-center gap-4">
+<span class="font-body-sm text-on-surface-variant">Showing <strong>254</strong> events</span>
+<div class="h-4 w-px bg-outline-variant"></div>
+<div class="flex gap-1">
+<button class="px-3 py-1 rounded bg-primary-container text-on-primary-container font-label-md">Today</button>
+<button class="px-3 py-1 rounded text-on-surface-variant font-label-md hover:bg-surface-container-low">Last 7D</button>
+</div>
+</div>
+<div class="flex items-center gap-2">
+<button class="p-1.5 hover:bg-surface-container rounded-lg text-outline">
+<span class="material-symbols-outlined text-[20px]">view_column</span>
+</button>
+<button class="p-1.5 hover:bg-surface-container rounded-lg text-outline">
+<span class="material-symbols-outlined text-[20px]">filter_list</span>
+</button>
+</div>
+</div>
+<!-- Technical Data Table -->
+<div class="overflow-x-auto custom-scrollbar">
+<table class="w-full text-left border-collapse">
+<thead class="bg-surface-container-low sticky top-0">
+<tr>
+<th class="px-6 py-3 font-label-md text-label-md uppercase tracking-wider text-on-surface-variant">Timestamp</th>
+<th class="px-6 py-3 font-label-md text-label-md uppercase tracking-wider text-on-surface-variant">User (Role)</th>
+<th class="px-6 py-3 font-label-md text-label-md uppercase tracking-wider text-on-surface-variant">Action</th>
+<th class="px-6 py-3 font-label-md text-label-md uppercase tracking-wider text-on-surface-variant">Target Object</th>
+<th class="px-6 py-3 font-label-md text-label-md uppercase tracking-wider text-on-surface-variant text-right">IP Address</th>
+<th class="px-6 py-3 w-10"></th>
+</tr>
+</thead>
+<tbody class="divide-y divide-outline-variant">
+<!-- Row 1 -->
+<tr class="hover:bg-surface-container-low transition-colors group">
+<td class="px-6 py-4 font-data-mono text-data-mono whitespace-nowrap">2024-05-24 14:22:01</td>
+<td class="px-6 py-4">
+<div class="flex items-center gap-2">
+<span class="font-body-md text-on-surface font-semibold">a.rahman</span>
+<span class="px-2 py-0.5 rounded bg-surface-variant text-on-surface-variant text-[10px] font-bold uppercase">Admin</span>
+</div>
+</td>
+<td class="px-6 py-4">
+<div class="flex items-center gap-2">
+<span class="w-2 h-2 rounded-full bg-primary"></span>
+<span class="font-body-md text-on-surface">Book Issued</span>
+</div>
+</td>
+<td class="px-6 py-4 font-data-mono text-data-mono text-primary">ACC-209931</td>
+<td class="px-6 py-4 font-data-mono text-data-mono text-right text-on-surface-variant">192.168.1.104</td>
+<td class="px-6 py-4 text-right">
+<button class="opacity-0 group-hover:opacity-100 p-1 hover:bg-white rounded transition-all">
+<span class="material-symbols-outlined text-outline">more_vert</span>
+</button>
+</td>
+</tr>
+<!-- Row 2 -->
+<tr class="hover:bg-surface-container-low transition-colors group">
+<td class="px-6 py-4 font-data-mono text-data-mono whitespace-nowrap">2024-05-24 14:18:45</td>
+<td class="px-6 py-4">
+<div class="flex items-center gap-2">
+<span class="font-body-md text-on-surface font-semibold">j.doe</span>
+<span class="px-2 py-0.5 rounded bg-secondary-container text-on-secondary-container text-[10px] font-bold uppercase">Librarian</span>
+</div>
+</td>
+<td class="px-6 py-4">
+<div class="flex items-center gap-2">
+<span class="w-2 h-2 rounded-full bg-tertiary"></span>
+<span class="font-body-md text-on-surface">Settings Changed</span>
+</div>
+</td>
+<td class="px-6 py-4 font-data-mono text-data-mono text-primary">CONFIG_CIRC_LIMIT</td>
+<td class="px-6 py-4 font-data-mono text-data-mono text-right text-on-surface-variant">10.0.0.45</td>
+<td class="px-6 py-4 text-right">
+<button class="opacity-0 group-hover:opacity-100 p-1 hover:bg-white rounded transition-all">
+<span class="material-symbols-outlined text-outline">more_vert</span>
+</button>
+</td>
+</tr>
+<!-- Row 3 -->
+<tr class="hover:bg-surface-container-low transition-colors group">
+<td class="px-6 py-4 font-data-mono text-data-mono whitespace-nowrap">2024-05-24 14:15:12</td>
+<td class="px-6 py-4">
+<div class="flex items-center gap-2">
+<span class="font-body-md text-on-surface font-semibold">system.daemon</span>
+<span class="px-2 py-0.5 rounded bg-on-tertiary-fixed text-white text-[10px] font-bold uppercase">System</span>
+</div>
+</td>
+<td class="px-6 py-4">
+<div class="flex items-center gap-2">
+<span class="w-2 h-2 rounded-full bg-outline"></span>
+<span class="font-body-md text-on-surface">Login Success</span>
+</div>
+</td>
+<td class="px-6 py-4 font-data-mono text-data-mono text-primary">UID_5501</td>
+<td class="px-6 py-4 font-data-mono text-data-mono text-right text-on-surface-variant">127.0.0.1</td>
+<td class="px-6 py-4 text-right">
+<button class="opacity-0 group-hover:opacity-100 p-1 hover:bg-white rounded transition-all">
+<span class="material-symbols-outlined text-outline">more_vert</span>
+</button>
+</td>
+</tr>
+<!-- Row 4 -->
+<tr class="hover:bg-surface-container-low transition-colors group">
+<td class="px-6 py-4 font-data-mono text-data-mono whitespace-nowrap">2024-05-24 13:59:02</td>
+<td class="px-6 py-4">
+<div class="flex items-center gap-2">
+<span class="font-body-md text-on-surface font-semibold">m.kamal</span>
+<span class="px-2 py-0.5 rounded bg-secondary-container text-on-secondary-container text-[10px] font-bold uppercase">Librarian</span>
+</div>
+</td>
+<td class="px-6 py-4">
+<div class="flex items-center gap-2">
+<span class="w-2 h-2 rounded-full bg-error"></span>
+<span class="font-body-md text-on-surface">Access Denied</span>
+</div>
+</td>
+<td class="px-6 py-4 font-data-mono text-data-mono text-primary">ADMIN_PANEL</td>
+<td class="px-6 py-4 font-data-mono text-data-mono text-right text-on-surface-variant">192.168.1.112</td>
+<td class="px-6 py-4 text-right">
+<button class="opacity-0 group-hover:opacity-100 p-1 hover:bg-white rounded transition-all">
+<span class="material-symbols-outlined text-outline">more_vert</span>
+</button>
+</td>
+</tr>
+<!-- Row 5 -->
+<tr class="hover:bg-surface-container-low transition-colors group">
+<td class="px-6 py-4 font-data-mono text-data-mono whitespace-nowrap">2024-05-24 13:45:33</td>
+<td class="px-6 py-4">
+<div class="flex items-center gap-2">
+<span class="font-body-md text-on-surface font-semibold">a.rahman</span>
+<span class="px-2 py-0.5 rounded bg-surface-variant text-on-surface-variant text-[10px] font-bold uppercase">Admin</span>
+</div>
+</td>
+<td class="px-6 py-4">
+<div class="flex items-center gap-2">
+<span class="w-2 h-2 rounded-full bg-primary"></span>
+<span class="font-body-md text-on-surface">Catalog Item Deleted</span>
+</div>
+</td>
+<td class="px-6 py-4 font-data-mono text-data-mono text-primary">ACC-108842</td>
+<td class="px-6 py-4 font-data-mono text-data-mono text-right text-on-surface-variant">192.168.1.104</td>
+<td class="px-6 py-4 text-right">
+<button class="opacity-0 group-hover:opacity-100 p-1 hover:bg-white rounded transition-all">
+<span class="material-symbols-outlined text-outline">more_vert</span>
+</button>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<!-- Table Footer / Pagination -->
+<div class="px-6 py-4 bg-surface-container-lowest border-t border-outline-variant flex justify-between items-center">
+<div class="flex items-center gap-2">
+<span class="font-body-sm text-on-surface-variant">Rows per page:</span>
+<select class="bg-transparent border-none font-body-sm text-on-surface font-semibold focus:ring-0 cursor-pointer">
+<option>10</option>
+<option selected="">25</option>
+<option>50</option>
+</select>
+</div>
+<div class="flex items-center gap-4">
+<span class="font-body-sm text-on-surface-variant">1-25 of 254</span>
+<div class="flex gap-1">
+<button class="p-1 hover:bg-surface-container rounded-md text-on-surface-variant disabled:opacity-30" disabled="">
+<span class="material-symbols-outlined">chevron_left</span>
+</button>
+<button class="p-1 hover:bg-surface-container rounded-md text-on-surface-variant">
+<span class="material-symbols-outlined">chevron_right</span>
+</button>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Footer Anchor -->
+<footer class="bg-surface-container-lowest border-t border-outline-variant p-stack-md flex justify-between items-center w-full">
+<p class="font-body-sm text-body-sm text-on-secondary-container">© 2024 World University of Bangladesh - Library Management System</p>
+<div class="flex gap-stack-md">
+<a class="font-body-sm text-body-sm text-on-secondary-container hover:underline opacity-80 hover:opacity-100" href="#">Privacy Policy</a>
+<a class="font-body-sm text-body-sm text-on-secondary-container hover:underline opacity-80 hover:opacity-100" href="#">Support</a>
+<a class="font-body-sm text-body-sm text-on-secondary-container hover:underline opacity-80 hover:opacity-100" href="#">System Status</a>
+</div>
+</footer>
+</main>
+<!-- Micro-interactions Script -->
+<script>
+        // Simple search highlight effect
+        const searchInput = document.querySelector('input[type="text"]');
+        searchInput.addEventListener('focus', () => {
+            searchInput.parentElement.classList.add('ring-2', 'ring-primary/20');
+        });
+        searchInput.addEventListener('blur', () => {
+            searchInput.parentElement.classList.remove('ring-2', 'ring-primary/20');
+        });
+
+        // Add keyboard shortcut listener for search
+        document.addEventListener('keydown', (e) => {
+            if ((e.metaKey || e.ctrlKey) && e.key === 'f') {
+                e.preventDefault();
+                searchInput.focus();
+            }
+        });
+
+        // Table row hover visual helper
+        document.querySelectorAll('tbody tr').forEach(row => {
+            row.addEventListener('mouseenter', () => {
+                row.classList.add('bg-surface-container-low');
+            });
+            row.addEventListener('mouseleave', () => {
+                row.classList.remove('bg-surface-container-low');
+            });
+        });
+    </script>
+</body></html>

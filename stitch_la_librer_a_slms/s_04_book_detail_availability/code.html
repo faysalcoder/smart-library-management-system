@@ -1,0 +1,382 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>WUB Library - Book Detail</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&amp;family=JetBrains+Mono:wght@500&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "inverse-primary": "#b4c5ff",
+                    "secondary": "#505f76",
+                    "on-tertiary-fixed": "#360f00",
+                    "on-secondary-fixed-variant": "#38485d",
+                    "on-error-container": "#93000a",
+                    "surface-container-high": "#e7e7f3",
+                    "surface-container-low": "#f3f3fe",
+                    "background": "#faf8ff",
+                    "surface-dim": "#d9d9e5",
+                    "surface-container-highest": "#e1e2ed",
+                    "tertiary": "#943700",
+                    "inverse-on-surface": "#f0f0fb",
+                    "surface-bright": "#faf8ff",
+                    "on-primary-fixed-variant": "#003ea8",
+                    "secondary-fixed": "#d3e4fe",
+                    "on-surface-variant": "#434655",
+                    "on-error": "#ffffff",
+                    "surface-variant": "#e1e2ed",
+                    "secondary-container": "#d0e1fb",
+                    "on-background": "#191b23",
+                    "surface": "#faf8ff",
+                    "on-tertiary": "#ffffff",
+                    "tertiary-container": "#bc4800",
+                    "surface-container-lowest": "#ffffff",
+                    "on-tertiary-container": "#ffede6",
+                    "on-primary": "#ffffff",
+                    "error-container": "#ffdad6",
+                    "error": "#ba1a1a",
+                    "on-primary-fixed": "#00174b",
+                    "on-tertiary-fixed-variant": "#7d2d00",
+                    "primary-container": "#2563eb",
+                    "tertiary-fixed": "#ffdbcd",
+                    "surface-tint": "#0053db",
+                    "tertiary-fixed-dim": "#ffb596",
+                    "surface-container": "#ededf9",
+                    "on-secondary-fixed": "#0b1c30",
+                    "primary-fixed-dim": "#b4c5ff",
+                    "on-primary-container": "#eeefff",
+                    "secondary-fixed-dim": "#b7c8e1",
+                    "inverse-surface": "#2e3039",
+                    "outline": "#737686",
+                    "on-secondary-container": "#54647a",
+                    "on-surface": "#191b23",
+                    "primary-fixed": "#dbe1ff",
+                    "primary": "#004ac6",
+                    "on-secondary": "#ffffff",
+                    "outline-variant": "#c3c6d7"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.25rem",
+                    "lg": "0.5rem",
+                    "xl": "0.75rem",
+                    "full": "9999px"
+            },
+            "spacing": {
+                    "stack-lg": "1.5rem",
+                    "margin-desktop": "2rem",
+                    "stack-sm": "0.5rem",
+                    "stack-md": "1rem",
+                    "margin-mobile": "1rem",
+                    "container-max": "1440px",
+                    "gutter": "1.5rem"
+            },
+            "fontFamily": {
+                    "data-mono": ["JetBrains Mono"],
+                    "headline-lg": ["Inter"],
+                    "body-lg": ["Inter"],
+                    "headline-md": ["Inter"],
+                    "label-md": ["Inter"],
+                    "body-sm": ["Inter"],
+                    "headline-xl": ["Inter"],
+                    "body-md": ["Inter"]
+            },
+            "fontSize": {
+                    "data-mono": ["13px", {"lineHeight": "16px", "fontWeight": "500"}],
+                    "headline-lg": ["24px", {"lineHeight": "32px", "letterSpacing": "-0.01em", "fontWeight": "600"}],
+                    "body-lg": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                    "headline-md": ["20px", {"lineHeight": "28px", "fontWeight": "600"}],
+                    "label-md": ["12px", {"lineHeight": "16px", "fontWeight": "600"}],
+                    "body-sm": ["13px", {"lineHeight": "18px", "fontWeight": "400"}],
+                    "headline-xl": ["30px", {"lineHeight": "38px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                    "body-md": ["14px", {"lineHeight": "20px", "fontWeight": "400"}]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        body {
+            background-color: #F8FAFC;
+        }
+        .bento-grid {
+            display: grid;
+            grid-template-columns: repeat(12, 1fr);
+            gap: 24px;
+        }
+    </style>
+</head>
+<body class="bg-background text-on-surface">
+<!-- Side Navigation Shell -->
+<aside class="w-[240px] h-screen fixed left-0 top-0 bg-surface border-r border-outline-variant flex flex-col p-stack-md gap-stack-sm z-50">
+<div class="mb-stack-lg">
+<h1 class="font-headline-md text-headline-md font-bold text-primary">WUB Library</h1>
+<p class="font-body-sm text-body-sm text-on-surface-variant">SLMS Admin</p>
+</div>
+<nav class="flex flex-col gap-1">
+<a class="flex items-center gap-3 px-3 py-2 text-on-surface-variant hover:bg-surface-container-low transition-colors rounded-lg font-body-md text-body-md" href="#">
+<span class="material-symbols-outlined">dashboard</span>
+                Overview
+            </a>
+<a class="flex items-center gap-3 px-3 py-2 bg-secondary-container text-on-secondary-container rounded-lg font-bold font-body-md text-body-md" href="#">
+<span class="material-symbols-outlined">menu_book</span>
+                Books
+            </a>
+<a class="flex items-center gap-3 px-3 py-2 text-on-surface-variant hover:bg-surface-container-low transition-colors rounded-lg font-body-md text-body-md" href="#">
+<span class="material-symbols-outlined">group</span>
+                Members
+            </a>
+<a class="flex items-center gap-3 px-3 py-2 text-on-surface-variant hover:bg-surface-container-low transition-colors rounded-lg font-body-md text-body-md" href="#">
+<span class="material-symbols-outlined">admin_panel_settings</span>
+                Management
+            </a>
+<a class="flex items-center gap-3 px-3 py-2 text-on-surface-variant hover:bg-surface-container-low transition-colors rounded-lg font-body-md text-body-md" href="#">
+<span class="material-symbols-outlined">settings</span>
+                Settings
+            </a>
+</nav>
+</aside>
+<!-- Top Navigation Shell -->
+<header class="h-[64px] fixed top-0 right-0 left-[240px] bg-white border-b border-outline-variant z-40 flex justify-between items-center px-gutter w-full">
+<div class="flex items-center gap-4 flex-1">
+<div class="relative w-full max-w-xl">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-on-surface-variant">search</span>
+<input class="w-full pl-10 pr-12 py-2 bg-surface-container-lowest border border-outline-variant rounded-lg font-body-md focus:ring-2 focus:ring-primary-fixed-dim focus:border-primary" placeholder="Search catalog, authors, or ISBN..." type="text"/>
+<span class="absolute right-3 top-1/2 -translate-y-1/2 font-data-mono text-on-surface-variant opacity-50 border border-outline-variant rounded px-1.5 text-[10px]">⌘F</span>
+</div>
+</div>
+<div class="flex items-center gap-2">
+<button class="hover:bg-surface-container-low rounded-full p-2 transition-all duration-200">
+<span class="material-symbols-outlined text-on-surface-variant">notifications</span>
+</button>
+<button class="hover:bg-surface-container-low rounded-full p-2 transition-all duration-200">
+<span class="material-symbols-outlined text-on-surface-variant">qr_code_scanner</span>
+</button>
+<button class="hover:bg-surface-container-low rounded-full p-2 transition-all duration-200">
+<span class="material-symbols-outlined text-on-surface-variant">help_outline</span>
+</button>
+<div class="h-8 w-px bg-outline-variant mx-2"></div>
+<img class="w-8 h-8 rounded-full border border-outline-variant object-cover" data-alt="A professional headshot of a female university librarian with a friendly expression, wearing professional attire, set against a blurred background of modern university bookshelves. The lighting is soft and natural, reflecting a clean and authoritative academic environment." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCmpA5ic5cTs7U18gtdHZNeZvgkCPiiYvoYPPgUhqM9odH39THqMUTQBpVJRq0pUdc5MeMHVymJ-ybWHBzEkpzv5moDfu46tsKfyDh7aYdoloGggXX9q1a0AONt5gXC96LBsb0lzGxVGm-_UmBBJS0irmSMzryFlLIkiKwm2Wbu1uRNY6TnX14JdqVPs9DaXhxO03tZI-M6xGLD1ZR0Jts9jJRbUxQoOIrvVlD-KEYcsZG9c1ylEzlKDw"/>
+</div>
+</header>
+<!-- Main Canvas -->
+<main class="ml-[240px] pt-[64px] min-h-screen bg-background">
+<div class="max-w-[1200px] mx-auto p-gutter">
+<!-- Breadcrumb -->
+<nav class="flex items-center gap-2 mb-stack-lg text-on-surface-variant font-label-md text-label-md">
+<a class="hover:text-primary" href="#">Catalog</a>
+<span class="material-symbols-outlined text-[16px]">chevron_right</span>
+<a class="hover:text-primary" href="#">Computer Science</a>
+<span class="material-symbols-outlined text-[16px]">chevron_right</span>
+<span class="text-on-surface font-bold">Book Detail</span>
+</nav>
+<div class="bento-grid">
+<!-- Book Cover & Actions Column -->
+<div class="col-span-12 lg:col-span-4 flex flex-col gap-stack-lg">
+<div class="bg-white p-6 rounded-xl border border-outline-variant shadow-sm flex justify-center items-center">
+<img class="w-[240px] h-[336px] object-cover rounded shadow-lg border border-outline-variant transform transition-transform hover:scale-[1.02] cursor-zoom-in" data-alt="The front cover of a textbook titled 'Algorithms and Data Structures' by Robert Sedgewick. The design is minimalist and academic, featuring a clean white background with complex geometric patterns in shades of blue and gray. The layout is professional and fits a high-end corporate university library aesthetic." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBVECGQB_EjfCouY6-fY1_gUcT5Hg3R2K8yY0qw2hrRCJTnO_4nVTXEbxUjilFCeyuCVqt8OQCTwgqwKwt9a9T2HNK_XAWL0cZyZmsoiRokgJYH4Z1Jxv0-dAGGd80-n2mptRz_UVZGSv4papiDro-EX7-UzKqoVUOlcWiY6S0xlDXsWFBSbuMzjMERlj6YQa3OynlMHw_6IJoE1ct7_d48UHG-Uy6n2rK0qtZnlpnA2El7gvH4yP4Nkw"/>
+</div>
+<div class="flex flex-col gap-3">
+<button class="w-full h-[48px] bg-primary text-white rounded-lg font-headline-md flex items-center justify-center gap-2 hover:bg-[#003ea8] transition-colors active:scale-[0.98]">
+<span class="material-symbols-outlined">bookmark_add</span>
+                            Request Hold
+                        </button>
+<button class="w-full h-[48px] bg-white border border-primary text-primary rounded-lg font-headline-md flex items-center justify-center gap-2 hover:bg-primary-fixed-dim/10 transition-colors active:scale-[0.98]">
+<span class="material-symbols-outlined">edit</span>
+                            Edit Title
+                        </button>
+<p class="text-center font-body-sm text-body-sm text-on-surface-variant px-4">
+                            Librarian status detected. Management options are enabled.
+                        </p>
+</div>
+</div>
+<!-- Book Information Column -->
+<div class="col-span-12 lg:col-span-8 flex flex-col gap-stack-lg">
+<!-- Header Info -->
+<div class="bg-white p-8 rounded-xl border border-outline-variant shadow-sm">
+<div class="flex justify-between items-start mb-4">
+<div>
+<span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-[#DCFCE7] text-[#166534] mb-2 uppercase tracking-wide">
+                                    Computer Science
+                                </span>
+<h1 class="font-headline-xl text-headline-xl text-on-surface mb-1">Algorithms and Data Structures: A Comprehensive Guide</h1>
+<p class="font-headline-md text-headline-md text-secondary">by Robert Sedgewick &amp; Kevin Wayne</p>
+</div>
+<div class="flex gap-2">
+<button class="p-2 rounded-full border border-outline-variant hover:bg-surface-container-low text-on-surface-variant transition-colors">
+<span class="material-symbols-outlined">share</span>
+</button>
+<button class="p-2 rounded-full border border-outline-variant hover:bg-surface-container-low text-on-surface-variant transition-colors">
+<span class="material-symbols-outlined">more_vert</span>
+</button>
+</div>
+</div>
+<div class="grid grid-cols-2 md:grid-cols-4 gap-4 py-6 border-y border-outline-variant/50">
+<div>
+<p class="text-label-md font-label-md text-on-surface-variant uppercase">ISBN-13</p>
+<p class="font-data-mono text-data-mono text-on-surface">978-0321573513</p>
+</div>
+<div>
+<p class="text-label-md font-label-md text-on-surface-variant uppercase">Publisher</p>
+<p class="font-body-md text-body-md text-on-surface">Addison-Wesley</p>
+</div>
+<div>
+<p class="text-label-md font-label-md text-on-surface-variant uppercase">Release Date</p>
+<p class="font-body-md text-body-md text-on-surface">March 2011</p>
+</div>
+<div>
+<p class="text-label-md font-label-md text-on-surface-variant uppercase">Pages</p>
+<p class="font-body-md text-body-md text-on-surface">976 pages</p>
+</div>
+</div>
+<div class="mt-6">
+<h3 class="font-headline-md text-headline-md text-on-surface mb-3">Abstract</h3>
+<p class="font-body-lg text-body-lg text-on-surface-variant leading-relaxed">
+                                This textbook surveys the most important computer algorithms currently in use and provides a full treatment of data structures and algorithms for sorting, searching, graph processing, and string processing -- including fifty algorithms every programmer should know. In this edition, new Java implementations are written in an accessible modular programming style, where all of the code is exposed to the reader and ready to use.
+                            </p>
+</div>
+</div>
+<!-- Availability Table -->
+<div class="bg-white rounded-xl border border-outline-variant shadow-sm overflow-hidden">
+<div class="px-6 py-4 border-b border-outline-variant bg-surface-container-lowest flex justify-between items-center">
+<h2 class="font-headline-md text-headline-md text-on-surface">Physical Copies</h2>
+<div class="flex items-center gap-2 text-on-surface-variant">
+<span class="material-symbols-outlined text-[20px]">location_on</span>
+<span class="font-body-sm text-body-sm">Main Campus Library</span>
+</div>
+</div>
+<div class="overflow-x-auto">
+<table class="w-full text-left">
+<thead class="bg-surface-container-low/50">
+<tr>
+<th class="px-6 py-3 font-label-md text-label-md text-on-surface-variant uppercase tracking-wider">Accession No.</th>
+<th class="px-6 py-3 font-label-md text-label-md text-on-surface-variant uppercase tracking-wider">Shelf Location</th>
+<th class="px-6 py-3 font-label-md text-label-md text-on-surface-variant uppercase tracking-wider">Status</th>
+<th class="px-6 py-3 font-label-md text-label-md text-on-surface-variant uppercase tracking-wider">Due Date</th>
+<th class="px-6 py-3 font-label-md text-label-md text-on-surface-variant uppercase tracking-wider text-right">Actions</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-outline-variant/30">
+<tr class="hover:bg-surface-container-lowest transition-colors">
+<td class="px-6 py-4 font-data-mono text-data-mono text-on-surface">WUB-CS-001</td>
+<td class="px-6 py-4 font-body-md text-body-md text-on-surface">Floor 2, Row D, Shelf 4</td>
+<td class="px-6 py-4">
+<span class="inline-flex items-center px-2 py-1 rounded-md text-xs font-bold bg-[#DCFCE7] text-[#166534]">
+                                                AVAILABLE
+                                            </span>
+</td>
+<td class="px-6 py-4 font-body-md text-body-md text-on-surface-variant">—</td>
+<td class="px-6 py-4 text-right">
+<button class="text-primary font-label-md hover:underline">Locate</button>
+</td>
+</tr>
+<tr class="hover:bg-surface-container-lowest transition-colors">
+<td class="px-6 py-4 font-data-mono text-data-mono text-on-surface">WUB-CS-002</td>
+<td class="px-6 py-4 font-body-md text-body-md text-on-surface">Floor 2, Row D, Shelf 4</td>
+<td class="px-6 py-4">
+<span class="inline-flex items-center px-2 py-1 rounded-md text-xs font-bold bg-secondary-container text-on-secondary-container">
+                                                ISSUED
+                                            </span>
+</td>
+<td class="px-6 py-4 font-body-md text-body-md text-on-surface">24 Oct 2024</td>
+<td class="px-6 py-4 text-right">
+<button class="text-primary font-label-md hover:underline">Recall</button>
+</td>
+</tr>
+<tr class="hover:bg-surface-container-lowest transition-colors">
+<td class="px-6 py-4 font-data-mono text-data-mono text-on-surface">WUB-CS-003</td>
+<td class="px-6 py-4 font-body-md text-body-md text-on-surface">Cataloging Dept.</td>
+<td class="px-6 py-4">
+<span class="inline-flex items-center px-2 py-1 rounded-md text-xs font-bold bg-error-container text-on-error-container">
+                                                MAINTENANCE
+                                            </span>
+</td>
+<td class="px-6 py-4 font-body-md text-body-md text-on-surface-variant">—</td>
+<td class="px-6 py-4 text-right">
+<button class="text-on-surface-variant font-label-md opacity-50 cursor-not-allowed">Repairing</button>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+</div>
+<!-- Recommendations / Related Bento Section -->
+<div class="mt-stack-lg">
+<h2 class="font-headline-lg text-headline-lg text-on-surface mb-gutter">Frequently Borrowed Together</h2>
+<div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-gutter">
+<!-- Related Book Card -->
+<div class="bg-white p-3 rounded-lg border border-outline-variant hover:shadow-md transition-shadow cursor-pointer group">
+<div class="relative overflow-hidden rounded mb-2 h-48">
+<img class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300" data-alt="A book cover for 'Introduction to Algorithms' by CLRS. A classic academic textbook with a blue cover and a distinctive geometric tree diagram. High-resolution corporate university library style." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAaAlDUF7FHwJktglEwgT_0otmwSXzxl9LmSmLHWC3PwHQQSWOXW2eM5wMqb0JomByyaVx8WulkZ-KyT5h-fmgD_SpjJAsiCI8JjiqLws1SSBdZWze8Nrq-vDll8BngeGNc-PxaFx7BiYC9dFQ4urypvlSAcTTT0IsfGvw3Hq2EV21cwDq2xjFAePL6vVpBi0vBNLeY4QaVKENo3xiy2wwLJwcxpmtGSDMwSO2YDKys0WZMU2zVevnz9g"/>
+</div>
+<p class="font-label-md text-label-md text-on-surface line-clamp-2">Introduction to Algorithms</p>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Cormen et al.</p>
+</div>
+<div class="bg-white p-3 rounded-lg border border-outline-variant hover:shadow-md transition-shadow cursor-pointer group">
+<div class="relative overflow-hidden rounded mb-2 h-48">
+<img class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300" data-alt="A book cover for 'Design Patterns: Elements of Reusable Object-Oriented Software' featuring the Gang of Four. Minimalist white cover with a bridge illustration. Professional academic aesthetic." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBcwbDnNh03JTA_snb7oKUd_mojaPh5PnNNTp1cguaOZ1Z7xYWKB8X0XOwDyIpFrNi1PYPL1lVAdJ7vr070HyiJ2AKBiRzSLwxn2WsntmsLRMGMs_Syh1yMIpJFqY-kq19vk2uoMrotDkanPqBNPmZhVtEJmtQ9sW1gL_IZV752eeLivSX60gdJ1vjpfSyPWaABWFPEk-TrpxQ5zwyc-mJ7tap0btZRxmhQOU7kjomXakDOQhjOj4T45Q"/>
+</div>
+<p class="font-label-md text-label-md text-on-surface line-clamp-2">Design Patterns</p>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Gamma et al.</p>
+</div>
+<div class="bg-white p-3 rounded-lg border border-outline-variant hover:shadow-md transition-shadow cursor-pointer group">
+<div class="relative overflow-hidden rounded mb-2 h-48">
+<img class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300" data-alt="Book cover of 'Clean Code' by Robert C. Martin. Blue and white design with a professional, educational feel. Digital art in a modern library style." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCfLz8uPx5rkDMTV1YKCjbSwxLSoU6fxUHmTGOOfCAdBO9-Vh4v84-tQQVo1SU13GIwc7TffE2mZtheEyM_RokE9zXf3uUpN3As9Xt4wobTAGKxzKmxTLE1NTNceh7GFkaZM6Z5nbClpxgTkvzUJGLW-NcycE6-MGKE_2LmaCWOneRdoUlqK5jgDR-iXNtBHasfYClxv2u_uDdqzzVtQCxLPlrHBDsHcdLIdQKYzcddO9SFhhVjSc4UOg"/>
+</div>
+<p class="font-label-md text-label-md text-on-surface line-clamp-2">Clean Code</p>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Robert C. Martin</p>
+</div>
+<!-- Empty slots for grid flow -->
+<div class="hidden md:flex bg-surface-container-low rounded-lg border border-dashed border-outline-variant items-center justify-center">
+<span class="material-symbols-outlined text-outline">add_circle</span>
+</div>
+<div class="hidden lg:flex bg-surface-container-low rounded-lg border border-dashed border-outline-variant items-center justify-center">
+<span class="material-symbols-outlined text-outline">add_circle</span>
+</div>
+<div class="hidden lg:flex bg-surface-container-low rounded-lg border border-dashed border-outline-variant items-center justify-center">
+<span class="material-symbols-outlined text-outline">add_circle</span>
+</div>
+</div>
+</div>
+</div>
+</main>
+<!-- Footer Shell -->
+<footer class="ml-[240px] p-stack-md bg-surface-container-lowest border-t border-outline-variant flex justify-between items-center w-full relative z-30">
+<div class="flex items-center gap-4">
+<span class="font-label-md text-label-md uppercase tracking-wider text-secondary">La librería</span>
+<span class="text-on-surface-variant/30 text-sm">|</span>
+<p class="font-body-sm text-body-sm text-on-secondary-container">© 2024 World University of Bangladesh - Library Management System</p>
+</div>
+<div class="flex gap-6 items-center">
+<a class="font-body-sm text-body-sm text-on-secondary-container hover:underline" href="#">Privacy Policy</a>
+<a class="font-body-sm text-body-sm text-on-secondary-container hover:underline" href="#">Support</a>
+<a class="font-body-sm text-body-sm text-on-secondary-container hover:underline flex items-center gap-1" href="#">
+<div class="w-2 h-2 rounded-full bg-green-500"></div>
+                System Status
+            </a>
+</div>
+</footer>
+<script>
+        // Micro-interaction for status indicators
+        document.querySelectorAll('tr').forEach(row => {
+            row.addEventListener('mouseenter', () => {
+                row.style.transform = 'translateX(4px)';
+                row.style.transition = 'transform 0.2s ease-out';
+            });
+            row.addEventListener('mouseleave', () => {
+                row.style.transform = 'translateX(0px)';
+            });
+        });
+    </script>
+</body></html>

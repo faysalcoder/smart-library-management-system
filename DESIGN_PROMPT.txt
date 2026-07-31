@@ -1,0 +1,882 @@
+================================================================================
+  SMART LIBRARY MANAGEMENT SYSTEM (SLMS)
+  UI / UX DESIGN PROMPT
+================================================================================
+  Project      : Smart Library Management System
+  Client       : World University of Bangladesh — Central Library
+  Department   : Computer Science & Engineering
+  Phase        : PHASE 1 — DESIGN (executed FIRST, before any implementation)
+  Companions   : SYSTEM_ARCHITECTURE.md  |  DEVELOPMENT_PLAN.md
+  Version      : 1.0
+  Currency     : BDT (৳)      Locale: en-BD      Date format: DD Mon YYYY
+================================================================================
+
+
+--------------------------------------------------------------------------------
+SECTION 0 — HOW TO USE THIS FILE
+--------------------------------------------------------------------------------
+
+This file is a ready-to-use design brief. It can be:
+
+  (a) Handed to a human UI/UX designer as the complete specification, or
+  (b) Pasted into an AI design tool (Figma AI, v0, Claude, Lovable, Uizard,
+      Galileo, etc.) as the generation prompt, or
+  (c) Used section by section — SECTION 9 contains copy-paste-ready
+      per-screen prompts for generating one screen at a time.
+
+If you are pasting into an AI tool with a length limit, use:
+  MASTER PROMPT (SECTION 1) + the specific screen prompt from SECTION 9.
+
+
+================================================================================
+SECTION 1 — MASTER PROMPT  (paste this first, every time)
+================================================================================
+
+You are a senior product designer specialising in operational software for
+institutional environments — the kind of tool a staff member uses several
+hundred times a day and must never have to think about.
+
+Design the complete user interface for the SMART LIBRARY MANAGEMENT SYSTEM
+(SLMS), a web-based library automation system for the Central Library of World
+University of Bangladesh. It replaces a manual, paper-register workflow that
+suffers from slow record keeping, difficulty tracking borrowed books, fine
+calculation errors, and no visibility into live availability.
+
+THE SYSTEM SERVES FOUR ROLES:
+  1. STUDENT       — searches the catalog, checks availability, views their own
+                     loans, borrowing history, and outstanding fines.
+  2. LIBRARIAN     — the power user. Works the circulation desk all day issuing
+                     and returning books with a barcode scanner and a student ID
+                     card scanner. Also manages the catalog, member records, and
+                     operational reports.
+  3. ADMINISTRATOR — manages user accounts and roles, configures system policy
+                     (loan period, fine rate, borrowing limits), reviews the
+                     audit log, and runs database backups.
+  4. MANAGEMENT    — read-only. Views reports and dashboards for decision-making.
+
+THE SINGLE MOST IMPORTANT DESIGN CONSTRAINT:
+  The librarian's issue and return screens are SCANNER-FIRST. During a
+  transaction the librarian's hands are on a physical book and a scanner gun —
+  NOT on a mouse. A complete book issue must be achievable with two scans and
+  one Enter key press. If your design requires the librarian to click a dropdown
+  or hunt for a field mid-transaction, the design has failed.
+
+DESIGN PHILOSOPHY — apply all six:
+  1. CLARITY OVER DECORATION. This is a working tool used under queue pressure.
+     Every pixel earns its place. No ornament, no gradients-for-the-sake-of-it,
+     no decorative illustration on operational screens.
+  2. SPEED OF COMPREHENSION. A librarian glancing at a screen for one second
+     must know: who is this student, is the book available, is there a fine.
+     Use size, weight, and colour to establish that hierarchy.
+  3. ERROR PREVENTION OVER ERROR MESSAGES. Disable what cannot be done. Show
+     eligibility before the action, not after. Confirm destructive actions.
+  4. CONSISTENCY IS NON-NEGOTIABLE. One status colour system, one button
+     hierarchy, one table pattern, one form pattern — used identically on every
+     screen in the system.
+  5. ACCESSIBLE BY DEFAULT. WCAG 2.1 AA contrast, visible focus rings, full
+     keyboard operability, minimum 44x44px touch targets, never colour alone as
+     a meaning carrier (always pair colour with an icon or text label).
+  6. GRACEFUL ON OLD HARDWARE. The library runs Core i3/i5 machines with 8 GB
+     RAM at 1366x768. Design for fast rendering: no heavy imagery, no complex
+     animation, no infinite-scroll virtualisation.
+
+TONE OF VOICE:
+  Professional, calm, plain-language. Never jargon. Never cute.
+  Good:  "This student has reached the 3-book borrowing limit."
+  Bad:   "Oops! Something went wrong :("
+  Good:  "Book returned 4 days late. Fine: ৳20.00"
+  Bad:   "ERR_OVERDUE_FINE_CALC_TRIGGERED"
+
+
+================================================================================
+SECTION 2 — VISUAL DESIGN SYSTEM
+================================================================================
+
+2.1 COLOUR PALETTE
+--------------------------------------------------------------------------------
+BRAND / PRIMARY  — used for primary actions, active nav, links
+    Primary 700   #1D4ED8   (primary button hover, active state)
+    Primary 600   #2563EB   (primary button, focus ring)
+    Primary 500   #3B82F6   (accents)
+    Primary 50    #EFF6FF   (subtle tinted backgrounds)
+
+SEMANTIC STATUS  — this mapping is FIXED and used identically system-wide
+    Success / Available / Eligible / On-time
+        Green 700  #15803D   (text on light)
+        Green 600  #16A34A   (icon, badge fill)
+        Green 50   #F0FDF4   (badge background)
+    Warning / Issued / Due Soon / Pending
+        Amber 700  #B45309
+        Amber 500  #F59E0B
+        Amber 50   #FFFBEB
+    Danger / Overdue / Blocked / Error
+        Red 700    #B91C1C
+        Red 600    #DC2626
+        Red 50     #FEF2F2
+    Neutral / Lost / Withdrawn / Inactive
+        Grey 600   #4B5563
+        Grey 100   #F3F4F6
+    Info
+        Blue 600   #2563EB
+        Blue 50    #EFF6FF
+
+NEUTRALS (light theme — the default)
+    Page background      #F8FAFC
+    Surface / card       #FFFFFF
+    Border               #E2E8F0
+    Border strong        #CBD5E1
+    Text primary         #0F172A
+    Text secondary       #475569
+    Text muted           #94A3B8
+
+DARK THEME (optional Phase 2, but define tokens now)
+    Page background      #0F172A
+    Surface              #1E293B
+    Border               #334155
+    Text primary         #F1F5F9
+    Text secondary       #CBD5E1
+
+CONTRAST RULE: every text/background pair must reach 4.5:1 (body) or 3:1
+(large text and UI components). Verify before shipping any screen.
+
+
+2.2 TYPOGRAPHY
+--------------------------------------------------------------------------------
+Font family:  Inter, "Segoe UI", system-ui, sans-serif
+Monospace:    "JetBrains Mono", Consolas, monospace
+              (use ONLY for barcodes, accession numbers, ISBN, student IDs)
+
+Scale:
+    Display   32px / 40px / weight 700   — page titles on dashboards
+    H1        24px / 32px / weight 700   — screen titles
+    H2        20px / 28px / weight 600   — section headings
+    H3        16px / 24px / weight 600   — card headings
+    Body      14px / 20px / weight 400   — default UI text, table cells
+    Body-md   14px / 20px / weight 500   — emphasised body, table headers
+    Small     12px / 16px / weight 400   — helper text, timestamps, captions
+    Micro     11px / 16px / weight 500   — badge labels, uppercase eyebrows
+
+    SCANNER FIELD DISPLAY: 20px monospace, weight 600 — the librarian must be
+    able to read the scanned value from a normal seated distance.
+
+Rules: maximum 2 font weights visible per screen region. Never centre body
+text. Numeric columns in tables are right-aligned with tabular figures.
+
+
+2.3 SPACING, RADII, ELEVATION
+--------------------------------------------------------------------------------
+Spacing scale (4px base):  4, 8, 12, 16, 24, 32, 48, 64
+    Inside a card:          24px padding
+    Between form fields:    16px
+    Between sections:       32px
+    Table cell padding:     12px vertical / 16px horizontal
+
+Radii:   Input/button 6px  |  Card 8px  |  Modal 12px  |  Badge 9999px (pill)
+
+Elevation (use sparingly — flat by default):
+    Level 0  none                                    — page surfaces
+    Level 1  0 1px 2px rgba(0,0,0,0.05)              — cards
+    Level 2  0 4px 12px rgba(0,0,0,0.08)             — dropdowns, popovers
+    Level 3  0 20px 40px rgba(0,0,0,0.15)            — modals
+
+Grid: 12-column, 24px gutter, max content width 1440px, page padding 24px
+      (16px on mobile).
+
+
+2.4 ICONOGRAPHY
+--------------------------------------------------------------------------------
+Library:  Lucide (or Heroicons outline) — single consistent set, never mixed.
+Sizes:    16px inline with text | 20px in buttons | 24px in nav | 32px in
+          empty states
+Stroke:   1.5px–2px, consistent everywhere.
+Rule:     An icon never appears alone as the only carrier of meaning unless it
+          has an accessible label and a tooltip.
+
+Semantic icon map (fixed):
+    search       magnifying-glass       book            book
+    student      user / id-card         issue           arrow-right-circle
+    return       arrow-left-circle      fine            banknote
+    overdue      alert-triangle         report          bar-chart
+    settings     settings-gear          audit log       scroll-text
+    backup       database               scan            scan-line
+    available    check-circle           unavailable     x-circle
+
+
+================================================================================
+SECTION 3 — COMPONENT SPECIFICATIONS
+================================================================================
+
+3.1 BUTTONS
+--------------------------------------------------------------------------------
+Primary    solid Primary 600, white text, 6px radius, 40px height,
+           16px horizontal padding, 14px/500 label
+Secondary  white surface, 1px Border strong, Text primary label
+Danger     solid Red 600, white text — destructive actions only
+Ghost      transparent, Text secondary — tertiary/cancel actions
+Sizes      sm 32px | md 40px (default) | lg 48px (primary confirm actions on
+           circulation screens — big and unmissable)
+States     default / hover (darken 8%) / focus (2px Primary 600 ring, 2px
+           offset) / active (darken 12%) / disabled (40% opacity, no pointer) /
+           loading (spinner replaces the icon, label stays, button disabled)
+
+RULE: exactly ONE primary button per screen region. The primary action on a
+      circulation screen is always the large one, always bottom-right of the
+      action bar.
+
+3.2 FORM INPUTS
+--------------------------------------------------------------------------------
+Text input   40px height, 1px Border, 6px radius, 12px horizontal padding,
+             14px text, placeholder in Text muted
+Label        12px/500 Text secondary, 6px above the field, always present —
+             never rely on a placeholder as the label
+Helper text  12px Text muted, 4px below
+Error state  1px Red 600 border, Red 50 background tint, 12px Red 700 message
+             below with an alert icon
+Required     red asterisk after the label
+Disabled     Grey 100 background, Text muted, not-allowed cursor
+Select       same metrics as text input, chevron-down 16px at right
+Date input   native date picker, DD Mon YYYY display format
+Search input  magnifier icon left inset, clear (x) button right when filled
+
+3.3 SCANNER INPUT  ★ THE SIGNATURE COMPONENT
+--------------------------------------------------------------------------------
+This is the most important component in the entire system. Design it with care.
+
+Physical behaviour: the scanners are keyboard-wedge devices. They type the
+barcode characters rapidly then send Enter. The field must auto-focus on page
+load, auto-submit on Enter, then re-focus itself for the next scan.
+
+Dimensions: full width of its card, 72px tall, 8px radius, 2px border.
+Content:    scan-line icon 32px on the left, then the value in 20px monospace.
+
+FOUR STATES — design each explicitly:
+
+  [IDLE / WAITING]
+    2px dashed Primary 500 border, Primary 50 background.
+    A slow pulsing animation on the border (2s cycle) signalling "ready".
+    Text: "Scan student ID card…"  (or "Scan book barcode…")
+    Below, in 12px Text muted: "or type the number and press Enter"
+    A blinking text cursor is visible.
+
+  [SCANNING / PROCESSING]
+    Solid 2px Primary 600 border, white background.
+    The scanned value renders live in 20px monospace as it arrives.
+    A small spinner appears at the right edge.
+    Text below: "Verifying…"
+
+  [SUCCESS]
+    Solid 2px Green 600 border, Green 50 background.
+    Check-circle icon 32px in Green 600 replaces the scan icon.
+    The scanned value in 20px monospace, Green 700.
+    The resolved record (student or book) expands into a detail panel below.
+    Optional: a short success chime, user-toggleable.
+
+  [ERROR]
+    Solid 2px Red 600 border, Red 50 background, x-circle icon in Red 600.
+    The scanned value shown so the librarian can see what was actually read.
+    A plain-language reason directly below in Red 700, e.g.
+      "Card not recognised. Register this card in Student Management."
+      "This copy is already issued to student 3927 (due 12 Aug 2026)."
+    A "Scan again" affordance; the field auto-clears and re-focuses after 3s.
+
+3.4 STATUS BADGE
+--------------------------------------------------------------------------------
+Pill, 22px tall, 8px horizontal padding, 11px/500 uppercase with 0.03em
+tracking, 12px icon on the left. Background = the 50 tint, text and icon = the
+700 shade of the matching semantic colour.
+
+Fixed badge vocabulary — never invent new labels:
+    AVAILABLE   green   check-circle
+    ISSUED      amber   arrow-right-circle
+    RESERVED    blue    bookmark
+    OVERDUE     red     alert-triangle
+    LOST        grey    x-circle
+    DAMAGED     grey    alert-octagon
+    WITHDRAWN   grey    archive
+    ELIGIBLE    green   check-circle
+    BLOCKED     red     ban
+    PENDING     amber   clock
+    PAID        green   check-circle
+    WAIVED      grey    minus-circle
+
+3.5 DATA TABLE
+--------------------------------------------------------------------------------
+Header      Grey 50 background, 12px/600 uppercase Text secondary, sticky on
+            scroll, sortable columns show a chevron on hover and a filled
+            chevron when active
+Row         48px tall, 1px bottom border, hover tint Primary 50
+Zebra       none (borders provide enough separation)
+Alignment   text left, numbers/currency right, status badge centre, actions
+            right
+Actions     icon buttons revealed on row hover; always keyboard-reachable
+Selection   optional leading checkbox column for bulk operations
+Density     comfortable (48px) default; a compact toggle (36px) for the overdue
+            and audit-log screens where scanning many rows matters
+Pagination  bottom-right: "Showing 1–25 of 348" + Previous / page numbers /
+            Next; page-size selector 25 / 50 / 100
+Responsive  below 768px, each row collapses into a stacked card with the
+            columns as label:value pairs
+Empty state icon 32px + heading + one-line explanation + primary action button
+Loading     skeleton rows (never a bare spinner on a table)
+
+3.6 CARD
+--------------------------------------------------------------------------------
+White surface, 1px Border, 8px radius, 24px padding, Level 1 elevation.
+Optional header row: H3 title on the left, action(s) on the right, 1px divider
+below, 16px gap to the body.
+
+3.7 STAT TILE (dashboard KPI)
+--------------------------------------------------------------------------------
+Card containing: 12px uppercase Text secondary label; 32px/700 value; an
+optional 12px delta line with an up/down arrow in green or red; a 20px icon in
+the top-right tinted with the relevant semantic colour. The entire tile is
+clickable and navigates to the filtered list it summarises.
+
+3.8 ALERT / BANNER
+--------------------------------------------------------------------------------
+Full width of its container, 12px radius, 16px padding, 4px left accent bar in
+the semantic colour, 20px icon, 14px/600 title, 14px/400 body, optional close
+button. Four variants: success, warning, danger, info.
+
+3.9 MODAL
+--------------------------------------------------------------------------------
+Centred, max-width 480px (560px for forms), 12px radius, Level 3 elevation,
+backdrop rgba(15,23,42,0.5). Header with title and close (x). Footer action bar
+right-aligned: Cancel (ghost) then the primary or danger action. Traps focus,
+closes on Escape, returns focus to the trigger on close.
+
+Destructive confirmations must restate the specific consequence:
+    "Delete 'Database System Concepts'? This title has 3 copies and 47
+     historical loan records. This cannot be undone."
+
+3.10 NAVIGATION SHELL
+--------------------------------------------------------------------------------
+Sidebar     240px wide, white surface, 1px right border, collapsible to 64px
+            (icons only). Logo block at top (64px tall). Nav items 40px tall
+            with a 20px icon + 14px label; active item has Primary 50
+            background, Primary 700 text, and a 3px Primary 600 left bar.
+            Items are grouped with 11px uppercase section labels.
+Topbar      64px tall, white, 1px bottom border. Left: sidebar toggle + current
+            page title. Right: global search (librarian/admin only),
+            notification bell with count badge, user menu (avatar + name + role
+            chip, dropdown with Profile / Change password / Log out).
+Mobile      sidebar becomes an off-canvas drawer behind a hamburger; the topbar
+            stays fixed.
+
+3.11 PRINT LAYOUT
+--------------------------------------------------------------------------------
+Hide all navigation and interactive chrome. Black on white, no background
+fills. Header carries the university name, "Central Library", the document
+title, and the generation timestamp. Footer carries page N of M. Tables use
+visible 1px rules. Receipts are sized for 80mm thermal paper; reports are A4
+portrait (landscape where a report exceeds 6 columns).
+
+
+================================================================================
+SECTION 4 — LAYOUT & RESPONSIVE RULES
+================================================================================
+
+Breakpoints
+    Mobile      375–767px    single column, off-canvas nav, tables → cards
+    Tablet      768–1023px   2-column forms, condensed sidebar
+    Desktop     1024–1365px  full sidebar, standard layout
+    Wide        1366px+      PRIMARY TARGET — this is the library's screen size
+    Ultra-wide  1920px+      content capped at 1440px, centred
+
+Page anatomy (top to bottom):
+    1. Breadcrumb (12px, only when nesting is 2+ deep)
+    2. Page header: H1 title on the left, primary action(s) on the right
+    3. Filter/toolbar bar (when the page lists data)
+    4. Content region
+    5. Pagination or action footer
+
+Form layout:
+    Single column for forms under 6 fields.
+    Two columns (grouped by meaning, never split a related pair) above that.
+    Labels above fields, never inline-left.
+    Actions bottom-right: Cancel (ghost) then Save (primary).
+    Sticky action bar if the form is taller than the viewport.
+
+
+================================================================================
+SECTION 5 — INTERACTION & MOTION
+================================================================================
+
+Motion budget: 150ms for micro-interactions (hover, focus), 200ms for
+transitions (dropdown, tab), 250ms for modal enter/exit. Easing: ease-out for
+entering, ease-in for exiting. Respect prefers-reduced-motion by disabling all
+non-essential animation.
+
+Feedback rules:
+    - Every action produces visible feedback within 100ms.
+    - Operations over 400ms show a loading state on the triggering control.
+    - Success feedback appears as a toast (top-right, auto-dismiss 4s) for
+      non-blocking actions, and inline for form submissions.
+    - Errors NEVER auto-dismiss.
+    - Toasts stack vertically, maximum 3 visible.
+
+Keyboard model (must be fully specified in the design):
+    Tab / Shift+Tab   move focus in visual order
+    Enter             submit the focused form or activate the focused control
+    Escape            close modal / clear the scanner field
+    /                 focus the global search
+    Alt+I             go to Issue Book       (librarian)
+    Alt+R             go to Return Book      (librarian)
+    Alt+S             go to Search           (all)
+    Arrow keys        navigate table rows and dropdown options
+
+Focus ring: 2px Primary 600, 2px offset, on every interactive element. Never
+remove it. Never replace it with only a colour change.
+
+
+================================================================================
+SECTION 6 — CONTENT & MICROCOPY RULES
+================================================================================
+
+Dates       "13 Aug 2026"           never 13/08/26 (ambiguous)
+Date+time   "13 Aug 2026, 2:45 PM"
+Relative    "Due in 3 days" / "4 days overdue"  — pair with the absolute date
+Currency    "৳20.00"                always 2 decimals, symbol before
+Numbers     "1,248"                 thousands separators
+IDs         monospace: 4018, ACC-00231, 978-0-07-352332-3
+Names       Title Case as entered; never uppercase a person's name
+
+Button labels are verbs describing the outcome:
+    "Issue Book"  not  "Submit"
+    "Confirm Return"  not  "OK"
+    "Collect Fine"  not  "Save"
+
+Error messages state (a) what happened, (b) why, (c) what to do next:
+    "Cannot issue this book. Sowmika Islam Suchi already has 3 books on loan,
+     which is the limit. Return a book first, or ask an administrator to raise
+     the limit."
+
+Empty states state what the area is for and offer the next action:
+    "No books issued today. Issued books will appear here as you process them.
+     [Issue a Book]"
+
+Confirmations name the specific object and the specific consequence.
+Never use "Are you sure?" alone.
+
+
+================================================================================
+SECTION 7 — ACCESSIBILITY REQUIREMENTS (WCAG 2.1 AA)
+================================================================================
+
+  [ ] All text meets 4.5:1 contrast; large text and UI components meet 3:1
+  [ ] Colour is never the sole carrier of meaning — always paired with an icon
+      or a text label (critical for the status badge system)
+  [ ] Every interactive element is reachable and operable by keyboard alone
+  [ ] A COMPLETE BOOK ISSUE AND RETURN CAN BE PERFORMED WITHOUT A MOUSE
+  [ ] Visible focus indicator on every focusable element
+  [ ] Logical heading hierarchy (one H1 per page, no skipped levels)
+  [ ] Every form input has a programmatically associated label
+  [ ] Errors are announced to screen readers (aria-live="assertive")
+  [ ] Status changes are announced politely (aria-live="polite")
+  [ ] Tables use proper th/scope markup with captions
+  [ ] Modals trap focus and restore it on close
+  [ ] Touch targets are at least 44x44px
+  [ ] "Skip to main content" link as the first focusable element
+  [ ] Page title updates on navigation
+  [ ] prefers-reduced-motion honoured
+
+
+================================================================================
+SECTION 8 — SCREEN INVENTORY (21 SCREENS TO DESIGN)
+================================================================================
+
+  ID    SCREEN                          ROLE          PRIORITY
+  ----  ------------------------------  ------------  --------
+  S-01  Login                           All           HIGH
+  S-02  Student Dashboard               Student       HIGH
+  S-03  Book Search & Results           Student/Lib   CRITICAL
+  S-04  Book Detail / Availability      Student       HIGH
+  S-05  My Loans / Borrowing History    Student       HIGH
+  S-06  My Fines                        Student       MEDIUM
+  S-07  Librarian Dashboard             Librarian     HIGH
+  S-08  Issue Book (scan flow)          Librarian     CRITICAL ★
+  S-09  Return Book (scan flow)         Librarian     CRITICAL ★
+  S-10  Borrowing Receipt (print)       Librarian     HIGH
+  S-11  Book List / Catalog Management  Librarian     HIGH
+  S-12  Add / Edit Book + Copies        Librarian     HIGH
+  S-13  Student List & Profile          Librarian     HIGH
+  S-14  Overdue Monitor                 Librarian     HIGH
+  S-15  Fine Collection                 Librarian     MEDIUM
+  S-16  Reports Hub + 9 report views    Lib/Admin/Mgt MEDIUM
+  S-17  User Account Management         Admin         MEDIUM
+  S-18  Role & Permission Matrix        Admin         MEDIUM
+  S-19  System Settings                 Admin         MEDIUM
+  S-20  Audit Log Viewer                Admin         MEDIUM
+  S-21  Backup & Restore                Admin         LOW
+
+  ★ Design S-08 and S-09 FIRST. They are the system's reason for existing and
+    everything else is negotiable around them.
+
+
+================================================================================
+SECTION 9 — PER-SCREEN DESIGN PROMPTS  (copy-paste ready)
+================================================================================
+
+Each block below is a self-contained prompt. Prepend SECTION 1 (Master Prompt)
+when using them individually with an AI tool.
+
+--------------------------------------------------------------------------------
+S-08 · ISSUE BOOK  ★ DESIGN THIS FIRST
+--------------------------------------------------------------------------------
+Design the Issue Book screen — the librarian's most-used screen, operated
+several hundred times a day with a scanner in hand.
+
+Layout: standard app shell (240px sidebar, 64px topbar). Content is a single
+centred column, max-width 720px, so nothing competes for attention.
+
+Structure, top to bottom:
+
+  1. Page header: H1 "Issue Book", and on the right a small muted line showing
+     today's date and the librarian's name.
+
+  2. STEP 1 CARD — "Scan Student ID Card"
+     Contains the scanner-input component (§3.3) in its idle state.
+     ON SUCCESS the card expands to show the student panel:
+        - Student number in monospace, and full name in H2
+        - Department and batch in Text secondary
+        - Three inline stat chips: "Active loans 1 of 3" |
+          "Outstanding fine ৳0.00" | "Member since Jan 2024"
+        - A prominent eligibility badge: ELIGIBLE (green) or BLOCKED (red)
+        - If blocked, a red alert banner naming the exact reason and the
+          remedy — and Step 2 stays disabled and visibly dimmed.
+        - A small "Change student" ghost link to re-scan.
+
+  3. STEP 2 CARD — "Scan Book Barcode"
+     Disabled and dimmed until Step 1 succeeds. Then the scanner-input
+     activates and auto-focuses.
+     ON SUCCESS the card expands to show the book panel:
+        - Accession number in monospace, and the title in H2
+        - Author, category, and shelf number in Text secondary
+        - Availability badge: AVAILABLE (green) or ISSUED (amber)
+        - If already issued, a red alert stating who holds it and its due date,
+          and the confirm action stays disabled.
+        - A book cover thumbnail (64x88px) on the left if one exists;
+          otherwise a neutral book-icon placeholder.
+
+  4. SUMMARY CARD — appears only when both steps succeed.
+     A clean two-column key/value block:
+        Issue date   30 Jul 2026
+        Due date     13 Aug 2026   ← rendered larger and in Primary 700
+        Loan period  14 days
+     Below it, a muted line: "The student will owe ৳5.00 per day after the due
+     date."
+
+  5. ACTION BAR — sticky at the bottom of the column.
+     Left: "Cancel" (ghost). Right: "✓ Confirm Issue" (primary, LARGE 48px).
+     The confirm button is disabled until both scans succeed.
+     Show the keyboard hint "press Enter" beside it.
+
+Also design these states of this screen:
+   (a) Fresh/empty — only Step 1 active, Step 2 dimmed
+   (b) Student verified, book not yet scanned
+   (c) Both verified, ready to confirm
+   (d) Student blocked by outstanding fine (red path)
+   (e) Book already issued to someone else (red path)
+   (f) Card not recognised (red path)
+   (g) Submitting (button in loading state)
+   (h) Success — full-card green confirmation with a "Print receipt" primary
+       action and a "Issue another book" secondary action
+
+--------------------------------------------------------------------------------
+S-09 · RETURN BOOK  ★ DESIGN THIS SECOND
+--------------------------------------------------------------------------------
+Design the Return Book screen. Single-step and faster than issuing: the
+librarian scans only the book barcode; the system finds the loan record.
+
+Layout matches S-08 (centred 720px column) for muscle-memory consistency.
+
+  1. Page header: H1 "Return Book".
+
+  2. SCAN CARD — "Scan Returned Book"
+     The scanner-input component, auto-focused, idle state.
+
+  3. LOAN RECORD PANEL — appears on a successful scan:
+        - Book: accession number (monospace), title (H2), author
+        - Borrower: student number, name, department
+        - A date row of three items, evenly spaced:
+             Issued 16 Jul 2026 | Due 30 Jul 2026 | Returning 03 Aug 2026
+        - A large, unmissable outcome block:
+
+          ON TIME →  green panel, check-circle icon,
+                     "Returned on time. No fine."
+
+          OVERDUE →  red panel, alert-triangle icon,
+                     "4 days overdue"  in H1-size
+                     "Fine: ৳20.00"    in Display size, Red 700
+                     a breakdown line: "4 days × ৳5.00 per day"
+                     and a checkbox: "Collect fine now" (checked by default)
+
+  4. ACTION BAR — "Cancel" (ghost) and "✓ Confirm Return" (primary, 48px).
+
+States to design:
+   (a) Waiting for scan
+   (b) On-time return (green outcome)
+   (c) Overdue return with fine (red outcome)
+   (d) Barcode not found / not currently on loan (error)
+   (e) Success confirmation, offering "Return another book"
+
+--------------------------------------------------------------------------------
+S-03 · BOOK SEARCH & RESULTS
+--------------------------------------------------------------------------------
+Design the catalog search screen, used by both students and librarians.
+
+  1. A prominent search hero at the top: a 56px-tall search input with a
+     magnifier icon, placeholder "Search by title, author, ISBN, or keyword…",
+     and a primary "Search" button. Below it, four quick-filter chips:
+     All | Available Now | Newly Added | Most Borrowed.
+
+  2. A results toolbar: "348 results for 'database'" on the left; on the right
+     a sort select (Relevance / Title A–Z / Newest / Most borrowed) and a
+     grid/list view toggle.
+
+  3. A left filter sidebar (280px, collapsible):
+        Category      checkbox list with counts
+        Availability  radio: All / Available only
+        Author        searchable checkbox list
+        Year          range slider
+        Language      checkbox list
+     With an "Apply filters" primary button and a "Clear all" ghost link.
+     Active filters appear as removable chips above the results.
+
+  4. Results as cards in a 3-column grid (2 on tablet, 1 on mobile). Each card:
+        - Cover thumbnail 80x112px (or a neutral placeholder)
+        - Title in H3, truncated to 2 lines
+        - Author in Text secondary
+        - Category badge
+        - Shelf number in monospace
+        - An availability line: "3 of 5 available" with a green dot, or
+          "All copies issued" with an amber dot
+        - A "View details" action
+
+  5. Pagination at the bottom.
+
+Also design: the loading state (skeleton cards), the zero-results state
+("No books match 'xyz'. Try a different spelling, or search by author or
+ISBN." + a Clear filters action), and the mobile layout.
+
+--------------------------------------------------------------------------------
+S-07 · LIBRARIAN DASHBOARD
+--------------------------------------------------------------------------------
+Design the librarian's landing screen — an at-a-glance operational picture plus
+one-click access to the two circulation actions.
+
+  1. A greeting header: "Good morning, Rafiq" with today's date beneath.
+
+  2. TWO LARGE ACTION TILES side by side, taller than everything else on the
+     page (roughly 140px): "Issue Book" (Primary, arrow-right-circle icon,
+     keyboard hint "Alt+I") and "Return Book" (Green, arrow-left-circle icon,
+     hint "Alt+R"). These are the fastest path to the librarian's real work.
+
+  3. A row of four stat tiles: Issued Today | Returned Today | Currently
+     Overdue (red if > 0) | Pending Fines (৳). Each clicks through to its
+     filtered list.
+
+  4. A two-column lower region:
+     LEFT (60%)  — "Recent Activity" table: time, action badge, book, student.
+                   Last 10 rows, with a "View all" link.
+     RIGHT (40%) — "Due Back Today" list, and beneath it "Most Overdue"
+                   showing the top 5 with days-overdue in red.
+
+  5. A dismissible alert banner strip at the very top when something needs
+     attention: "12 books are overdue by more than 30 days. [Review]"
+
+--------------------------------------------------------------------------------
+S-02 · STUDENT DASHBOARD
+--------------------------------------------------------------------------------
+Design the student's landing screen. Warmer and simpler than the librarian's.
+
+  1. Greeting: "Welcome back, Sowmika" + student number and department.
+  2. A prominent search bar — searching is the student's main reason to visit.
+  3. Three stat tiles: Books on Loan (2) | Due Soon (1) | Outstanding Fine (৳0)
+  4. "My Current Loans" as a card list. Each row: cover thumbnail, title,
+     author, due date, and a status pill —
+        green "Due in 8 days" / amber "Due tomorrow" / red "3 days overdue".
+     If any loan is overdue, an amber banner sits above the list.
+  5. "Recently Returned" — a compact 5-row list.
+  6. An empty state for a student with no loans, offering "Search the catalog".
+
+--------------------------------------------------------------------------------
+S-14 · OVERDUE MONITOR
+--------------------------------------------------------------------------------
+A dense, scannable table screen. Compact row density (36px) by default because
+the librarian scans many rows at once.
+
+Toolbar: an as-of date picker, a "days overdue" range filter, a department
+filter, and a "Send reminders" primary action.
+
+Columns: Student No (mono) | Name | Department | Contact | Book Title |
+Accession (mono) | Due Date | Days Overdue (right-aligned, red, bold) |
+Accrued Fine (right-aligned, ৳) | Actions.
+
+Rows are tinted by severity: 1–7 days amber-50, 8–30 days red-50, 30+ days
+red-100 with a bold left border. A summary strip above the table shows total
+overdue count and total accrued fine.
+
+--------------------------------------------------------------------------------
+S-12 · ADD / EDIT BOOK
+--------------------------------------------------------------------------------
+A two-column form inside a card, with a separate copies-management panel.
+
+  Column 1 — Bibliographic: ISBN (with a "Look up" button), Title, Author,
+             Publisher, Edition, Publication Year, Language
+  Column 2 — Library data: Category (select), Shelf Number, Cover Image
+             (drag-and-drop upload with preview)
+
+  Below: a "Copies" panel — a table of physical copies (accession number,
+  barcode, condition, status, actions) with an "Add copies" control that
+  accepts a quantity and auto-generates sequential accession numbers.
+
+  Sticky footer action bar: Cancel (ghost) | Save Book (primary).
+  Show inline validation errors, and the duplicate-ISBN error case.
+
+--------------------------------------------------------------------------------
+S-10 · BORROWING RECEIPT (PRINT)
+--------------------------------------------------------------------------------
+Design an 80mm thermal receipt, monochrome, monospace-friendly:
+
+     WORLD UNIVERSITY OF BANGLADESH
+            CENTRAL LIBRARY
+     ------------------------------
+     BORROWING RECEIPT
+     Receipt No : CIR-000431
+     Date       : 30 Jul 2026 2:45 PM
+     ------------------------------
+     STUDENT
+     4018 · Sowmika Islam Suchi
+     CSE · Batch 66A
+     ------------------------------
+     BOOK
+     ACC-00231
+     Database System Concepts
+     Silberschatz, Korth, Sudarshan
+     Shelf C-14
+     ------------------------------
+     Issue Date : 30 Jul 2026
+     DUE DATE   : 13 Aug 2026
+     ------------------------------
+     Overdue fine: ৳5.00 per day
+     Please return on or before the
+     due date.
+     ------------------------------
+     Issued by  : Rafiq Hasan
+          [barcode of CIR-000431]
+
+--------------------------------------------------------------------------------
+S-16 · REPORTS HUB
+--------------------------------------------------------------------------------
+A card grid of the nine available reports. Each card: an icon, the report name,
+a one-line description, and a "Generate" action. Clicking opens a parameter
+panel (date range, category, department, top-N as applicable) and then renders
+the report with Print, Export PDF, and Export Excel actions in the header.
+Design one representative rendered report (Circulation Summary) showing the
+header block, a stat row, and the data table with totals.
+
+--------------------------------------------------------------------------------
+S-19 · SYSTEM SETTINGS
+--------------------------------------------------------------------------------
+Grouped settings sections in cards, each with a heading and helper text:
+
+  Circulation Policy — Loan period (days), Max books per student,
+                       Max renewals
+  Fine Policy        — Fine rate per day (৳), Grace period (days),
+                       Maximum fine cap (৳), Borrow-block threshold (৳)
+  Library Hours      — Opening time, Closing time, Closed days
+  Notifications      — Reminder lead time, notification channels
+  Security           — Session timeout, failed-login lockout threshold,
+                       password minimum length
+
+Each field shows its current value and a muted "Default: 14" hint. A sticky
+"Save changes" bar appears only when something has been modified, with a
+"Discard" ghost action. Changing fine-affecting values shows an info banner:
+"Changes apply to new fines only. Existing fines keep their original rate."
+
+--------------------------------------------------------------------------------
+S-01 · LOGIN
+--------------------------------------------------------------------------------
+A split-screen layout. Left 40%: Primary 700 background with the university
+name, "Smart Library Management System", a one-line value statement, and a
+subtle line-art library illustration. Right 60%: a white centred card,
+max-width 400px, containing an H1 "Sign in", the Username and Password fields
+(password with a show/hide toggle), a "Remember me" checkbox and a "Forgot
+password?" link, and a full-width primary "Sign in" button. Below, a muted line
+"Library support: ext. 214".
+
+Design the error state (a red alert above the form reading "Incorrect username
+or password. 3 attempts remaining before your account is locked.") and the
+locked state.
+
+
+================================================================================
+SECTION 10 — DELIVERABLES CHECKLIST
+================================================================================
+
+  [ ] Design system file: colour, type, spacing, elevation tokens
+  [ ] Component library: all 11 components in §3, every state
+  [ ] Scanner-input component in all 4 states (highest scrutiny)
+  [ ] All 21 screens at high fidelity
+  [ ] Responsive variants at 1366px, 768px, 375px for the 8 key screens
+  [ ] Every empty, loading, and error state
+  [ ] Print layouts: borrowing receipt + one representative report
+  [ ] Clickable prototype of the Issue and Return flows
+  [ ] Redline / spec sheet for developer handoff
+  [ ] Accessibility annotations: focus order, ARIA roles, contrast proofs
+
+
+================================================================================
+SECTION 11 — REVIEW CRITERIA (the design is done when all pass)
+================================================================================
+
+  1. A librarian can complete a book issue using ONLY a scanner and the Enter
+     key — no mouse, no more than two scans.
+  2. Every status in the system is communicated by BOTH colour and a label.
+  3. Nothing in the interface uses a colour, spacing value, or type size that
+     is not in the design system.
+  4. Every error message says what happened, why, and what to do next.
+  5. Every screen has a designed empty state and a designed error state.
+  6. Every screen is usable at 1366x768 without horizontal scrolling.
+  7. All text passes WCAG AA contrast.
+  8. A first-time student user can find a book and check its availability
+     without instruction.
+  9. No screen requires more than 3 clicks from the dashboard.
+ 10. The design would still be legible and usable printed in greyscale.
+
+
+================================================================================
+SECTION 12 — SHORT-FORM PROMPT (for tools with tight input limits)
+================================================================================
+
+Design a clean, professional web UI for a university Smart Library Management
+System (World University of Bangladesh) with four roles: Student, Librarian,
+Administrator, Management.
+
+Style: modern institutional dashboard. Light theme. Inter font. Primary blue
+#2563EB. Semantic status colours — green = available/on-time, amber =
+issued/pending, red = overdue/blocked, grey = lost/inactive. 8px radius, subtle
+1px borders, minimal shadows, flat and calm. 240px left sidebar + 64px topbar
+shell. Data-dense but breathable. WCAG AA.
+
+The critical screens are Issue Book and Return Book: they are SCANNER-FIRST.
+A large 72px auto-focused barcode field dominates each, with four visual states
+(idle pulsing dashed blue, scanning solid blue with spinner, success solid
+green with the resolved student/book detail panel expanding below, error solid
+red with a plain-language reason). A complete book issue must take two scans
+and one Enter press — no mouse. Confirm buttons are 48px and unmissable.
+
+Also design: catalog search with filters and availability cards, student
+dashboard with current loans and due-date pills, librarian dashboard with two
+oversized Issue/Return action tiles plus KPI stat tiles, an overdue monitor
+table with severity-tinted rows, book add/edit form with a copies panel, a
+reports hub, an admin settings page, and a login split-screen.
+
+Every status is shown as a pill badge with an icon plus a text label, never
+colour alone. Currency is ৳ with two decimals. Dates are "13 Aug 2026". IDs and
+barcodes are monospace. Tone is plain, calm, and professional.
+
+================================================================================
+END OF DESIGN PROMPT
+================================================================================

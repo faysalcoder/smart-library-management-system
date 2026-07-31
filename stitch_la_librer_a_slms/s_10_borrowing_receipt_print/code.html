@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>WUB Library - Borrowing Receipt</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600;700&family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "inverse-primary": "#b4c5ff",
+                    "secondary": "#505f76",
+                    "on-tertiary-fixed": "#360f00",
+                    "on-secondary-fixed-variant": "#38485d",
+                    "on-error-container": "#93000a",
+                    "surface-container-high": "#e7e7f3",
+                    "surface-container-low": "#f3f3fe",
+                    "background": "#faf8ff",
+                    "surface-dim": "#d9d9e5",
+                    "surface-container-highest": "#e1e2ed",
+                    "tertiary": "#943700",
+                    "inverse-on-surface": "#f0f0fb",
+                    "surface-bright": "#faf8ff",
+                    "on-primary-fixed-variant": "#003ea8",
+                    "secondary-fixed": "#d3e4fe",
+                    "on-surface-variant": "#434655",
+                    "on-error": "#ffffff",
+                    "surface-variant": "#e1e2ed",
+                    "secondary-container": "#d0e1fb",
+                    "on-background": "#191b23",
+                    "surface": "#faf8ff",
+                    "on-tertiary": "#ffffff",
+                    "tertiary-container": "#bc4800",
+                    "surface-container-lowest": "#ffffff",
+                    "on-tertiary-container": "#ffede6",
+                    "on-primary": "#ffffff",
+                    "error-container": "#ffdad6",
+                    "error": "#ba1a1a",
+                    "on-primary-fixed": "#00174b",
+                    "on-tertiary-fixed-variant": "#7d2d00",
+                    "primary-container": "#2563eb",
+                    "tertiary-fixed": "#ffdbcd",
+                    "surface-tint": "#0053db",
+                    "tertiary-fixed-dim": "#ffb596",
+                    "surface-container": "#ededf9",
+                    "on-secondary-fixed": "#0b1c30",
+                    "primary-fixed-dim": "#b4c5ff",
+                    "on-primary-container": "#eeefff",
+                    "secondary-fixed-dim": "#b7c8e1",
+                    "inverse-surface": "#2e3039",
+                    "outline": "#737686",
+                    "on-secondary-container": "#54647a",
+                    "on-surface": "#191b23",
+                    "primary-fixed": "#dbe1ff",
+                    "primary": "#004ac6",
+                    "on-secondary": "#ffffff",
+                    "outline-variant": "#c3c6d7"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.25rem",
+                    "lg": "0.5rem",
+                    "xl": "0.75rem",
+                    "full": "9999px"
+            },
+            "spacing": {
+                    "stack-lg": "1.5rem",
+                    "margin-desktop": "2rem",
+                    "stack-sm": "0.5rem",
+                    "stack-md": "1rem",
+                    "margin-mobile": "1rem",
+                    "container-max": "1440px",
+                    "gutter": "1.5rem"
+            },
+            "fontFamily": {
+                    "data-mono": ["JetBrains Mono"],
+                    "headline-lg": ["Inter"],
+                    "body-lg": ["Inter"],
+                    "headline-md": ["Inter"],
+                    "label-md": ["Inter"],
+                    "body-sm": ["Inter"],
+                    "headline-xl": ["Inter"],
+                    "body-md": ["Inter"]
+            },
+            "fontSize": {
+                    "data-mono": ["13px", {"lineHeight": "16px", "fontWeight": "500"}],
+                    "headline-lg": ["24px", {"lineHeight": "32px", "letterSpacing": "-0.01em", "fontWeight": "600"}],
+                    "body-lg": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                    "headline-md": ["20px", {"lineHeight": "28px", "fontWeight": "600"}],
+                    "label-md": ["12px", {"lineHeight": "16px", "fontWeight": "600"}],
+                    "body-sm": ["13px", {"lineHeight": "18px", "fontWeight": "400"}],
+                    "headline-xl": ["30px", {"lineHeight": "38px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                    "body-md": ["14px", {"lineHeight": "20px", "fontWeight": "400"}]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        @media print {
+            body { background: white; }
+            .no-print { display: none !important; }
+            .printable-area { 
+                box-shadow: none !important; 
+                margin: 0 !important;
+                padding: 0 !important;
+                width: 80mm !important;
+            }
+            @page {
+                size: 80mm auto;
+                margin: 0;
+            }
+        }
+        
+        .thermal-font {
+            font-family: 'JetBrains Mono', monospace;
+            text-transform: uppercase;
+        }
+
+        .barcode-strip {
+            background-image: repeating-linear-gradient(90deg, #000, #000 2px, transparent 2px, transparent 4px);
+        }
+    </style>
+</head>
+<body class="bg-surface-container-low font-body-md text-on-surface antialiased min-h-screen">
+<!-- Top Navigation Bar (Suppressed via design rules for task-focused screens, but we show a minimal back bar) -->
+<div class="no-print h-[64px] bg-white border-b border-outline-variant flex items-center px-gutter gap-4 sticky top-0 z-50">
+<button class="p-2 hover:bg-surface-container-high rounded-full transition-colors flex items-center gap-2 text-primary" onclick="window.history.back()">
+<span class="material-symbols-outlined">arrow_back</span>
+<span class="font-label-md text-label-md">Return to Management</span>
+</button>
+<div class="h-6 w-[1px] bg-outline-variant"></div>
+<h1 class="font-headline-sm text-headline-sm font-black text-on-surface">Borrowing Receipt</h1>
+<div class="ml-auto flex items-center gap-2">
+<button class="bg-primary text-on-primary px-6 py-2 rounded-lg font-label-md text-label-md flex items-center gap-2 hover:opacity-90 active:scale-95 transition-all" onclick="window.print()">
+<span class="material-symbols-outlined">print</span>
+                Print Receipt
+            </button>
+</div>
+</div>
+<main class="flex justify-center p-8 md:p-12">
+<!-- 80mm Thermal Receipt Layout -->
+<div class="printable-area bg-white w-[320px] (approx 80mm) shadow-xl p-6 border border-outline-variant mx-auto thermal-font text-[12px] leading-relaxed">
+<!-- Institution Header -->
+<div class="text-center mb-6">
+<h2 class="text-lg font-bold tracking-tight mb-1">World University of Bangladesh</h2>
+<p class="text-[10px] mb-2 opacity-80">Library Management System</p>
+<div class="border-b border-dashed border-on-surface-variant w-full my-2"></div>
+<p class="font-bold text-[14px]">La librería</p>
+</div>
+<!-- Receipt Info -->
+<div class="mb-4">
+<div class="flex justify-between">
+<span>Receipt No:</span>
+<span class="font-bold">TX-99201-B</span>
+</div>
+<div class="flex justify-between">
+<span>Date:</span>
+<span>14 OCT 2024</span>
+</div>
+<div class="flex justify-between">
+<span>Time:</span>
+<span>14:23 PM</span>
+</div>
+</div>
+<div class="border-b border-dashed border-on-surface-variant w-full my-4"></div>
+<!-- Student Details -->
+<div class="mb-4">
+<p class="font-bold mb-1 underline">Member Details</p>
+<div class="flex justify-between">
+<span>ID:</span>
+<span class="font-bold">WUB-22-0459</span>
+</div>
+<div class="flex justify-between">
+<span>Name:</span>
+<span>RAHMAN, TANVIR</span>
+</div>
+</div>
+<div class="border-b border-dashed border-on-surface-variant w-full my-4"></div>
+<!-- Book Details -->
+<div class="mb-4">
+<p class="font-bold mb-1 underline">Circulation Item</p>
+<div class="mt-2 space-y-1">
+<div class="flex items-start justify-between gap-4">
+<span>Title:</span>
+<span class="text-right font-bold">Algorithms: Design and Analysis (4th Ed)</span>
+</div>
+<div class="flex justify-between">
+<span>Accession:</span>
+<span class="font-bold">AC-4491-02</span>
+</div>
+<div class="flex justify-between">
+<span>Shelf:</span>
+<span class="font-bold">QA76.6.S77</span>
+</div>
+</div>
+</div>
+<div class="border-b border-dashed border-on-surface-variant w-full my-4"></div>
+<!-- Due Date Callout -->
+<div class="bg-surface-container py-3 px-2 text-center rounded-sm border border-outline">
+<p class="text-[10px] mb-1">PLEASE RETURN BY</p>
+<p class="text-[20px] font-black tracking-tighter">28 OCT 2024</p>
+<p class="text-[9px] mt-1">LATE FEES APPLY: $0.50/DAY</p>
+</div>
+<!-- Barcode Section -->
+<div class="mt-8 text-center">
+<div class="w-full h-12 barcode-strip mb-2"></div>
+<p class="text-[10px] tracking-[0.3em]">TX99201B449102</p>
+</div>
+<!-- Footer Message -->
+<div class="mt-8 text-center text-[10px] space-y-1 italic opacity-70">
+<p>Thank you for using WUB Library Services.</p>
+<p>Knowledge is Power.</p>
+<p class="not-italic mt-2">www.wub.edu.bd/library</p>
+</div>
+</div>
+</main>
+<!-- Side help widget (Non-printable) -->
+<div class="no-print fixed bottom-8 right-8 flex flex-col gap-3">
+<button class="bg-white text-on-surface shadow-lg border border-outline-variant p-4 rounded-xl flex items-center gap-3 hover:bg-surface-container transition-all group">
+<div class="bg-primary-container/20 p-2 rounded-lg text-primary">
+<span class="material-symbols-outlined">help_outline</span>
+</div>
+<div class="text-left">
+<p class="font-label-md text-label-md">Printing Issues?</p>
+<p class="text-[11px] text-on-surface-variant">Check thermal printer calibration</p>
+</div>
+</button>
+<button class="bg-white text-on-surface shadow-lg border border-outline-variant p-4 rounded-xl flex items-center gap-3 hover:bg-surface-container transition-all">
+<div class="bg-secondary-container/20 p-2 rounded-lg text-secondary">
+<span class="material-symbols-outlined">mail</span>
+</div>
+<div class="text-left">
+<p class="font-label-md text-label-md">Send Digital Copy</p>
+<p class="text-[11px] text-on-surface-variant">To: rahman.t@student.wub.edu</p>
+</div>
+</button>
+</div>
+<!-- Hidden Footer to comply with design shell rules where applicable -->
+<footer class="no-print ml-0 p-stack-md border-t border-outline-variant flex justify-between items-center w-full mt-auto bg-surface-container-lowest">
+<span class="font-body-sm text-body-sm text-secondary">© 2024 World University of Bangladesh - Library Management System</span>
+<div class="flex gap-4">
+<a class="text-on-secondary-container font-body-sm text-body-sm hover:underline" href="#">Privacy Policy</a>
+<a class="text-on-secondary-container font-body-sm text-body-sm hover:underline" href="#">Support</a>
+</div>
+</footer>
+<script>
+        // Simple interactivity for print preview environment
+        document.addEventListener('keydown', (e) => {
+            if (e.metaKey && e.key === 'p' || e.ctrlKey && e.key === 'p') {
+                // System print will trigger automatically
+            }
+        });
+        
+        // Dynamic time update for receipt (simulated)
+        const updateReceiptTime = () => {
+            const now = new Date();
+            const timeString = now.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: true });
+            const dateString = now.toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' }).toUpperCase();
+            // In a real app we'd target specific IDs, but for this preview we maintain the static aesthetic.
+        };
+    </script>
+</body></html>

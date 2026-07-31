@@ -1,0 +1,456 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>User Account Management | La librería</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500&family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "surface-container-lowest": "#ffffff",
+                    "on-primary": "#ffffff",
+                    "on-secondary-container": "#54647a",
+                    "on-primary-fixed-variant": "#003ea8",
+                    "surface-tint": "#0053db",
+                    "primary-fixed-dim": "#b4c5ff",
+                    "secondary": "#505f76",
+                    "primary": "#004ac6",
+                    "tertiary-fixed": "#ffdbcd",
+                    "secondary-fixed": "#d3e4fe",
+                    "on-secondary-fixed": "#0b1c30",
+                    "inverse-primary": "#b4c5ff",
+                    "secondary-container": "#d0e1fb",
+                    "error": "#ba1a1a",
+                    "on-tertiary-fixed": "#360f00",
+                    "surface": "#faf8ff",
+                    "on-surface": "#191b23",
+                    "secondary-fixed-dim": "#b7c8e1",
+                    "on-secondary-fixed-variant": "#38485d",
+                    "surface-variant": "#e1e2ed",
+                    "surface-container-highest": "#e1e2ed",
+                    "on-background": "#191b23",
+                    "surface-container-high": "#e7e7f3",
+                    "on-primary-container": "#eeefff",
+                    "surface-bright": "#faf8ff",
+                    "inverse-on-surface": "#f0f0fb",
+                    "primary-fixed": "#dbe1ff",
+                    "on-surface-variant": "#434655",
+                    "on-error": "#ffffff",
+                    "primary-container": "#2563eb",
+                    "outline-variant": "#c3c6d7",
+                    "on-secondary": "#ffffff",
+                    "surface-container": "#ededf9",
+                    "surface-dim": "#d9d9e5",
+                    "tertiary-fixed-dim": "#ffb596",
+                    "tertiary": "#943700",
+                    "on-tertiary": "#ffffff",
+                    "background": "#faf8ff",
+                    "tertiary-container": "#bc4800",
+                    "inverse-surface": "#2e3039",
+                    "outline": "#737686",
+                    "on-primary-fixed": "#00174b",
+                    "error-container": "#ffdad6",
+                    "surface-container-low": "#f3f3fe",
+                    "on-tertiary-container": "#ffede6",
+                    "on-tertiary-fixed-variant": "#7d2d00",
+                    "on-error-container": "#93000a"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.25rem",
+                    "lg": "0.5rem",
+                    "xl": "0.75rem",
+                    "full": "9999px"
+            },
+            "spacing": {
+                    "container-max": "1440px",
+                    "stack-lg": "1.5rem",
+                    "gutter": "1.5rem",
+                    "stack-sm": "0.5rem",
+                    "margin-desktop": "2rem",
+                    "stack-md": "1rem",
+                    "margin-mobile": "1rem"
+            },
+            "fontFamily": {
+                    "headline-xl": ["Inter"],
+                    "headline-md": ["Inter"],
+                    "headline-lg": ["Inter"],
+                    "body-md": ["Inter"],
+                    "data-mono": ["JetBrains Mono"],
+                    "label-md": ["Inter"],
+                    "body-lg": ["Inter"],
+                    "body-sm": ["Inter"]
+            },
+            "fontSize": {
+                    "headline-xl": ["30px", {"lineHeight": "38px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                    "headline-md": ["20px", {"lineHeight": "28px", "fontWeight": "600"}],
+                    "headline-lg": ["24px", {"lineHeight": "32px", "letterSpacing": "-0.01em", "fontWeight": "600"}],
+                    "body-md": ["14px", {"lineHeight": "20px", "fontWeight": "400"}],
+                    "data-mono": ["13px", {"lineHeight": "16px", "fontWeight": "500"}],
+                    "label-md": ["12px", {"lineHeight": "16px", "fontWeight": "600"}],
+                    "body-lg": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                    "body-sm": ["13px", {"lineHeight": "18px", "fontWeight": "400"}]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+            display: inline-block;
+            vertical-align: middle;
+            line-height: 1;
+        }
+        body {
+            background-color: #F8FAFC;
+        }
+        .bento-card {
+            background: #FFFFFF;
+            border: 1px solid #E2E8F0;
+            border-radius: 8px;
+            transition: all 0.2s ease;
+        }
+        .bento-card:hover {
+            border-color: #2563EB;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+        }
+    </style>
+</head>
+<body class="font-body-md text-on-surface">
+<!-- Side Navigation Shell -->
+<aside class="w-[240px] h-screen fixed left-0 top-0 bg-surface-container-lowest dark:bg-inverse-surface border-r border-outline-variant dark:border-outline flex flex-col h-full py-gutter px-stack-md z-50">
+<div class="mb-stack-lg px-2">
+<h1 class="text-headline-md font-headline-md text-primary dark:text-primary-fixed-dim">La librería</h1>
+<p class="text-label-md text-on-surface-variant opacity-70">WUB Library System</p>
+</div>
+<nav class="flex-1 space-y-1">
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg text-on-surface-variant dark:text-surface-variant hover:bg-surface-container transition-colors active:scale-95 transition-transform duration-150" href="#">
+<span class="material-symbols-outlined">dashboard</span>
+<span class="font-body-md">Overview</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg text-on-surface-variant dark:text-surface-variant hover:bg-surface-container transition-colors active:scale-95 transition-transform duration-150" href="#">
+<span class="material-symbols-outlined">menu_book</span>
+<span class="font-body-md">Books</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg text-on-surface-variant dark:text-surface-variant hover:bg-surface-container transition-colors active:scale-95 transition-transform duration-150" href="#">
+<span class="material-symbols-outlined">group</span>
+<span class="font-body-md">Members</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg text-primary dark:text-primary-fixed-dim bg-secondary-container dark:bg-on-secondary-fixed-variant font-bold active:scale-95 transition-transform duration-150" href="#">
+<span class="material-symbols-outlined">admin_panel_settings</span>
+<span class="font-body-md">Management</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg text-on-surface-variant dark:text-surface-variant hover:bg-surface-container transition-colors active:scale-95 transition-transform duration-150" href="#">
+<span class="material-symbols-outlined">settings</span>
+<span class="font-body-md">Settings</span>
+</a>
+</nav>
+<div class="mt-auto p-2">
+<div class="flex items-center gap-3 p-2 bg-surface-container-low rounded-lg">
+<img class="w-10 h-10 rounded-full object-cover border-2 border-primary" data-alt="Professional portrait of a male university librarian in a clean, modern office setting. He is wearing a sharp navy blue blazer and spectacles, looking directly at the camera with a confident yet friendly expression. The background shows blurred bookshelves and soft institutional lighting typical of a high-end academic library. The overall aesthetic is clean, professional, and corporate." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAb8q7tnL_vwG1fY20SK2fVCVrbBoHhbh8nqKHOClIPj8lt0bM-FnOdoY4NwJhkUzz44Zd70Aw7-MncA8VH2V0GE64imCPna1C7rorhi8WuotGLb45Imbur_N88mGBc6A46osfBMz6KnoVcK6HHJ9h_AJWPFANZAsu_VsXTl8al8u0zbYnzpkYZR08as8UA8j13Wx0sYMWy7or3TVOhHim5Z8f4gQpjdYhRo2u5n7JeNJLK9ObAeCVWaw"/>
+<div class="overflow-hidden">
+<p class="text-body-sm font-bold truncate">Dr. Ariful Islam</p>
+<p class="text-[10px] text-on-surface-variant">System Administrator</p>
+</div>
+</div>
+</div>
+</aside>
+<!-- Top Navigation Shell -->
+<header class="h-[64px] fixed top-0 right-0 left-[240px] z-40 bg-surface-container-lowest dark:bg-surface-dim border-b border-outline-variant dark:border-outline flex justify-between items-center px-gutter w-full">
+<div class="flex items-center gap-4 flex-1">
+<div class="relative w-full max-w-md">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-outline">search</span>
+<input class="w-full bg-surface-container-low border border-outline-variant rounded-lg py-2 pl-10 pr-12 text-body-md focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-all" placeholder="Global search..." type="text"/>
+<span class="absolute right-3 top-1/2 -translate-y-1/2 font-data-mono text-[10px] text-outline border border-outline-variant px-1.5 py-0.5 rounded bg-surface">⌘F</span>
+</div>
+</div>
+<div class="flex items-center gap-6">
+<div class="flex gap-4">
+<button class="material-symbols-outlined text-outline hover:text-primary transition-colors">notifications</button>
+<button class="material-symbols-outlined text-outline hover:text-primary transition-colors">help_outline</button>
+</div>
+</div>
+</header>
+<!-- Main Content Canvas -->
+<main class="ml-[240px] mt-[64px] min-h-[calc(100vh-64px-56px)] p-8 max-w-[1440px] mx-auto">
+<!-- Header Section -->
+<div class="flex justify-between items-end mb-8">
+<div>
+<nav class="flex text-label-md text-outline mb-2 gap-2 items-center">
+<span>Admin</span>
+<span class="material-symbols-outlined text-[14px]">chevron_right</span>
+<span class="text-primary">User Account Management</span>
+</nav>
+<h1 class="font-headline-xl text-headline-xl text-on-surface">User Account Management</h1>
+</div>
+<button class="bg-primary hover:bg-primary/90 text-white px-6 py-2.5 rounded-lg flex items-center gap-2 font-bold transition-all active:scale-95 shadow-sm">
+<span class="material-symbols-outlined">person_add</span>
+<span>Create New User</span>
+</button>
+</div>
+<!-- Summary Stat Tiles -->
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+<div class="bento-card p-6 flex flex-col justify-between h-32 relative overflow-hidden">
+<div class="z-10">
+<p class="text-label-md text-on-surface-variant font-semibold">Total Active Users</p>
+<p class="text-headline-xl font-headline-xl text-primary mt-2">124</p>
+</div>
+<div class="absolute right-[-10px] bottom-[-10px] opacity-5">
+<span class="material-symbols-outlined text-[80px]">group</span>
+</div>
+</div>
+<div class="bento-card p-6 flex flex-col justify-between h-32 relative overflow-hidden">
+<div class="z-10">
+<p class="text-label-md text-on-surface-variant font-semibold">Administrators</p>
+<p class="text-headline-xl font-headline-xl text-on-surface mt-2">12</p>
+</div>
+<div class="absolute right-[-10px] bottom-[-10px] opacity-5">
+<span class="material-symbols-outlined text-[80px]">admin_panel_settings</span>
+</div>
+</div>
+<div class="bento-card p-6 flex flex-col justify-between h-32 relative overflow-hidden">
+<div class="z-10">
+<p class="text-label-md text-on-surface-variant font-semibold">Librarians</p>
+<p class="text-headline-xl font-headline-xl text-on-surface mt-2">84</p>
+</div>
+<div class="absolute right-[-10px] bottom-[-10px] opacity-5">
+<span class="material-symbols-outlined text-[80px]">menu_book</span>
+</div>
+</div>
+<div class="bento-card p-6 flex flex-col justify-between h-32 relative overflow-hidden">
+<div class="z-10">
+<p class="text-label-md text-on-surface-variant font-semibold">Management</p>
+<p class="text-headline-xl font-headline-xl text-on-surface mt-2">28</p>
+</div>
+<div class="absolute right-[-10px] bottom-[-10px] opacity-5">
+<span class="material-symbols-outlined text-[80px]">corporate_fare</span>
+</div>
+</div>
+</div>
+<!-- Toolbar & Data Table Card -->
+<div class="bg-white border border-outline-variant rounded-xl overflow-hidden shadow-sm">
+<!-- Toolbar -->
+<div class="p-4 border-b border-outline-variant flex flex-wrap items-center justify-between gap-4 bg-surface-container-lowest">
+<div class="flex items-center gap-4 flex-1">
+<div class="relative w-full max-w-sm">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-outline text-[20px]">search</span>
+<input class="w-full bg-white border border-outline-variant rounded-lg py-2 pl-10 pr-4 text-body-md focus:ring-1 focus:ring-primary focus:border-primary outline-none transition-all" placeholder="Search by name, email or ID..." type="text"/>
+</div>
+<div class="flex items-center gap-2">
+<span class="text-label-md text-on-surface-variant whitespace-nowrap">Filter by Role:</span>
+<select class="bg-white border border-outline-variant rounded-lg px-3 py-2 text-body-md focus:ring-1 focus:ring-primary outline-none cursor-pointer">
+<option>All Roles</option>
+<option>Admin</option>
+<option>Librarian</option>
+<option>Management</option>
+</select>
+</div>
+</div>
+<div class="flex items-center gap-2">
+<button class="p-2 hover:bg-surface-container rounded-lg transition-colors material-symbols-outlined text-outline">file_download</button>
+<button class="p-2 hover:bg-surface-container rounded-lg transition-colors material-symbols-outlined text-outline">refresh</button>
+</div>
+</div>
+<!-- Data Table -->
+<div class="overflow-x-auto">
+<table class="w-full text-left border-collapse">
+<thead class="bg-surface-container-low border-b border-outline-variant">
+<tr>
+<th class="px-6 py-4 text-label-md font-bold text-on-surface-variant uppercase tracking-wider">User</th>
+<th class="px-6 py-4 text-label-md font-bold text-on-surface-variant uppercase tracking-wider">ID</th>
+<th class="px-6 py-4 text-label-md font-bold text-on-surface-variant uppercase tracking-wider">Role</th>
+<th class="px-6 py-4 text-label-md font-bold text-on-surface-variant uppercase tracking-wider">Email</th>
+<th class="px-6 py-4 text-label-md font-bold text-on-surface-variant uppercase tracking-wider">Last Login</th>
+<th class="px-6 py-4 text-label-md font-bold text-on-surface-variant uppercase tracking-wider">Status</th>
+<th class="px-6 py-4 text-label-md font-bold text-on-surface-variant uppercase tracking-wider text-right">Actions</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-outline-variant">
+<!-- Row 1: Admin -->
+<tr class="hover:bg-surface-container-lowest transition-colors group">
+<td class="px-6 py-4">
+<div class="flex items-center gap-3">
+<img class="w-9 h-9 rounded-full object-cover" data-alt="A close-up professional profile picture of a woman in her late 30s with a warm, expert demeanor. She is wearing a structured charcoal grey suit jacket and simple silver jewelry. Her hair is neatly styled. The background is a clean, bright academic setting with soft-focus glass walls and subtle plant greenery. The lighting is flattering and bright, embodying a modern institutional aesthetic." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBIILqPypjdXIt5deXWeSSbd-naPaXtr0nktkDdC-cMpaqXmd_WiE1EREP0KTt8ncQdx1ozWcGhBnSp_OACUGKnivxThynGKkkBWzBZgwOzwa81DswrLMRInf9fhTNQc46MRa3YdWzts02ntL6kTFjYaiKj2btGmW9thEJjrQyxH3zbW-LYh9kobjm0RZO6ExKHxXtSPBybgVPFlI78_hkJo-qgku7MObSSHsHvi7mKbX1QxGD6NPiTzw"/>
+<div>
+<p class="text-body-md font-bold">Sarah Chowdhury</p>
+<p class="text-body-sm text-on-surface-variant">Central Library Dept.</p>
+</div>
+</div>
+</td>
+<td class="px-6 py-4">
+<span class="font-data-mono text-data-mono bg-surface-container px-2 py-1 rounded">ADM-2024-001</span>
+</td>
+<td class="px-6 py-4">
+<span class="bg-purple-100 text-purple-700 text-[10px] font-bold px-2 py-1 rounded-full uppercase tracking-tighter">ADMIN</span>
+</td>
+<td class="px-6 py-4 text-body-sm text-on-surface-variant">sarah.c@wub.edu.bd</td>
+<td class="px-6 py-4 text-body-sm text-on-surface-variant">2 mins ago</td>
+<td class="px-6 py-4">
+<span class="flex items-center gap-1.5 text-[#166534] bg-[#DCFCE7] px-2 py-0.5 rounded-full text-[11px] font-bold w-fit">
+<span class="w-1.5 h-1.5 rounded-full bg-[#166534]"></span>
+                                    ELIGIBLE
+                                </span>
+</td>
+<td class="px-6 py-4 text-right">
+<div class="flex justify-end gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+<button class="p-1.5 hover:bg-secondary-container text-primary rounded transition-colors material-symbols-outlined" title="Edit">edit</button>
+<button class="p-1.5 hover:bg-error-container text-error rounded transition-colors material-symbols-outlined" title="Deactivate">block</button>
+</div>
+</td>
+</tr>
+<!-- Row 2: Librarian -->
+<tr class="hover:bg-surface-container-lowest transition-colors group">
+<td class="px-6 py-4">
+<div class="flex items-center gap-3">
+<img class="w-9 h-9 rounded-full object-cover" data-alt="A friendly, approachable professional headshot of a young man in his mid-20s. He is wearing a mustard-colored casual shirt, looking directly into the camera with a helpful smile. The background is a high-key library setting with neatly organized bookshelves and clean lines. The photography uses soft, natural light that fills the frame, maintaining a consistent professional corporate tone." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBznEH78SMELE0WFyJpvRGah7LD1ULenBJdU5DlYkrufGGl0rTiD1lJyfJKgZYdv8JHHERNwSK0vhBghJ5UaQ-BmCTpIacJb3zkxSTPrQ7y91JGqHR2gO7nS5PkJcG0R0S_4PoYsYaC1oTaMUoYLRyr4HKluAV8YQeWF6t_3IeioIhE9Cdncnv0zPmElPHsvvBmg3Yic1KDYbB8g0-gv8YRXD7P7sdcrTelPtaYKxdeJMe6cSiegOYipQ"/>
+<div>
+<p class="text-body-md font-bold">Tanvir Ahmed</p>
+<p class="text-body-sm text-on-surface-variant">Circulation Desk</p>
+</div>
+</div>
+</td>
+<td class="px-6 py-4">
+<span class="font-data-mono text-data-mono bg-surface-container px-2 py-1 rounded">LIB-2024-042</span>
+</td>
+<td class="px-6 py-4">
+<span class="bg-blue-100 text-blue-700 text-[10px] font-bold px-2 py-1 rounded-full uppercase tracking-tighter">LIBRARIAN</span>
+</td>
+<td class="px-6 py-4 text-body-sm text-on-surface-variant">tanvir.a@wub.edu.bd</td>
+<td class="px-6 py-4 text-body-sm text-on-surface-variant">3 hours ago</td>
+<td class="px-6 py-4">
+<span class="flex items-center gap-1.5 text-[#166534] bg-[#DCFCE7] px-2 py-0.5 rounded-full text-[11px] font-bold w-fit">
+<span class="w-1.5 h-1.5 rounded-full bg-[#166534]"></span>
+                                    ELIGIBLE
+                                </span>
+</td>
+<td class="px-6 py-4 text-right">
+<div class="flex justify-end gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+<button class="p-1.5 hover:bg-secondary-container text-primary rounded transition-colors material-symbols-outlined">edit</button>
+<button class="p-1.5 hover:bg-error-container text-error rounded transition-colors material-symbols-outlined">block</button>
+</div>
+</td>
+</tr>
+<!-- Row 3: Management (Deactivated) -->
+<tr class="hover:bg-surface-container-lowest transition-colors group">
+<td class="px-6 py-4">
+<div class="flex items-center gap-3 opacity-60">
+<img class="w-9 h-9 rounded-full object-cover grayscale" data-alt="A portrait of an older, distinguished gentleman with graying hair and a calm expression. He is wearing a formal dark grey suit and a white shirt. The image is set in a corporate board room with muted lighting and mahogany accents. The aesthetic is extremely professional and high-end, using a palette of deep grays and whites with soft ambient light to highlight features with clarity." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDdkpL4wLwJcF6hWTm0I2nKHZ8QO-4BrNWSK_VBlwlEkRh9IDvv9TVgxCqnlGWG_0oApUSnhle7lxiD7aVeWmhBmBKpta6RPEaUNzs2o9J4Y_3eq-ODN6N5LRTPXV0uySJxze3jJc-tt5mrC7RXFR_A_1IXyijTeDs2sZU1QDLpmgNO3NRJBROqXYAHL_d24vIkg_l_h-twbDtR6phn35_LOuFvcOZChOPY8paFuPqdzpwMhlcHXLzYfA"/>
+<div>
+<p class="text-body-md font-bold">Prof. M. Kamal</p>
+<p class="text-body-sm text-on-surface-variant">Faculty Board</p>
+</div>
+</div>
+</td>
+<td class="px-6 py-4 opacity-60">
+<span class="font-data-mono text-data-mono bg-surface-container px-2 py-1 rounded">MGT-2023-112</span>
+</td>
+<td class="px-6 py-4 opacity-60">
+<span class="bg-amber-100 text-amber-700 text-[10px] font-bold px-2 py-1 rounded-full uppercase tracking-tighter">MANAGEMENT</span>
+</td>
+<td class="px-6 py-4 text-body-sm text-on-surface-variant opacity-60">m.kamal@wub.edu.bd</td>
+<td class="px-6 py-4 text-body-sm text-on-surface-variant opacity-60">12 Feb 2024</td>
+<td class="px-6 py-4">
+<span class="flex items-center gap-1.5 text-on-surface-variant bg-surface-container-high px-2 py-0.5 rounded-full text-[11px] font-bold w-fit">
+<span class="w-1.5 h-1.5 rounded-full bg-outline"></span>
+                                    WITHDRAWN
+                                </span>
+</td>
+<td class="px-6 py-4 text-right">
+<div class="flex justify-end gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+<button class="p-1.5 hover:bg-secondary-container text-primary rounded transition-colors material-symbols-outlined">edit</button>
+<button class="p-1.5 hover:bg-secondary-container text-secondary rounded transition-colors material-symbols-outlined">settings_backup_restore</button>
+</div>
+</td>
+</tr>
+<!-- Row 4: Librarian -->
+<tr class="hover:bg-surface-container-lowest transition-colors group">
+<td class="px-6 py-4">
+<div class="flex items-center gap-3">
+<img class="w-9 h-9 rounded-full object-cover" data-alt="A portrait of a young woman professional in her late 20s, wearing modern eyewear and a simple cream-colored blouse. She is standing in a brightly lit corridor of a modern library, with soft bokeh highlighting the architectural details behind her. The photography is sharp, clean, and emphasizes natural skin tones and a professional, approachable look. The lighting is soft and even." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDCIFSvGyfKvAIkJpxh25W0KT16E2wB3omCCwpDUStVlCfJSPOoqQ27v1fAFs7IqkN6kUbUsRNWDO1qafWDwZklJceydK56V4vC2vVj54J8LAqwTLILbvvd7m1F-TRWZieoms-KgDnOUUpBGN_6C6xjrGwYoada8I6OvR16d6oODKBLjVCtq1CHlq-ou_iyLEo1q_ny1zUe0qgyhzLqe0kpUFo0jIdURsyh7gyjtAwWDzNx7R8wf66o-A"/>
+<div>
+<p class="text-body-md font-bold">Nusrat Jahan</p>
+<p class="text-body-sm text-on-surface-variant">Digital Cataloging</p>
+</div>
+</div>
+</td>
+<td class="px-6 py-4">
+<span class="font-data-mono text-data-mono bg-surface-container px-2 py-1 rounded">LIB-2024-055</span>
+</td>
+<td class="px-6 py-4">
+<span class="bg-blue-100 text-blue-700 text-[10px] font-bold px-2 py-1 rounded-full uppercase tracking-tighter">LIBRARIAN</span>
+</td>
+<td class="px-6 py-4 text-body-sm text-on-surface-variant">nusrat.j@wub.edu.bd</td>
+<td class="px-6 py-4 text-body-sm text-on-surface-variant">Yesterday</td>
+<td class="px-6 py-4">
+<span class="flex items-center gap-1.5 text-[#166534] bg-[#DCFCE7] px-2 py-0.5 rounded-full text-[11px] font-bold w-fit">
+<span class="w-1.5 h-1.5 rounded-full bg-[#166534]"></span>
+                                    ELIGIBLE
+                                </span>
+</td>
+<td class="px-6 py-4 text-right">
+<div class="flex justify-end gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+<button class="p-1.5 hover:bg-secondary-container text-primary rounded transition-colors material-symbols-outlined">edit</button>
+<button class="p-1.5 hover:bg-error-container text-error rounded transition-colors material-symbols-outlined">block</button>
+</div>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<!-- Pagination -->
+<div class="px-6 py-4 bg-surface-container-low border-t border-outline-variant flex items-center justify-between">
+<p class="text-body-sm text-on-surface-variant">Showing <span class="font-bold text-on-surface">1 - 10</span> of <span class="font-bold text-on-surface">124</span> users</p>
+<div class="flex items-center gap-1">
+<button class="p-2 hover:bg-surface-container-highest rounded-lg disabled:opacity-30 disabled:hover:bg-transparent transition-colors" disabled="">
+<span class="material-symbols-outlined">chevron_left</span>
+</button>
+<div class="flex items-center gap-1 px-2">
+<button class="w-8 h-8 rounded-lg bg-primary text-white font-bold text-body-sm transition-all">1</button>
+<button class="w-8 h-8 rounded-lg hover:bg-surface-container-highest text-on-surface-variant font-body-sm transition-all">2</button>
+<button class="w-8 h-8 rounded-lg hover:bg-surface-container-highest text-on-surface-variant font-body-sm transition-all">3</button>
+<span class="px-1 text-on-surface-variant">...</span>
+<button class="w-8 h-8 rounded-lg hover:bg-surface-container-highest text-on-surface-variant font-body-sm transition-all">13</button>
+</div>
+<button class="p-2 hover:bg-surface-container-highest rounded-lg transition-colors">
+<span class="material-symbols-outlined">chevron_right</span>
+</button>
+</div>
+</div>
+</div>
+</main>
+<!-- Footer -->
+<footer class="ml-[240px] w-[calc(100%-240px)] bg-surface-container-low dark:bg-surface-container-high border-t border-outline-variant dark:border-outline flex justify-between items-center py-4 px-gutter">
+<div class="flex items-center gap-4">
+<p class="font-label-md text-label-md font-bold text-on-surface">La librería</p>
+<p class="font-body-sm text-body-sm text-secondary dark:text-secondary-fixed-dim opacity-80">© 2024 World University of Bangladesh - Library Management System</p>
+</div>
+<div class="flex items-center gap-6">
+<a class="font-body-sm text-body-sm text-on-surface-variant hover:text-primary underline transition-all" href="#">Privacy Policy</a>
+<a class="font-body-sm text-body-sm text-on-surface-variant hover:text-primary underline transition-all" href="#">Terms of Service</a>
+<a class="font-body-sm text-body-sm text-on-surface-variant hover:text-primary underline transition-all" href="#">Support</a>
+</div>
+</footer>
+<script>
+        // Simple micro-interaction for rows
+        document.querySelectorAll('tbody tr').forEach(row => {
+            row.addEventListener('mouseenter', () => {
+                row.style.cursor = 'pointer';
+            });
+        });
+
+        // Search Bar Shortcut Focus
+        window.addEventListener('keydown', (e) => {
+            if ((e.metaKey || e.ctrlKey) && e.key === 'f') {
+                e.preventDefault();
+                document.querySelector('input[placeholder="Global search..."]').focus();
+            }
+        });
+    </script>
+</body></html>

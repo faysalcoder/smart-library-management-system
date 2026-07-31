@@ -1,0 +1,459 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Backup & Restore - La librería</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500&family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap" rel="stylesheet"/>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+            vertical-align: middle;
+        }
+        .status-pulse {
+            animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+        }
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: .5; }
+        }
+    </style>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "surface-container-lowest": "#ffffff",
+                        "on-primary": "#ffffff",
+                        "on-secondary-container": "#54647a",
+                        "on-primary-fixed-variant": "#003ea8",
+                        "surface-tint": "#0053db",
+                        "primary-fixed-dim": "#b4c5ff",
+                        "secondary": "#505f76",
+                        "primary": "#004ac6",
+                        "tertiary-fixed": "#ffdbcd",
+                        "secondary-fixed": "#d3e4fe",
+                        "on-secondary-fixed": "#0b1c30",
+                        "inverse-primary": "#b4c5ff",
+                        "secondary-container": "#d0e1fb",
+                        "error": "#ba1a1a",
+                        "on-tertiary-fixed": "#360f00",
+                        "surface": "#faf8ff",
+                        "on-surface": "#191b23",
+                        "secondary-fixed-dim": "#b7c8e1",
+                        "on-secondary-fixed-variant": "#38485d",
+                        "surface-variant": "#e1e2ed",
+                        "surface-container-highest": "#e1e2ed",
+                        "on-background": "#191b23",
+                        "surface-container-high": "#e7e7f3",
+                        "on-primary-container": "#eeefff",
+                        "surface-bright": "#faf8ff",
+                        "inverse-on-surface": "#f0f0fb",
+                        "primary-fixed": "#dbe1ff",
+                        "on-surface-variant": "#434655",
+                        "on-error": "#ffffff",
+                        "primary-container": "#2563eb",
+                        "outline-variant": "#c3c6d7",
+                        "on-secondary": "#ffffff",
+                        "surface-container": "#ededf9",
+                        "surface-dim": "#d9d9e5",
+                        "tertiary-fixed-dim": "#ffb596",
+                        "tertiary": "#943700",
+                        "on-tertiary": "#ffffff",
+                        "background": "#faf8ff",
+                        "tertiary-container": "#bc4800",
+                        "inverse-surface": "#2e3039",
+                        "outline": "#737686",
+                        "on-primary-fixed": "#00174b",
+                        "error-container": "#ffdad6",
+                        "surface-container-low": "#f3f3fe",
+                        "on-tertiary-container": "#ffede6",
+                        "on-tertiary-fixed-variant": "#7d2d00",
+                        "on-error-container": "#93000a"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "container-max": "1440px",
+                        "stack-lg": "1.5rem",
+                        "gutter": "1.5rem",
+                        "stack-sm": "0.5rem",
+                        "margin-desktop": "2rem",
+                        "stack-md": "1rem",
+                        "margin-mobile": "1rem"
+                    },
+                    "fontFamily": {
+                        "headline-xl": ["Inter"],
+                        "headline-md": ["Inter"],
+                        "headline-lg": ["Inter"],
+                        "body-md": ["Inter"],
+                        "data-mono": ["JetBrains Mono"],
+                        "label-md": ["Inter"],
+                        "body-lg": ["Inter"],
+                        "body-sm": ["Inter"]
+                    },
+                    "fontSize": {
+                        "headline-xl": ["30px", {"lineHeight": "38px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                        "headline-md": ["20px", {"lineHeight": "28px", "fontWeight": "600"}],
+                        "headline-lg": ["24px", {"lineHeight": "32px", "letterSpacing": "-0.01em", "fontWeight": "600"}],
+                        "body-md": ["14px", {"lineHeight": "20px", "fontWeight": "400"}],
+                        "data-mono": ["13px", {"lineHeight": "16px", "fontWeight": "500"}],
+                        "label-md": ["12px", {"lineHeight": "16px", "fontWeight": "600"}],
+                        "body-lg": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                        "body-sm": ["13px", {"lineHeight": "18px", "fontWeight": "400"}]
+                    }
+                },
+            },
+        }
+    </script>
+</head>
+<body class="bg-background font-body-md text-on-surface selection:bg-primary-fixed selection:text-on-primary-fixed">
+<!-- SideNavBar -->
+<aside class="w-[240px] h-screen fixed left-0 top-0 bg-surface-container-lowest border-r border-outline-variant flex flex-col h-full py-gutter px-stack-md z-[60]">
+<div class="mb-8 px-2">
+<h1 class="text-headline-md font-headline-md text-primary tracking-tight">La librería</h1>
+<p class="text-body-sm text-on-surface-variant">WUB Library System</p>
+</div>
+<nav class="flex-1 space-y-1">
+<a class="flex items-center gap-3 px-3 py-2 text-on-surface-variant hover:bg-surface-container transition-colors rounded-lg active:scale-95 duration-150" href="#">
+<span class="material-symbols-outlined" data-icon="dashboard">dashboard</span>
+<span class="font-body-md">Overview</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 text-on-surface-variant hover:bg-surface-container transition-colors rounded-lg active:scale-95 duration-150" href="#">
+<span class="material-symbols-outlined" data-icon="menu_book">menu_book</span>
+<span class="font-body-md">Books</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 text-on-surface-variant hover:bg-surface-container transition-colors rounded-lg active:scale-95 duration-150" href="#">
+<span class="material-symbols-outlined" data-icon="group">group</span>
+<span class="font-body-md">Members</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 text-primary bg-secondary-container font-bold rounded-lg active:scale-95 duration-150" href="#">
+<span class="material-symbols-outlined" data-icon="admin_panel_settings">admin_panel_settings</span>
+<span class="font-body-md">Management</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 text-on-surface-variant hover:bg-surface-container transition-colors rounded-lg active:scale-95 duration-150" href="#">
+<span class="material-symbols-outlined" data-icon="settings">settings</span>
+<span class="font-body-md">Settings</span>
+</a>
+</nav>
+<div class="mt-auto flex items-center gap-3 px-3 py-2 border-t border-outline-variant pt-6">
+<img class="w-10 h-10 rounded-full bg-surface-container-high object-cover" data-alt="Professional portrait of a male librarian in a crisp white shirt and navy tie, smiling in a modern university library setting with blurred bookshelves in the background. High-key academic lighting, professional corporate photography style." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCJbuQK7lNknnk5ZqFpJOkY1_nS-IVKbWRKaml6vLQIlzvv_DbVLxNX56iq6jF0f_QW0ZElaiI4j4jKv0yQOCmYdtyJ85aoxEHbB5RhKSF7WLf_GYIsA0CCbiASrfivLb_FPKgCx-8CStAvso31v10hh0Nb5CPAE-_o5VS9tOKg32GnZkLuPnZmEmpWEGBxUJKl5vuxgl97ta5_30Lg6XZEyGpzYMYKMv2mzUXVbIMhsQ5aJQ13hFC-0A"/>
+<div>
+<p class="text-body-sm font-bold text-on-surface">Admin User</p>
+<p class="text-[10px] text-on-surface-variant uppercase tracking-wider">System Architect</p>
+</div>
+</div>
+</aside>
+<!-- TopNavBar -->
+<header class="h-[64px] fixed top-0 right-0 left-[240px] z-50 bg-surface-container-lowest border-b border-outline-variant flex justify-between items-center px-gutter w-full">
+<div class="flex items-center flex-1 max-w-xl relative">
+<span class="material-symbols-outlined absolute left-3 text-outline" data-icon="search">search</span>
+<input class="w-full pl-10 pr-12 py-2 bg-surface-container-low border-none rounded-lg font-body-md focus:ring-2 focus:ring-primary-container" placeholder="Search system logs or backups... (⌘F)" type="text"/>
+<span class="absolute right-3 font-data-mono text-outline text-[10px] bg-surface-container-high px-1.5 py-0.5 rounded border border-outline-variant">⌘F</span>
+</div>
+<div class="flex items-center gap-6 ml-gutter">
+<div class="flex items-center gap-2">
+<button class="p-2 text-on-surface-variant hover:text-primary transition-all duration-200">
+<span class="material-symbols-outlined" data-icon="notifications">notifications</span>
+</button>
+<button class="p-2 text-on-surface-variant hover:text-primary transition-all duration-200">
+<span class="material-symbols-outlined" data-icon="help_outline">help_outline</span>
+</button>
+</div>
+</div>
+</header>
+<!-- Main Content -->
+<main class="ml-[240px] mt-[64px] p-gutter min-h-screen">
+<div class="max-w-container-max mx-auto">
+<header class="mb-stack-lg flex justify-between items-end">
+<div>
+<nav class="flex items-center gap-2 text-label-md text-on-surface-variant mb-2">
+<span>Management</span>
+<span class="material-symbols-outlined text-[14px]" data-icon="chevron_right">chevron_right</span>
+<span class="text-primary font-bold">Backup & Restore</span>
+</nav>
+<h1 class="text-headline-xl font-headline-xl text-on-surface">Backup & Restore</h1>
+</div>
+<div class="flex gap-3">
+<button class="flex items-center gap-2 px-4 py-2 border border-outline-variant rounded-lg text-on-surface-variant font-label-md hover:bg-surface-container transition-colors">
+<span class="material-symbols-outlined text-[20px]" data-icon="cloud_sync">cloud_sync</span>
+                        External Logs
+                    </button>
+<button class="flex items-center gap-2 px-4 py-2 bg-primary text-on-primary rounded-lg font-label-md hover:bg-primary-container transition-colors shadow-sm active:scale-95 duration-150">
+<span class="material-symbols-outlined text-[20px]" data-icon="backup">backup</span>
+                        Backup Now
+                    </button>
+</div>
+</header>
+<!-- Status Grid -->
+<div class="grid grid-cols-1 md:grid-cols-3 gap-gutter mb-gutter">
+<!-- Last Backup Card -->
+<div class="bg-surface-container-lowest border border-outline-variant rounded-xl p-6 flex flex-col gap-4">
+<div class="flex justify-between items-start">
+<div class="p-3 bg-secondary-container rounded-lg">
+<span class="material-symbols-outlined text-primary" data-icon="history">history</span>
+</div>
+<span class="bg-green-100 text-green-800 text-[10px] font-bold px-2 py-1 rounded-full uppercase tracking-tighter">Success</span>
+</div>
+<div>
+<p class="text-label-md text-on-surface-variant">Last Backup</p>
+<h2 class="text-headline-md font-headline-md mt-1">Oct 24, 2023 · 04:00 AM</h2>
+</div>
+</div>
+<!-- Next Scheduled Card -->
+<div class="bg-surface-container-lowest border border-outline-variant rounded-xl p-6 flex flex-col gap-4">
+<div class="flex justify-between items-start">
+<div class="p-3 bg-surface-container-high rounded-lg">
+<span class="material-symbols-outlined text-on-surface-variant" data-icon="event">event</span>
+</div>
+</div>
+<div>
+<p class="text-label-md text-on-surface-variant">Next Scheduled Backup</p>
+<h2 class="text-headline-md font-headline-md mt-1">Tomorrow · 04:00 AM</h2>
+</div>
+</div>
+<!-- Database Health Card -->
+<div class="bg-surface-container-lowest border border-outline-variant rounded-xl p-6 flex flex-col gap-4">
+<div class="flex justify-between items-start">
+<div class="p-3 bg-green-50 rounded-lg">
+<span class="material-symbols-outlined text-green-600" data-icon="database">database</span>
+</div>
+<div class="flex items-center gap-1.5">
+<span class="w-2.5 h-2.5 bg-green-500 rounded-full status-pulse"></span>
+<span class="text-label-md font-bold text-green-700">Healthy</span>
+</div>
+</div>
+<div>
+<p class="text-label-md text-on-surface-variant">Database Health Status</p>
+<h2 class="text-headline-md font-headline-md mt-1">No integrity issues found</h2>
+</div>
+</div>
+</div>
+<!-- Main Content Grid -->
+<div class="grid grid-cols-1 xl:grid-cols-3 gap-gutter">
+<!-- Backup History Table -->
+<div class="xl:col-span-2 bg-surface-container-lowest border border-outline-variant rounded-xl overflow-hidden">
+<div class="px-6 py-4 border-b border-outline-variant flex justify-between items-center">
+<h3 class="text-headline-md font-headline-md">Backup History</h3>
+<div class="flex gap-2">
+<button class="p-2 text-on-surface-variant hover:bg-surface-container rounded-md transition-colors">
+<span class="material-symbols-outlined" data-icon="filter_list">filter_list</span>
+</button>
+<button class="p-2 text-on-surface-variant hover:bg-surface-container rounded-md transition-colors">
+<span class="material-symbols-outlined" data-icon="download">download</span>
+</button>
+</div>
+</div>
+<div class="overflow-x-auto">
+<table class="w-full text-left">
+<thead class="bg-surface-container-low text-label-md text-on-surface-variant uppercase tracking-wider">
+<tr>
+<th class="px-6 py-3 font-semibold">Backup ID</th>
+<th class="px-6 py-3 font-semibold">Date & Time</th>
+<th class="px-6 py-3 font-semibold">Size</th>
+<th class="px-6 py-3 font-semibold">Created By</th>
+<th class="px-6 py-3 font-semibold">Status</th>
+<th class="px-6 py-3 font-semibold text-right">Actions</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-outline-variant">
+<tr class="hover:bg-surface-container-low transition-colors">
+<td class="px-6 py-4 font-data-mono text-primary">#BK-20231024-001</td>
+<td class="px-6 py-4 text-body-sm">Oct 24, 2023 · 04:00:02</td>
+<td class="px-6 py-4 text-body-sm">1,240.4 MB</td>
+<td class="px-6 py-4 text-body-sm">System (Auto)</td>
+<td class="px-6 py-4">
+<span class="inline-flex items-center px-2 py-0.5 rounded text-[11px] font-bold bg-green-100 text-green-700">SUCCESS</span>
+</td>
+<td class="px-6 py-4 text-right">
+<div class="flex justify-end gap-2">
+<button class="p-1.5 text-on-surface-variant hover:text-primary transition-colors" title="Download">
+<span class="material-symbols-outlined text-[20px]" data-icon="download">download</span>
+</button>
+<button class="p-1.5 text-on-surface-variant hover:text-error transition-colors" title="Restore">
+<span class="material-symbols-outlined text-[20px]" data-icon="restore">restore</span>
+</button>
+</div>
+</td>
+</tr>
+<tr class="hover:bg-surface-container-low transition-colors">
+<td class="px-6 py-4 font-data-mono text-primary">#BK-20231023-001</td>
+<td class="px-6 py-4 text-body-sm">Oct 23, 2023 · 04:00:01</td>
+<td class="px-6 py-4 text-body-sm">1,238.1 MB</td>
+<td class="px-6 py-4 text-body-sm">System (Auto)</td>
+<td class="px-6 py-4">
+<span class="inline-flex items-center px-2 py-0.5 rounded text-[11px] font-bold bg-green-100 text-green-700">SUCCESS</span>
+</td>
+<td class="px-6 py-4 text-right">
+<div class="flex justify-end gap-2">
+<button class="p-1.5 text-on-surface-variant hover:text-primary transition-colors" title="Download">
+<span class="material-symbols-outlined text-[20px]" data-icon="download">download</span>
+</button>
+<button class="p-1.5 text-on-surface-variant hover:text-error transition-colors" title="Restore">
+<span class="material-symbols-outlined text-[20px]" data-icon="restore">restore</span>
+</button>
+</div>
+</td>
+</tr>
+<tr class="hover:bg-surface-container-low transition-colors">
+<td class="px-6 py-4 font-data-mono text-primary">#BK-20231022-042</td>
+<td class="px-6 py-4 text-body-sm">Oct 22, 2023 · 14:15:30</td>
+<td class="px-6 py-4 text-body-sm">--</td>
+<td class="px-6 py-4 text-body-sm">Admin. Rahman</td>
+<td class="px-6 py-4">
+<span class="inline-flex items-center px-2 py-0.5 rounded text-[11px] font-bold bg-red-100 text-red-700">FAILED</span>
+</td>
+<td class="px-6 py-4 text-right">
+<div class="flex justify-end gap-2">
+<button class="p-1.5 text-on-surface-variant hover:text-primary transition-colors" title="Retry">
+<span class="material-symbols-outlined text-[20px]" data-icon="refresh">refresh</span>
+</button>
+<button class="p-1.5 text-on-surface-variant hover:text-on-surface transition-colors" title="Log">
+<span class="material-symbols-outlined text-[20px]" data-icon="description">description</span>
+</button>
+</div>
+</td>
+</tr>
+<tr class="hover:bg-surface-container-low transition-colors">
+<td class="px-6 py-4 font-data-mono text-primary">#BK-20231022-001</td>
+<td class="px-6 py-4 text-body-sm">Oct 22, 2023 · 04:00:03</td>
+<td class="px-6 py-4 text-body-sm">1,232.4 MB</td>
+<td class="px-6 py-4 text-body-sm">System (Auto)</td>
+<td class="px-6 py-4">
+<span class="inline-flex items-center px-2 py-0.5 rounded text-[11px] font-bold bg-green-100 text-green-700">SUCCESS</span>
+</td>
+<td class="px-6 py-4 text-right">
+<div class="flex justify-end gap-2">
+<button class="p-1.5 text-on-surface-variant hover:text-primary transition-colors" title="Download">
+<span class="material-symbols-outlined text-[20px]" data-icon="download">download</span>
+</button>
+<button class="p-1.5 text-on-surface-variant hover:text-error transition-colors" title="Restore">
+<span class="material-symbols-outlined text-[20px]" data-icon="restore">restore</span>
+</button>
+</div>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<!-- Right Sidebar: Schedule & Info -->
+<div class="flex flex-col gap-gutter">
+<!-- Scheduled Backups Card -->
+<div class="bg-surface-container-lowest border border-outline-variant rounded-xl p-6">
+<div class="flex items-center gap-2 mb-6">
+<span class="material-symbols-outlined text-primary" data-icon="schedule">schedule</span>
+<h3 class="text-headline-md font-headline-md">Schedule Settings</h3>
+</div>
+<form class="space-y-4">
+<div>
+<label class="block text-label-md font-bold text-on-surface-variant mb-1.5">Backup Frequency</label>
+<select class="w-full bg-surface-container-low border-outline-variant rounded-lg focus:ring-primary focus:border-primary">
+<option>Daily</option>
+<option>Weekly</option>
+<option>Monthly</option>
+<option>Manual Only</option>
+</select>
+</div>
+<div>
+<label class="block text-label-md font-bold text-on-surface-variant mb-1.5">Execution Time</label>
+<input class="w-full bg-surface-container-low border-outline-variant rounded-lg focus:ring-primary focus:border-primary" type="time" value="04:00"/>
+</div>
+<div>
+<label class="block text-label-md font-bold text-on-surface-variant mb-1.5">Destination Storage</label>
+<div class="grid grid-cols-2 gap-2">
+<label class="flex flex-col items-center gap-2 p-3 border border-primary bg-secondary-container rounded-lg cursor-pointer">
+<input checked="" class="hidden" name="destination" type="radio"/>
+<span class="material-symbols-outlined text-primary" data-icon="cloud_upload">cloud_upload</span>
+<span class="text-label-md font-bold text-primary">Cloud</span>
+</label>
+<label class="flex flex-col items-center gap-2 p-3 border border-outline-variant hover:bg-surface-container transition-colors rounded-lg cursor-pointer">
+<input class="hidden" name="destination" type="radio"/>
+<span class="material-symbols-outlined text-on-surface-variant" data-icon="storage">storage</span>
+<span class="text-label-md text-on-surface-variant">Local NAS</span>
+</label>
+</div>
+</div>
+<button class="w-full mt-2 py-2.5 border border-primary text-primary font-bold rounded-lg hover:bg-secondary-container transition-all active:scale-[0.98]" type="button">
+                                Update Schedule
+                            </button>
+</form>
+</div>
+<!-- Storage Usage Card -->
+<div class="bg-surface-container-lowest border border-outline-variant rounded-xl p-6">
+<h3 class="text-label-md font-bold text-on-surface-variant uppercase tracking-wider mb-4">Storage Allocation</h3>
+<div class="space-y-4">
+<div>
+<div class="flex justify-between text-body-sm mb-1.5">
+<span class="text-on-surface-variant">Used (Backups)</span>
+<span class="font-bold">42.8 GB / 100 GB</span>
+</div>
+<div class="w-full h-2 bg-surface-container-high rounded-full overflow-hidden">
+<div class="h-full bg-primary" style="width: 42.8%;"></div>
+</div>
+</div>
+<div class="pt-2">
+<p class="text-[11px] text-on-surface-variant leading-relaxed">
+                                    The system automatically purges backups older than 30 days to optimize storage space. Ensure critical snapshots are downloaded for long-term archiving.
+                                </p>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Restore Warning Banner -->
+<div class="mt-gutter p-4 bg-error-container border border-error border-opacity-20 rounded-xl flex items-start gap-4">
+<div class="p-2 bg-error bg-opacity-10 rounded-full">
+<span class="material-symbols-outlined text-error" data-icon="warning">warning</span>
+</div>
+<div>
+<h4 class="text-body-md font-bold text-on-error-container">CRITICAL: Destruction Warning</h4>
+<p class="text-body-sm text-on-error-container mt-1">
+                        Restoring from a backup will overwrite the current live database. All changes made since the backup was created will be permanently lost. This action is destructive and cannot be undone. Ensure you have performed a manual backup before proceeding with any restore action.
+                    </p>
+</div>
+<button class="ml-auto text-on-error-container hover:underline font-label-md flex items-center gap-1">
+                    Read Documentation
+                    <span class="material-symbols-outlined text-[16px]" data-icon="open_in_new">open_in_new</span>
+</button>
+</div>
+</div>
+</main>
+<!-- Footer -->
+<footer class="ml-[240px] w-[calc(100%-240px)] bg-surface-container-low border-t border-outline-variant flex justify-between items-center py-4 px-gutter">
+<p class="font-body-sm text-secondary">© 2024 World University of Bangladesh - Library Management System</p>
+<div class="flex gap-6">
+<a class="font-body-sm text-on-surface-variant hover:text-primary hover:underline transition-colors" href="#">Privacy Policy</a>
+<a class="font-body-sm text-on-surface-variant hover:text-primary hover:underline transition-colors" href="#">Terms of Service</a>
+<a class="font-body-sm text-on-surface-variant hover:text-primary hover:underline transition-colors" href="#">Support</a>
+</div>
+</footer>
+<script>
+        // Micro-interactions
+        document.querySelectorAll('button').forEach(btn => {
+            btn.addEventListener('click', function() {
+                const icon = this.querySelector('.material-symbols-outlined');
+                if (icon && icon.textContent === 'refresh') {
+                    icon.classList.add('animate-spin');
+                    setTimeout(() => icon.classList.remove('animate-spin'), 1000);
+                }
+            });
+        });
+
+        // Search shortcut simulation
+        window.addEventListener('keydown', (e) => {
+            if ((e.metaKey || e.ctrlKey) && e.key === 'f') {
+                e.preventDefault();
+                document.querySelector('input[type="text"]').focus();
+            }
+        });
+    </script>
+</body></html>

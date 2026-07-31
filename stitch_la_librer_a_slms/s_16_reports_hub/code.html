@@ -1,0 +1,391 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>WUB Library - Reports Hub</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&amp;family=JetBrains+Mono:wght@500&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "inverse-primary": "#b4c5ff",
+                        "secondary": "#505f76",
+                        "on-tertiary-fixed": "#360f00",
+                        "on-secondary-fixed-variant": "#38485d",
+                        "on-error-container": "#93000a",
+                        "surface-container-high": "#e7e7f3",
+                        "surface-container-low": "#f3f3fe",
+                        "background": "#faf8ff",
+                        "surface-dim": "#d9d9e5",
+                        "surface-container-highest": "#e1e2ed",
+                        "tertiary": "#943700",
+                        "inverse-on-surface": "#f0f0fb",
+                        "surface-bright": "#faf8ff",
+                        "on-primary-fixed-variant": "#003ea8",
+                        "secondary-fixed": "#d3e4fe",
+                        "on-surface-variant": "#434655",
+                        "on-error": "#ffffff",
+                        "surface-variant": "#e1e2ed",
+                        "secondary-container": "#d0e1fb",
+                        "on-background": "#191b23",
+                        "surface": "#faf8ff",
+                        "on-tertiary": "#ffffff",
+                        "tertiary-container": "#bc4800",
+                        "surface-container-lowest": "#ffffff",
+                        "on-tertiary-container": "#ffede6",
+                        "on-primary": "#ffffff",
+                        "error-container": "#ffdad6",
+                        "error": "#ba1a1a",
+                        "on-primary-fixed": "#00174b",
+                        "on-tertiary-fixed-variant": "#7d2d00",
+                        "primary-container": "#2563eb",
+                        "tertiary-fixed": "#ffdbcd",
+                        "surface-tint": "#0053db",
+                        "tertiary-fixed-dim": "#ffb596",
+                        "surface-container": "#ededf9",
+                        "on-secondary-fixed": "#0b1c30",
+                        "primary-fixed-dim": "#b4c5ff",
+                        "on-primary-container": "#eeefff",
+                        "secondary-fixed-dim": "#b7c8e1",
+                        "inverse-surface": "#2e3039",
+                        "outline": "#737686",
+                        "on-secondary-container": "#54647a",
+                        "on-surface": "#191b23",
+                        "primary-fixed": "#dbe1ff",
+                        "primary": "#004ac6",
+                        "on-secondary": "#ffffff",
+                        "outline-variant": "#c3c6d7"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "stack-lg": "1.5rem",
+                        "margin-desktop": "2rem",
+                        "stack-sm": "0.5rem",
+                        "stack-md": "1rem",
+                        "margin-mobile": "1rem",
+                        "container-max": "1440px",
+                        "gutter": "1.5rem"
+                    },
+                    "fontFamily": {
+                        "data-mono": ["JetBrains Mono"],
+                        "headline-lg": ["Inter"],
+                        "body-lg": ["Inter"],
+                        "headline-md": ["Inter"],
+                        "label-md": ["Inter"],
+                        "body-sm": ["Inter"],
+                        "headline-xl": ["Inter"],
+                        "body-md": ["Inter"]
+                    },
+                    "fontSize": {
+                        "data-mono": ["13px", {"lineHeight": "16px", "fontWeight": "500"}],
+                        "headline-lg": ["24px", {"lineHeight": "32px", "letterSpacing": "-0.01em", "fontWeight": "600"}],
+                        "body-lg": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                        "headline-md": ["20px", {"lineHeight": "28px", "fontWeight": "600"}],
+                        "label-md": ["12px", {"lineHeight": "16px", "fontWeight": "600"}],
+                        "body-sm": ["13px", {"lineHeight": "18px", "fontWeight": "400"}],
+                        "headline-xl": ["30px", {"lineHeight": "38px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                        "body-md": ["14px", {"lineHeight": "20px", "fontWeight": "400"}]
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+        body { font-family: 'Inter', sans-serif; }
+        .glass-card {
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(226, 232, 240, 0.6);
+        }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .bento-grid {
+            display: grid;
+            grid-template-columns: repeat(6, 1fr);
+            gap: 1.5rem;
+        }
+    </style>
+</head>
+<body class="bg-background text-on-background">
+<!-- SideNavBar (Anchor) -->
+<aside class="w-[240px] h-screen fixed left-0 top-0 bg-surface border-r border-outline-variant flex flex-col p-stack-md gap-stack-sm z-50">
+<div class="mb-stack-lg">
+<h1 class="font-headline-md text-headline-md font-bold text-primary">WUB Library</h1>
+<p class="text-body-sm text-on-surface-variant">SLMS Admin</p>
+</div>
+<nav class="flex-1 space-y-1">
+<a class="flex items-center gap-3 px-3 py-2 text-on-surface-variant hover:bg-surface-container-low transition-colors rounded-lg font-body-md text-body-md group" href="#">
+<span class="material-symbols-outlined">dashboard</span>
+<span>Overview</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 text-on-surface-variant hover:bg-surface-container-low transition-colors rounded-lg font-body-md text-body-md" href="#">
+<span class="material-symbols-outlined">menu_book</span>
+<span>Books</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 text-on-surface-variant hover:bg-surface-container-low transition-colors rounded-lg font-body-md text-body-md" href="#">
+<span class="material-symbols-outlined">group</span>
+<span>Members</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 bg-secondary-container text-on-secondary-container rounded-lg font-bold font-body-md text-body-md" href="#">
+<span class="material-symbols-outlined">admin_panel_settings</span>
+<span>Management</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 text-on-surface-variant hover:bg-surface-container-low transition-colors rounded-lg font-body-md text-body-md" href="#">
+<span class="material-symbols-outlined">settings</span>
+<span>Settings</span>
+</a>
+</nav>
+<div class="mt-auto p-2 rounded-xl bg-surface-container-low flex items-center gap-3">
+<img class="w-10 h-10 rounded-full bg-outline-variant object-cover" data-alt="A high-quality studio portrait of a professional librarian in professional attire, looking friendly and capable. The lighting is soft and even, with a clean academic office background. The style is modern and high-resolution, matching the corporate university theme." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAirm6pLefoXhaFBSpmDIHqcqDT6yfGBMEL3A34TKgtHOXMJzTnrPtL9-Zd78aLK4VNyZfKEVpF81uutS3XAZGARREC-jrsiaHeiyZrJQiip-BJh-hx3zUWy-vYutDUYFeip4ksw5zEuZQx46IgjslC5puA5VEoZ77Q6tTDuNC6pd-g3Myz4YrhT9YNJMU36cD0oi9a73d5pIYXKDN5Dg73J6ttYfEs8UXRWCghlrqMJLzMAOaCzj16HQ"/>
+<div class="overflow-hidden">
+<p class="text-label-md font-bold truncate">A. Rahman</p>
+<p class="text-body-sm text-on-surface-variant truncate">Chief Librarian</p>
+</div>
+</div>
+</aside>
+<!-- TopNavBar (Anchor) -->
+<header class="h-[64px] fixed top-0 right-0 left-[240px] bg-white border-b border-outline-variant flex justify-between items-center px-gutter z-40">
+<div class="flex items-center flex-1">
+<div class="relative w-full max-w-md">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-on-surface-variant">search</span>
+<input class="w-full bg-surface-container-low border-none rounded-lg pl-10 pr-16 py-2 text-body-md focus:ring-2 focus:ring-primary/20" placeholder="Search reports or data..." type="text"/>
+<div class="absolute right-3 top-1/2 -translate-y-1/2 font-data-mono text-label-md text-outline-variant bg-white px-1.5 py-0.5 rounded border border-outline-variant">⌘F</div>
+</div>
+</div>
+<div class="flex items-center gap-2">
+<button class="p-2 text-on-surface-variant hover:bg-surface-container-low rounded-full transition-all duration-200">
+<span class="material-symbols-outlined">notifications</span>
+</button>
+<button class="p-2 text-on-surface-variant hover:bg-surface-container-low rounded-full transition-all duration-200">
+<span class="material-symbols-outlined">qr_code_scanner</span>
+</button>
+<button class="p-2 text-on-surface-variant hover:bg-surface-container-low rounded-full transition-all duration-200">
+<span class="material-symbols-outlined">help_outline</span>
+</button>
+</div>
+</header>
+<!-- Main Content Canvas -->
+<main class="ml-[240px] pt-[64px] p-gutter min-h-screen">
+<div class="max-w-container-max mx-auto space-y-stack-lg">
+<!-- Welcome Header -->
+<div class="flex justify-between items-end mb-8">
+<div>
+<h2 class="font-headline-xl text-headline-xl text-on-surface tracking-tight">Reports Hub</h2>
+<p class="text-body-lg text-on-surface-variant">Analyze institutional data and generate compliance reports.</p>
+</div>
+<div class="flex gap-3">
+<button class="px-4 py-2 border border-primary text-primary rounded-lg font-label-md flex items-center gap-2 hover:bg-primary-fixed transition-colors active:scale-95 duration-150">
+<span class="material-symbols-outlined text-[18px]">download</span>
+                        Export All
+                    </button>
+<button class="px-4 py-2 bg-primary text-white rounded-lg font-label-md flex items-center gap-2 hover:bg-on-primary-fixed-variant transition-colors shadow-sm active:scale-95 duration-150">
+<span class="material-symbols-outlined text-[18px]">add</span>
+                        New Custom Report
+                    </button>
+</div>
+</div>
+<!-- Bento Grid of Report Categories -->
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-stack-md">
+<!-- Card 1: Circulation Summary -->
+<div class="glass-card p-6 rounded-xl flex flex-col gap-4 border-l-4 border-l-primary hover:shadow-lg transition-all">
+<div class="w-12 h-12 rounded-lg bg-primary-fixed flex items-center justify-center text-primary">
+<span class="material-symbols-outlined text-[28px]">sync_alt</span>
+</div>
+<div>
+<h3 class="font-headline-md text-on-surface">Circulation Summary</h3>
+<p class="text-body-sm text-on-surface-variant mt-1">Daily loan and return metrics over time.</p>
+</div>
+<button class="mt-auto px-4 py-2 bg-surface-container-highest text-on-surface rounded-lg font-label-md hover:bg-primary hover:text-white transition-all">Generate</button>
+</div>
+<!-- Card 2: Fine Collection -->
+<div class="glass-card p-6 rounded-xl flex flex-col gap-4 border-l-4 border-l-tertiary hover:shadow-lg transition-all">
+<div class="w-12 h-12 rounded-lg bg-tertiary-fixed flex items-center justify-center text-tertiary">
+<span class="material-symbols-outlined text-[28px]">payments</span>
+</div>
+<div>
+<h3 class="font-headline-md text-on-surface">Fine Collection</h3>
+<p class="text-body-sm text-on-surface-variant mt-1">Revenue streams from overdue penalties.</p>
+</div>
+<button class="mt-auto px-4 py-2 bg-surface-container-highest text-on-surface rounded-lg font-label-md hover:bg-tertiary hover:text-white transition-all">Generate</button>
+</div>
+<!-- Card 3: Overdue Statistics -->
+<div class="glass-card p-6 rounded-xl flex flex-col gap-4 border-l-4 border-l-error hover:shadow-lg transition-all">
+<div class="w-12 h-12 rounded-lg bg-error-container flex items-center justify-center text-error">
+<span class="material-symbols-outlined text-[28px]">running_with_errors</span>
+</div>
+<div>
+<h3 class="font-headline-md text-on-surface">Overdue Statistics</h3>
+<p class="text-body-sm text-on-surface-variant mt-1">Analysis of late returns and high-risk items.</p>
+</div>
+<button class="mt-auto px-4 py-2 bg-surface-container-highest text-on-surface rounded-lg font-label-md hover:bg-error hover:text-white transition-all">Generate</button>
+</div>
+<!-- Card 4: Member Activity -->
+<div class="glass-card p-6 rounded-xl flex flex-col gap-4 border-l-4 border-l-secondary hover:shadow-lg transition-all">
+<div class="w-12 h-12 rounded-lg bg-secondary-fixed flex items-center justify-center text-secondary">
+<span class="material-symbols-outlined text-[28px]">person_celebrate</span>
+</div>
+<div>
+<h3 class="font-headline-md text-on-surface">Member Activity</h3>
+<p class="text-body-sm text-on-surface-variant mt-1">User engagement and footfall reporting.</p>
+</div>
+<button class="mt-auto px-4 py-2 bg-surface-container-highest text-on-surface rounded-lg font-label-md hover:bg-secondary hover:text-white transition-all">Generate</button>
+</div>
+<!-- Card 5: Catalog Health -->
+<div class="glass-card p-6 rounded-xl flex flex-col gap-4 border-l-4 border-l-on-tertiary-fixed-variant hover:shadow-lg transition-all">
+<div class="w-12 h-12 rounded-lg bg-surface-container-highest flex items-center justify-center text-on-tertiary-fixed-variant">
+<span class="material-symbols-outlined text-[28px]">inventory_2</span>
+</div>
+<div>
+<h3 class="font-headline-md text-on-surface">Catalog Health</h3>
+<p class="text-body-sm text-on-surface-variant mt-1">Inventory accuracy and loss assessment.</p>
+</div>
+<button class="mt-auto px-4 py-2 bg-surface-container-highest text-on-surface rounded-lg font-label-md hover:bg-on-tertiary-fixed-variant hover:text-white transition-all">Generate</button>
+</div>
+</div>
+<!-- Report Preview Section -->
+<div class="glass-card rounded-xl border border-outline-variant overflow-hidden">
+<div class="p-6 border-b border-outline-variant flex flex-col md:flex-row justify-between items-center gap-4 bg-surface-container-lowest">
+<div>
+<h3 class="font-headline-lg text-headline-lg text-on-surface">Preview: Circulation Summary</h3>
+<p class="text-body-sm text-on-surface-variant">Last updated: Today, 09:42 AM</p>
+</div>
+<div class="flex items-center gap-3">
+<div class="flex items-center bg-white border border-outline-variant rounded-lg px-3 py-1.5">
+<span class="material-symbols-outlined text-[18px] text-on-surface-variant mr-2">calendar_today</span>
+<span class="text-body-md">Oct 01, 2024 - Oct 31, 2024</span>
+<span class="material-symbols-outlined text-[18px] text-on-surface-variant ml-2">expand_more</span>
+</div>
+<button class="p-2 bg-surface-container-high rounded-lg hover:bg-outline-variant transition-colors">
+<span class="material-symbols-outlined">filter_list</span>
+</button>
+</div>
+</div>
+<div class="p-6">
+<!-- Stat Cards Row -->
+<div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+<div class="p-5 bg-primary-fixed rounded-xl flex items-center gap-4">
+<div class="w-10 h-10 bg-white/50 rounded-full flex items-center justify-center">
+<span class="material-symbols-outlined text-primary">outbound</span>
+</div>
+<div>
+<p class="text-label-md text-on-primary-fixed-variant uppercase">Total Issued</p>
+<h4 class="text-headline-xl font-bold text-on-primary-fixed">1,284</h4>
+<p class="text-body-sm text-on-primary-fixed-variant flex items-center gap-1">
+<span class="material-symbols-outlined text-[14px]">trending_up</span> 12% vs last month
+                                </p>
+</div>
+</div>
+<div class="p-5 bg-secondary-fixed rounded-xl flex items-center gap-4">
+<div class="w-10 h-10 bg-white/50 rounded-full flex items-center justify-center">
+<span class="material-symbols-outlined text-secondary">assignment_return</span>
+</div>
+<div>
+<p class="text-label-md text-on-secondary-fixed-variant uppercase">Total Returned</p>
+<h4 class="text-headline-xl font-bold text-on-secondary-fixed">1,102</h4>
+<p class="text-body-sm text-on-secondary-fixed-variant flex items-center gap-1">
+<span class="material-symbols-outlined text-[14px]">trending_up</span> 8% vs last month
+                                </p>
+</div>
+</div>
+<div class="p-5 bg-error-container rounded-xl flex items-center gap-4">
+<div class="w-10 h-10 bg-white/50 rounded-full flex items-center justify-center">
+<span class="material-symbols-outlined text-error">notification_important</span>
+</div>
+<div>
+<p class="text-label-md text-on-error-container uppercase">Overdue Rate</p>
+<h4 class="text-headline-xl font-bold text-on-error-container">4.2%</h4>
+<p class="text-body-sm text-on-error-container flex items-center gap-1">
+<span class="material-symbols-outlined text-[14px]">trending_down</span> 0.5% decrease
+                                </p>
+</div>
+</div>
+</div>
+<!-- Summary Table -->
+<div class="rounded-xl border border-outline-variant overflow-hidden">
+<table class="w-full text-left border-collapse">
+<thead>
+<tr class="bg-surface-container-low">
+<th class="px-6 py-4 text-label-md text-on-surface-variant uppercase tracking-wider">Date Range</th>
+<th class="px-6 py-4 text-label-md text-on-surface-variant uppercase tracking-wider">Books Borrowed</th>
+<th class="px-6 py-4 text-label-md text-on-surface-variant uppercase tracking-wider">Returns</th>
+<th class="px-6 py-4 text-label-md text-on-surface-variant uppercase tracking-wider">Active Reservations</th>
+<th class="px-6 py-4 text-label-md text-on-surface-variant uppercase tracking-wider">Status</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-outline-variant">
+<tr class="hover:bg-surface-container-lowest transition-colors">
+<td class="px-6 py-4 font-data-mono text-body-md">Oct 24 - Oct 30</td>
+<td class="px-6 py-4 text-body-md font-bold">342</td>
+<td class="px-6 py-4 text-body-md">310</td>
+<td class="px-6 py-4 text-body-md">45</td>
+<td class="px-6 py-4">
+<span class="px-2 py-1 bg-green-100 text-green-800 text-[11px] font-bold rounded uppercase">Stable</span>
+</td>
+</tr>
+<tr class="hover:bg-surface-container-lowest transition-colors">
+<td class="px-6 py-4 font-data-mono text-body-md">Oct 17 - Oct 23</td>
+<td class="px-6 py-4 text-body-md font-bold">412</td>
+<td class="px-6 py-4 text-body-md">385</td>
+<td class="px-6 py-4 text-body-md">52</td>
+<td class="px-6 py-4">
+<span class="px-2 py-1 bg-blue-100 text-blue-800 text-[11px] font-bold rounded uppercase">Peak</span>
+</td>
+</tr>
+<tr class="hover:bg-surface-container-lowest transition-colors">
+<td class="px-6 py-4 font-data-mono text-body-md">Oct 10 - Oct 16</td>
+<td class="px-6 py-4 text-body-md font-bold">280</td>
+<td class="px-6 py-4 text-body-md">264</td>
+<td class="px-6 py-4 text-body-md">38</td>
+<td class="px-6 py-4">
+<span class="px-2 py-1 bg-green-100 text-green-800 text-[11px] font-bold rounded uppercase">Stable</span>
+</td>
+</tr>
+<tr class="hover:bg-surface-container-lowest transition-colors">
+<td class="px-6 py-4 font-data-mono text-body-md">Oct 01 - Oct 09</td>
+<td class="px-6 py-4 text-body-md font-bold">250</td>
+<td class="px-6 py-4 text-body-md">143</td>
+<td class="px-6 py-4 text-body-md">22</td>
+<td class="px-6 py-4">
+<span class="px-2 py-1 bg-amber-100 text-amber-800 text-[11px] font-bold rounded uppercase">Low Vol</span>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+</div>
+</main>
+<!-- Footer (Anchor) -->
+<footer class="ml-[240px] p-stack-md bg-surface-container-lowest border-t border-outline-variant flex justify-between items-center w-[calc(100%-240px)]">
+<span class="text-body-sm text-secondary font-label-md uppercase tracking-wider">© 2024 WORLD UNIVERSITY OF BANGLADESH - LIBRARY MANAGEMENT SYSTEM</span>
+<div class="flex gap-gutter">
+<a class="text-body-sm text-on-secondary-container hover:underline opacity-80 hover:opacity-100 transition-opacity" href="#">Privacy Policy</a>
+<a class="text-body-sm text-on-secondary-container hover:underline opacity-80 hover:opacity-100 transition-opacity" href="#">Support</a>
+<a class="text-body-sm text-on-secondary-container hover:underline opacity-80 hover:opacity-100 transition-opacity" href="#">System Status</a>
+</div>
+</footer>
+<script>
+        // Simple micro-interaction for cards
+        document.querySelectorAll('.glass-card').forEach(card => {
+            card.addEventListener('mouseenter', () => {
+                card.style.transform = 'translateY(-2px)';
+            });
+            card.addEventListener('mouseleave', () => {
+                card.style.transform = 'translateY(0)';
+            });
+        });
+    </script>
+</body></html>

@@ -1,0 +1,12 @@
+# OS
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Editors
+.vscode/*
+!.vscode/extensions.json
+.idea/
+
+# Backend and frontend have their own .gitignore for vendor/, node_modules/,
+# .env, build output, etc. — this file only covers repo-wide clutter.

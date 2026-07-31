@@ -1,0 +1,701 @@
+<!DOCTYPE html><html class="light" lang="en" style=""><head>
+<meta charset="utf-8">
+<meta content="width=device-width, initial-scale=1.0" name="viewport">
+<title class="">Overdue Monitor | La librería</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&amp;family=JetBrains+Mono:wght@500&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "secondary-container": "#d0e1fb",
+                        "error-container": "#ffdad6",
+                        "surface-container-high": "#e7e7f3",
+                        "outline": "#737686",
+                        "inverse-primary": "#b4c5ff",
+                        "primary-container": "#2563eb",
+                        "on-error-container": "#93000a",
+                        "tertiary-fixed": "#ffdbcd",
+                        "surface-container-highest": "#e1e2ed",
+                        "surface-container": "#ededf9",
+                        "on-surface": "#191b23",
+                        "on-tertiary": "#ffffff",
+                        "surface": "#faf8ff",
+                        "on-secondary": "#ffffff",
+                        "tertiary-fixed-dim": "#ffb596",
+                        "on-secondary-container": "#54647a",
+                        "surface-container-low": "#f3f3fe",
+                        "inverse-surface": "#2e3039",
+                        "tertiary-container": "#bc4800",
+                        "on-secondary-fixed-variant": "#38485d",
+                        "primary-fixed": "#dbe1ff",
+                        "on-secondary-fixed": "#0b1c30",
+                        "on-primary": "#ffffff",
+                        "surface-variant": "#e1e2ed",
+                        "inverse-on-surface": "#f0f0fb",
+                        "surface-bright": "#faf8ff",
+                        "on-tertiary-fixed": "#360f00",
+                        "on-error": "#ffffff",
+                        "on-primary-fixed": "#00174b",
+                        "tertiary": "#943700",
+                        "on-surface-variant": "#434655",
+                        "secondary-fixed": "#d3e4fe",
+                        "primary": "#004ac6",
+                        "outline-variant": "#c3c6d7",
+                        "surface-tint": "#0053db",
+                        "error": "#ba1a1a",
+                        "on-primary-container": "#eeefff",
+                        "on-primary-fixed-variant": "#003ea8",
+                        "on-background": "#191b23",
+                        "surface-dim": "#d9d9e5",
+                        "on-tertiary-container": "#ffede6",
+                        "background": "#faf8ff",
+                        "on-tertiary-fixed-variant": "#7d2d00",
+                        "surface-container-lowest": "#ffffff",
+                        "secondary": "#505f76",
+                        "primary-fixed-dim": "#b4c5ff",
+                        "secondary-fixed-dim": "#b7c8e1"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "gutter": "1.5rem",
+                        "stack-sm": "0.5rem",
+                        "stack-md": "1rem",
+                        "stack-lg": "1.5rem",
+                        "container-max": "1440px",
+                        "margin-desktop": "2rem",
+                        "margin-mobile": "1rem"
+                    },
+                    "fontFamily": {
+                        "label-md": ["Inter"],
+                        "data-mono": ["JetBrains Mono"],
+                        "body-md": ["Inter"],
+                        "body-lg": ["Inter"],
+                        "headline-md": ["Inter"],
+                        "headline-lg": ["Inter"],
+                        "headline-xl": ["Inter"],
+                        "body-sm": ["Inter"]
+                    },
+                    "fontSize": {
+                        "label-md": ["12px", {"lineHeight": "16px", "fontWeight": "600"}],
+                        "data-mono": ["13px", {"lineHeight": "16px", "fontWeight": "500"}],
+                        "body-md": ["14px", {"lineHeight": "20px", "fontWeight": "400"}],
+                        "body-lg": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                        "headline-md": ["20px", {"lineHeight": "28px", "fontWeight": "600"}],
+                        "headline-lg": ["24px", {"lineHeight": "32px", "letterSpacing": "-0.01em", "fontWeight": "600"}],
+                        "headline-xl": ["30px", {"lineHeight": "38px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                        "body-sm": ["13px", {"lineHeight": "18px", "fontWeight": "400"}]
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+        body {
+            background-color: #f8fafc;
+            color: #191b23;
+            -webkit-font-smoothing: antialiased;
+        }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+            display: inline-block;
+            vertical-align: middle;
+            line-height: 1;
+        }
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 4px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+            background: #94a3b8;
+        }
+        .severity-low { background-color: #fffbeb; } /* amber-50 equivalent */
+        .severity-medium { background-color: #fef2f2; } /* red-50 equivalent */
+        .severity-high { 
+            background-color: #fee2e2; /* red-100 equivalent */
+            border-left: 4px solid #ba1a1a;
+        }
+    </style>
+</head>
+<body class="font-body-md text-body-md overflow-hidden">
+<!-- Sidebar (Shared Component Blueprint) -->
+<aside class="w-[240px] h-screen fixed left-0 top-0 bg-surface border-r border-outline-variant flex flex-col p-stack-md gap-stack-sm z-50">
+<div class="mb-stack-lg px-2"><div class="flex items-center gap-3 mb-2"><img src="https://lh3.googleusercontent.com/aida/AP1WRLtE2FtoxwJscQGVG7MSvVellS3ohqmPxnAIQIfFIJL-V1y02_I5t6ksB6lcVxACL7eJ5dPOipZuHH1jpl1Rss4CcI6Nf1av6kz2HMYU3t59exbWPcofS3HsplyAveIaSVFepMsWZWMvV0aZSQRDeGv2-eMx5NlnDIWZOo5RHERygy7Us2JjnoUXRCpYJItBZmrkZLceYc_L6jGszT7MEyNGIXt2ghiY3SSITV6NatnSQ2ApgZGnv1HhejFW" alt="La librería logo" class="w-8 h-8 object-contain"><h1 class="font-headline-md text-headline-md font-bold text-primary">La librería</h1></div><p class="text-on-surface-variant font-label-md text-label-md opacity-70">Library Management System</p></div>
+<nav class="flex-1 space-y-1">
+<a class="flex items-center gap-3 px-3 py-2 text-on-surface-variant hover:bg-surface-container-low transition-colors rounded-lg" href="#">
+<span class="material-symbols-outlined">dashboard</span>
+<span class="">Overview</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 bg-secondary-container text-on-secondary-container rounded-lg font-bold" href="#">
+<span class="material-symbols-outlined">menu_book</span>
+<span class="">Books</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 text-on-surface-variant hover:bg-surface-container-low transition-colors rounded-lg" href="#">
+<span class="material-symbols-outlined">group</span>
+<span class="">Members</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 text-on-surface-variant hover:bg-surface-container-low transition-colors rounded-lg" href="#">
+<span class="material-symbols-outlined">admin_panel_settings</span>
+<span class="">Management</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 text-on-surface-variant hover:bg-surface-container-low transition-colors rounded-lg" href="#">
+<span class="material-symbols-outlined">settings</span>
+<span class="">Settings</span>
+</a>
+</nav>
+<div class="mt-auto flex items-center gap-3 px-3 py-4 border-t border-outline-variant">
+<div class="w-10 h-10 rounded-full bg-primary-fixed flex items-center justify-center overflow-hidden">
+<img class="w-full h-full object-cover" data-alt="A professional headshot of a female South Asian librarian with a welcoming expression, wearing a formal suit. She is positioned in a modern university library setting with blurred bookshelves in the background. High-key lighting emphasizes a clean, academic atmosphere with a corporate and professional aesthetic." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDq40PGju0nH5vxrBjv8SRK4ZX7JelJIbIc6A4J-osCsjOuBbwsEb5MlxF-5Ba989n7qHrimPAIb9igLX_JK-Z2BMr_Qt5Fc0ILdbRjfwnljlP-XP2F97Lchy7oJUKkRW19_DL-mijTemfN-wh35t2hushGw0vMa8kaI6UdOwGPfpBQFVekj8ekDnHP_M-eWESNrASM3j3NHXQD2M5pN8uYtq9SdFSUJOdgtCiVpVOPVfNeIpIFVcHOaw">
+</div>
+<div class="flex-1 overflow-hidden">
+<p class="font-label-md text-label-md truncate">Librarian Profile</p>
+<p class="text-[10px] text-on-surface-variant">Head Curator</p>
+</div>
+</div>
+</aside>
+<!-- Header (Shared Component Blueprint) -->
+<header class="h-[64px] fixed top-0 right-0 left-[240px] z-40 bg-white border-b border-outline-variant flex justify-between items-center px-gutter w-auto">
+<div class="flex items-center gap-4 flex-1">
+<div class="relative w-full max-w-md">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-on-surface-variant scale-90">search</span>
+<input class="w-full bg-surface-container-low border-none rounded-full pl-10 pr-4 py-2 font-body-sm text-body-sm focus:ring-2 focus:ring-primary-fixed outline-none" placeholder="Search catalog, students, or records... (⌘F)" type="text">
+<div class="absolute right-3 top-1/2 -translate-y-1/2 font-data-mono text-[10px] text-outline px-1.5 py-0.5 border border-outline-variant rounded bg-white">⌘F</div>
+</div>
+</div>
+<div class="flex items-center gap-2">
+<button class="material-symbols-outlined hover:bg-surface-container-low rounded-full p-2 transition-all">notifications</button>
+<button class="material-symbols-outlined hover:bg-surface-container-low rounded-full p-2 transition-all">qr_code_scanner</button>
+<button class="material-symbols-outlined hover:bg-surface-container-low rounded-full p-2 transition-all">help_outline</button>
+</div>
+</header>
+<!-- Main Content Canvas -->
+<main class="ml-[240px] mt-[64px] h-[calc(100vh-64px-48px)] overflow-hidden flex flex-col p-6 gap-6">
+<!-- Summary Strip -->
+<section class="grid grid-cols-4 gap-4">
+<div class="bg-white p-4 rounded-xl border border-outline-variant flex items-center gap-4 shadow-sm">
+<div class="w-12 h-12 rounded-lg bg-error-container flex items-center justify-center text-on-error-container">
+<span class="material-symbols-outlined text-[28px]">pending_actions</span>
+</div>
+<div>
+<p class="text-on-surface-variant font-label-md text-label-md">Total Overdue</p>
+<h3 class="font-headline-lg text-headline-lg text-on-surface">142 Items</h3>
+</div>
+</div>
+<div class="bg-white p-4 rounded-xl border border-outline-variant flex items-center gap-4 shadow-sm">
+<div class="w-12 h-12 rounded-lg bg-tertiary-fixed flex items-center justify-center text-on-tertiary-fixed-variant">
+<span class="material-symbols-outlined text-[28px]">payments</span>
+</div>
+<div>
+<p class="text-on-surface-variant font-label-md text-label-md">Total Accrued Fine</p>
+<h3 class="font-headline-lg text-headline-lg text-on-surface">৳ 4,850.00</h3>
+</div>
+</div>
+<div class="bg-white p-4 rounded-xl border border-outline-variant flex items-center gap-4 shadow-sm">
+<div class="w-12 h-12 rounded-lg bg-secondary-fixed flex items-center justify-center text-on-secondary-fixed-variant">
+<span class="material-symbols-outlined text-[28px]">warning</span>
+</div>
+<div>
+<p class="text-on-surface-variant font-label-md text-label-md">High Severity (30+d)</p>
+<h3 class="font-headline-lg text-headline-lg text-on-surface">24 Users</h3>
+</div>
+</div>
+<div class="bg-white p-4 rounded-xl border border-outline-variant flex items-center gap-4 shadow-sm">
+<div class="w-12 h-12 rounded-lg bg-surface-container-high flex items-center justify-center text-primary">
+<span class="material-symbols-outlined text-[28px]">schedule_send</span>
+</div>
+<div>
+<p class="text-on-surface-variant font-label-md text-label-md">Reminders Today</p>
+<h3 class="font-headline-lg text-headline-lg text-on-surface">58 Sent</h3>
+</div>
+</div>
+</section>
+<!-- Toolbar -->
+<section class="bg-white p-4 rounded-xl border border-outline-variant flex flex-wrap items-center justify-between gap-4 shadow-sm">
+<div class="flex items-center gap-4">
+<div class="flex flex-col gap-1">
+<label class="font-label-md text-[10px] uppercase text-outline">As-Of Date</label>
+<input class="border border-outline-variant rounded-lg px-3 py-1.5 text-body-sm font-body-sm focus:ring-2 focus:ring-primary-fixed outline-none" type="date" value="2024-05-20">
+</div>
+<div class="flex flex-col gap-1">
+<label class="font-label-md text-[10px] uppercase text-outline">Overdue Range</label>
+<select class="border border-outline-variant rounded-lg px-3 py-1.5 text-body-sm font-body-sm focus:ring-2 focus:ring-primary-fixed outline-none">
+<option>All Overdue</option>
+<option>1-7 Days</option>
+<option>8-30 Days</option>
+<option>30+ Days</option>
+</select>
+</div>
+<div class="flex flex-col gap-1">
+<label class="font-label-md text-[10px] uppercase text-outline">Department</label>
+<select class="border border-outline-variant rounded-lg px-3 py-1.5 text-body-sm font-body-sm focus:ring-2 focus:ring-primary-fixed outline-none">
+<option>All Departments</option>
+<option>Computer Science</option>
+<option>Business Administration</option>
+<option>Civil Engineering</option>
+<option>Pharmacy</option>
+</select>
+</div>
+</div>
+<div class="flex items-center gap-2">
+<button class="flex items-center gap-2 px-4 py-2 border border-outline-variant rounded-lg text-body-sm font-semibold hover:bg-surface-container-low transition-colors">
+<span class="material-symbols-outlined text-[18px]">file_download</span>
+                    Export CSV
+                </button>
+<button class="flex items-center gap-2 px-6 py-2 bg-primary text-white rounded-lg text-body-sm font-semibold hover:opacity-90 active:scale-95 transition-all shadow-md">
+<span class="material-symbols-outlined text-[18px]">send</span>
+                    Send Reminders
+                </button>
+</div>
+</section>
+<!-- Data Table -->
+<section class="flex-1 bg-white border border-outline-variant rounded-xl shadow-sm overflow-hidden flex flex-col">
+<div class="overflow-x-auto custom-scrollbar flex-1">
+<table class="w-full text-left border-collapse min-w-[1000px]">
+<thead class="bg-surface sticky top-0 z-10">
+<tr class="border-b border-outline-variant">
+<th class="px-4 py-3 font-label-md text-label-md text-outline uppercase tracking-wider">Student ID</th>
+<th class="px-4 py-3 font-label-md text-label-md text-outline uppercase tracking-wider">Name</th>
+<th class="px-4 py-3 font-label-md text-label-md text-outline uppercase tracking-wider">Department</th>
+<th class="px-4 py-3 font-label-md text-label-md text-outline uppercase tracking-wider">Book Title</th>
+<th class="px-4 py-3 font-label-md text-label-md text-outline uppercase tracking-wider">Accession</th>
+<th class="px-4 py-3 font-label-md text-label-md text-outline uppercase tracking-wider">Due Date</th>
+<th class="px-4 py-3 font-label-md text-label-md text-outline uppercase tracking-wider text-right">Days Overdue</th>
+<th class="px-4 py-3 font-label-md text-label-md text-outline uppercase tracking-wider text-right">Accrued Fine</th>
+<th class="px-4 py-3 font-label-md text-label-md text-outline uppercase tracking-wider text-center">Actions</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-outline-variant/30">
+<!-- High Severity Row -->
+<tr class="severity-high h-[36px] hover:brightness-[0.98] transition-all">
+<td class="px-4 py-1.5 font-data-mono text-data-mono">CS-21-045</td>
+<td class="px-4 py-1.5 font-semibold">Tariqul Islam</td>
+<td class="px-4 py-1.5">CSE</td>
+<td class="px-4 py-1.5 truncate max-w-[200px]">Introduction to Algorithms</td>
+<td class="px-4 py-1.5 font-data-mono text-data-mono">ALGO-2023-01</td>
+<td class="px-4 py-1.5">Apr 12, 2024</td>
+<td class="px-4 py-1.5 text-right font-bold text-error">38</td>
+<td class="px-4 py-1.5 text-right font-semibold">৳ 380.00</td>
+<td class="px-4 py-1.5 text-center">
+<div class="flex items-center justify-center gap-1">
+<button class="p-1 hover:bg-white rounded text-primary material-symbols-outlined text-[18px]">mail</button>
+<button class="p-1 hover:bg-white rounded text-outline material-symbols-outlined text-[18px]">more_vert</button>
+</div>
+</td>
+</tr>
+<!-- Medium Severity Row -->
+<tr class="severity-medium h-[36px] hover:brightness-[0.98] transition-all">
+<td class="px-4 py-1.5 font-data-mono text-data-mono">BA-22-112</td>
+<td class="px-4 py-1.5 font-semibold">Sadia Ahmed</td>
+<td class="px-4 py-1.5">Business Admin</td>
+<td class="px-4 py-1.5 truncate max-w-[200px]">Microeconomics Theory</td>
+<td class="px-4 py-1.5 font-data-mono text-data-mono">BA-2022-998</td>
+<td class="px-4 py-1.5">May 05, 2024</td>
+<td class="px-4 py-1.5 text-right font-bold text-error">15</td>
+<td class="px-4 py-1.5 text-right font-semibold">৳ 150.00</td>
+<td class="px-4 py-1.5 text-center">
+<div class="flex items-center justify-center gap-1">
+<button class="p-1 hover:bg-white rounded text-primary material-symbols-outlined text-[18px]">mail</button>
+<button class="p-1 hover:bg-white rounded text-outline material-symbols-outlined text-[18px]">more_vert</button>
+</div>
+</td>
+</tr>
+<!-- Low Severity Row -->
+<tr class="severity-low h-[36px] hover:brightness-[0.98] transition-all">
+<td class="px-4 py-1.5 font-data-mono text-data-mono">CE-20-092</td>
+<td class="px-4 py-1.5 font-semibold">Fahim Shahriar</td>
+<td class="px-4 py-1.5">Civil Engineering</td>
+<td class="px-4 py-1.5 truncate max-w-[200px]">Strength of Materials</td>
+<td class="px-4 py-1.5 font-data-mono text-data-mono">ENG-MAT-442</td>
+<td class="px-4 py-1.5">May 16, 2024</td>
+<td class="px-4 py-1.5 text-right font-bold text-error">4</td>
+<td class="px-4 py-1.5 text-right font-semibold">৳ 40.00</td>
+<td class="px-4 py-1.5 text-center">
+<div class="flex items-center justify-center gap-1">
+<button class="p-1 hover:bg-white rounded text-primary material-symbols-outlined text-[18px]">mail</button>
+<button class="p-1 hover:bg-white rounded text-outline material-symbols-outlined text-[18px]">more_vert</button>
+</div>
+</td>
+</tr>
+<!-- Multi-row simulation -->
+<tr class="severity-high h-[36px] hover:brightness-[0.98] transition-all">
+<td class="px-4 py-1.5 font-data-mono text-data-mono">PH-21-002</td>
+<td class="px-4 py-1.5 font-semibold">Nusrat Jahan</td>
+<td class="px-4 py-1.5">Pharmacy</td>
+<td class="px-4 py-1.5 truncate max-w-[200px]">Clinical Pharmacology</td>
+<td class="px-4 py-1.5 font-data-mono text-data-mono">MED-7712</td>
+<td class="px-4 py-1.5">Mar 22, 2024</td>
+<td class="px-4 py-1.5 text-right font-bold text-error">59</td>
+<td class="px-4 py-1.5 text-right font-semibold">৳ 590.00</td>
+<td class="px-4 py-1.5 text-center">
+<div class="flex items-center justify-center gap-1">
+<button class="p-1 hover:bg-white rounded text-primary material-symbols-outlined text-[18px]">mail</button>
+<button class="p-1 hover:bg-white rounded text-outline material-symbols-outlined text-[18px]">more_vert</button>
+</div>
+</td>
+</tr>
+<tr class="h-[36px] hover:bg-surface-container-low transition-all">
+<td class="px-4 py-1.5 font-data-mono text-data-mono">CS-23-401</td>
+<td class="px-4 py-1.5 font-semibold">Ariful Haq</td>
+<td class="px-4 py-1.5">CSE</td>
+<td class="px-4 py-1.5 truncate max-w-[200px]">Data Structures</td>
+<td class="px-4 py-1.5 font-data-mono text-data-mono">CS-302-DS</td>
+<td class="px-4 py-1.5">May 19, 2024</td>
+<td class="px-4 py-1.5 text-right font-bold text-error">1</td>
+<td class="px-4 py-1.5 text-right font-semibold">৳ 10.00</td>
+<td class="px-4 py-1.5 text-center">
+<div class="flex items-center justify-center gap-1">
+<button class="p-1 hover:bg-white rounded text-primary material-symbols-outlined text-[18px]">mail</button>
+<button class="p-1 hover:bg-white rounded text-outline material-symbols-outlined text-[18px]">more_vert</button>
+</div>
+</td>
+</tr>
+<!-- Fill rows for visual density -->
+<script>
+                            const names = ["Mehedi Hasan", "Rubina Akter", "Kamal Uddin", "Tanvir Ahmed", "Salma Begum"];
+                            const depts = ["Civil Eng", "CSE", "BBA", "Pharmacy", "EEE"];
+                            const books = ["Calculus II", "Digital Logic", "Marketing 101", "Anatomy Basics", "Circuit Theory"];
+                            for(let i=0; i<15; i++) {
+                                const days = Math.floor(Math.random() * 45) + 1;
+                                let severity = "";
+                                if(days > 30) severity = "severity-high";
+                                else if(days > 7) severity = "severity-medium";
+                                else severity = "severity-low";
+
+                                document.write(`
+                                    <tr class="${severity} h-[36px] hover:brightness-[0.98] transition-all">
+                                        <td class="px-4 py-1.5 font-data-mono text-data-mono">WUB-GEN-${100+i}</td>
+                                        <td class="px-4 py-1.5 font-semibold">${names[i%5]}</td>
+                                        <td class="px-4 py-1.5">${depts[i%5]}</td>
+                                        <td class="px-4 py-1.5 truncate max-w-[200px]">${books[i%5]}</td>
+                                        <td class="px-4 py-1.5 font-data-mono text-data-mono">LIB-${2000+i}</td>
+                                        <td class="px-4 py-1.5">May ${Math.max(1, 20-days)}, 2024</td>
+                                        <td class="px-4 py-1.5 text-right font-bold text-error">${days}</td>
+                                        <td class="px-4 py-1.5 text-right font-semibold">৳ ${days*10}.00</td>
+                                        <td class="px-4 py-1.5 text-center">
+                                            <div class="flex items-center justify-center gap-1">
+                                                <button class="p-1 hover:bg-white rounded text-primary material-symbols-outlined text-[18px]">mail</button>
+                                                <button class="p-1 hover:bg-white rounded text-outline material-symbols-outlined text-[18px]">more_vert</button>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                `);
+                            }
+                        </script>
+                                    <tr class="severity-medium h-[36px] hover:brightness-[0.98] transition-all">
+                                        <td class="px-4 py-1.5 font-data-mono text-data-mono">GEN-100</td>
+                                        <td class="px-4 py-1.5 font-semibold">Mehedi Hasan</td>
+                                        <td class="px-4 py-1.5">Civil Eng</td>
+                                        <td class="px-4 py-1.5 truncate max-w-[200px]">Calculus II</td>
+                                        <td class="px-4 py-1.5 font-data-mono text-data-mono">LIB-2000</td>
+                                        <td class="px-4 py-1.5">May 11, 2024</td>
+                                        <td class="px-4 py-1.5 text-right font-bold text-error">9</td>
+                                        <td class="px-4 py-1.5 text-right font-semibold">৳ 90.00</td>
+                                        <td class="px-4 py-1.5 text-center">
+                                            <div class="flex items-center justify-center gap-1">
+                                                <button class="p-1 hover:bg-white rounded text-primary material-symbols-outlined text-[18px]">mail</button>
+                                                <button class="p-1 hover:bg-white rounded text-outline material-symbols-outlined text-[18px]">more_vert</button>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                
+                                    <tr class="severity-high h-[36px] hover:brightness-[0.98] transition-all">
+                                        <td class="px-4 py-1.5 font-data-mono text-data-mono">GEN-101</td>
+                                        <td class="px-4 py-1.5 font-semibold">Rubina Akter</td>
+                                        <td class="px-4 py-1.5">CSE</td>
+                                        <td class="px-4 py-1.5 truncate max-w-[200px]">Digital Logic</td>
+                                        <td class="px-4 py-1.5 font-data-mono text-data-mono">LIB-2001</td>
+                                        <td class="px-4 py-1.5">May 1, 2024</td>
+                                        <td class="px-4 py-1.5 text-right font-bold text-error">38</td>
+                                        <td class="px-4 py-1.5 text-right font-semibold">৳ 380.00</td>
+                                        <td class="px-4 py-1.5 text-center">
+                                            <div class="flex items-center justify-center gap-1">
+                                                <button class="p-1 hover:bg-white rounded text-primary material-symbols-outlined text-[18px]">mail</button>
+                                                <button class="p-1 hover:bg-white rounded text-outline material-symbols-outlined text-[18px]">more_vert</button>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                
+                                    <tr class="severity-medium h-[36px] hover:brightness-[0.98] transition-all">
+                                        <td class="px-4 py-1.5 font-data-mono text-data-mono">GEN-102</td>
+                                        <td class="px-4 py-1.5 font-semibold">Kamal Uddin</td>
+                                        <td class="px-4 py-1.5">BBA</td>
+                                        <td class="px-4 py-1.5 truncate max-w-[200px]">Marketing 101</td>
+                                        <td class="px-4 py-1.5 font-data-mono text-data-mono">LIB-2002</td>
+                                        <td class="px-4 py-1.5">May 1, 2024</td>
+                                        <td class="px-4 py-1.5 text-right font-bold text-error">30</td>
+                                        <td class="px-4 py-1.5 text-right font-semibold">৳ 300.00</td>
+                                        <td class="px-4 py-1.5 text-center">
+                                            <div class="flex items-center justify-center gap-1">
+                                                <button class="p-1 hover:bg-white rounded text-primary material-symbols-outlined text-[18px]">mail</button>
+                                                <button class="p-1 hover:bg-white rounded text-outline material-symbols-outlined text-[18px]">more_vert</button>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                
+                                    <tr class="severity-high h-[36px] hover:brightness-[0.98] transition-all">
+                                        <td class="px-4 py-1.5 font-data-mono text-data-mono">GEN-103</td>
+                                        <td class="px-4 py-1.5 font-semibold">Tanvir Ahmed</td>
+                                        <td class="px-4 py-1.5">Pharmacy</td>
+                                        <td class="px-4 py-1.5 truncate max-w-[200px]">Anatomy Basics</td>
+                                        <td class="px-4 py-1.5 font-data-mono text-data-mono">LIB-2003</td>
+                                        <td class="px-4 py-1.5">May 1, 2024</td>
+                                        <td class="px-4 py-1.5 text-right font-bold text-error">45</td>
+                                        <td class="px-4 py-1.5 text-right font-semibold">৳ 450.00</td>
+                                        <td class="px-4 py-1.5 text-center">
+                                            <div class="flex items-center justify-center gap-1">
+                                                <button class="p-1 hover:bg-white rounded text-primary material-symbols-outlined text-[18px]">mail</button>
+                                                <button class="p-1 hover:bg-white rounded text-outline material-symbols-outlined text-[18px]">more_vert</button>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                
+                                    <tr class="severity-low h-[36px] hover:brightness-[0.98] transition-all">
+                                        <td class="px-4 py-1.5 font-data-mono text-data-mono">GEN-104</td>
+                                        <td class="px-4 py-1.5 font-semibold">Salma Begum</td>
+                                        <td class="px-4 py-1.5">EEE</td>
+                                        <td class="px-4 py-1.5 truncate max-w-[200px]">Circuit Theory</td>
+                                        <td class="px-4 py-1.5 font-data-mono text-data-mono">LIB-2004</td>
+                                        <td class="px-4 py-1.5">May 15, 2024</td>
+                                        <td class="px-4 py-1.5 text-right font-bold text-error">5</td>
+                                        <td class="px-4 py-1.5 text-right font-semibold">৳ 50.00</td>
+                                        <td class="px-4 py-1.5 text-center">
+                                            <div class="flex items-center justify-center gap-1">
+                                                <button class="p-1 hover:bg-white rounded text-primary material-symbols-outlined text-[18px]">mail</button>
+                                                <button class="p-1 hover:bg-white rounded text-outline material-symbols-outlined text-[18px]">more_vert</button>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                
+                                    <tr class="severity-medium h-[36px] hover:brightness-[0.98] transition-all">
+                                        <td class="px-4 py-1.5 font-data-mono text-data-mono">GEN-105</td>
+                                        <td class="px-4 py-1.5 font-semibold">Mehedi Hasan</td>
+                                        <td class="px-4 py-1.5">Civil Eng</td>
+                                        <td class="px-4 py-1.5 truncate max-w-[200px]">Calculus II</td>
+                                        <td class="px-4 py-1.5 font-data-mono text-data-mono">LIB-2005</td>
+                                        <td class="px-4 py-1.5">May 1, 2024</td>
+                                        <td class="px-4 py-1.5 text-right font-bold text-error">20</td>
+                                        <td class="px-4 py-1.5 text-right font-semibold">৳ 200.00</td>
+                                        <td class="px-4 py-1.5 text-center">
+                                            <div class="flex items-center justify-center gap-1">
+                                                <button class="p-1 hover:bg-white rounded text-primary material-symbols-outlined text-[18px]">mail</button>
+                                                <button class="p-1 hover:bg-white rounded text-outline material-symbols-outlined text-[18px]">more_vert</button>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                
+                                    <tr class="severity-high h-[36px] hover:brightness-[0.98] transition-all">
+                                        <td class="px-4 py-1.5 font-data-mono text-data-mono">GEN-106</td>
+                                        <td class="px-4 py-1.5 font-semibold">Rubina Akter</td>
+                                        <td class="px-4 py-1.5">CSE</td>
+                                        <td class="px-4 py-1.5 truncate max-w-[200px]">Digital Logic</td>
+                                        <td class="px-4 py-1.5 font-data-mono text-data-mono">LIB-2006</td>
+                                        <td class="px-4 py-1.5">May 1, 2024</td>
+                                        <td class="px-4 py-1.5 text-right font-bold text-error">44</td>
+                                        <td class="px-4 py-1.5 text-right font-semibold">৳ 440.00</td>
+                                        <td class="px-4 py-1.5 text-center">
+                                            <div class="flex items-center justify-center gap-1">
+                                                <button class="p-1 hover:bg-white rounded text-primary material-symbols-outlined text-[18px]">mail</button>
+                                                <button class="p-1 hover:bg-white rounded text-outline material-symbols-outlined text-[18px]">more_vert</button>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                
+                                    <tr class="severity-medium h-[36px] hover:brightness-[0.98] transition-all">
+                                        <td class="px-4 py-1.5 font-data-mono text-data-mono">GEN-107</td>
+                                        <td class="px-4 py-1.5 font-semibold">Kamal Uddin</td>
+                                        <td class="px-4 py-1.5">BBA</td>
+                                        <td class="px-4 py-1.5 truncate max-w-[200px]">Marketing 101</td>
+                                        <td class="px-4 py-1.5 font-data-mono text-data-mono">LIB-2007</td>
+                                        <td class="px-4 py-1.5">May 11, 2024</td>
+                                        <td class="px-4 py-1.5 text-right font-bold text-error">9</td>
+                                        <td class="px-4 py-1.5 text-right font-semibold">৳ 90.00</td>
+                                        <td class="px-4 py-1.5 text-center">
+                                            <div class="flex items-center justify-center gap-1">
+                                                <button class="p-1 hover:bg-white rounded text-primary material-symbols-outlined text-[18px]">mail</button>
+                                                <button class="p-1 hover:bg-white rounded text-outline material-symbols-outlined text-[18px]">more_vert</button>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                
+                                    <tr class="severity-medium h-[36px] hover:brightness-[0.98] transition-all">
+                                        <td class="px-4 py-1.5 font-data-mono text-data-mono">GEN-108</td>
+                                        <td class="px-4 py-1.5 font-semibold">Tanvir Ahmed</td>
+                                        <td class="px-4 py-1.5">Pharmacy</td>
+                                        <td class="px-4 py-1.5 truncate max-w-[200px]">Anatomy Basics</td>
+                                        <td class="px-4 py-1.5 font-data-mono text-data-mono">LIB-2008</td>
+                                        <td class="px-4 py-1.5">May 1, 2024</td>
+                                        <td class="px-4 py-1.5 text-right font-bold text-error">20</td>
+                                        <td class="px-4 py-1.5 text-right font-semibold">৳ 200.00</td>
+                                        <td class="px-4 py-1.5 text-center">
+                                            <div class="flex items-center justify-center gap-1">
+                                                <button class="p-1 hover:bg-white rounded text-primary material-symbols-outlined text-[18px]">mail</button>
+                                                <button class="p-1 hover:bg-white rounded text-outline material-symbols-outlined text-[18px]">more_vert</button>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                
+                                    <tr class="severity-medium h-[36px] hover:brightness-[0.98] transition-all">
+                                        <td class="px-4 py-1.5 font-data-mono text-data-mono">GEN-109</td>
+                                        <td class="px-4 py-1.5 font-semibold">Salma Begum</td>
+                                        <td class="px-4 py-1.5">EEE</td>
+                                        <td class="px-4 py-1.5 truncate max-w-[200px]">Circuit Theory</td>
+                                        <td class="px-4 py-1.5 font-data-mono text-data-mono">LIB-2009</td>
+                                        <td class="px-4 py-1.5">May 1, 2024</td>
+                                        <td class="px-4 py-1.5 text-right font-bold text-error">30</td>
+                                        <td class="px-4 py-1.5 text-right font-semibold">৳ 300.00</td>
+                                        <td class="px-4 py-1.5 text-center">
+                                            <div class="flex items-center justify-center gap-1">
+                                                <button class="p-1 hover:bg-white rounded text-primary material-symbols-outlined text-[18px]">mail</button>
+                                                <button class="p-1 hover:bg-white rounded text-outline material-symbols-outlined text-[18px]">more_vert</button>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                
+                                    <tr class="severity-high h-[36px] hover:brightness-[0.98] transition-all">
+                                        <td class="px-4 py-1.5 font-data-mono text-data-mono">GEN-110</td>
+                                        <td class="px-4 py-1.5 font-semibold">Mehedi Hasan</td>
+                                        <td class="px-4 py-1.5">Civil Eng</td>
+                                        <td class="px-4 py-1.5 truncate max-w-[200px]">Calculus II</td>
+                                        <td class="px-4 py-1.5 font-data-mono text-data-mono">LIB-2010</td>
+                                        <td class="px-4 py-1.5">May 1, 2024</td>
+                                        <td class="px-4 py-1.5 text-right font-bold text-error">35</td>
+                                        <td class="px-4 py-1.5 text-right font-semibold">৳ 350.00</td>
+                                        <td class="px-4 py-1.5 text-center">
+                                            <div class="flex items-center justify-center gap-1">
+                                                <button class="p-1 hover:bg-white rounded text-primary material-symbols-outlined text-[18px]">mail</button>
+                                                <button class="p-1 hover:bg-white rounded text-outline material-symbols-outlined text-[18px]">more_vert</button>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                
+                                    <tr class="severity-medium h-[36px] hover:brightness-[0.98] transition-all">
+                                        <td class="px-4 py-1.5 font-data-mono text-data-mono">GEN-111</td>
+                                        <td class="px-4 py-1.5 font-semibold">Rubina Akter</td>
+                                        <td class="px-4 py-1.5">CSE</td>
+                                        <td class="px-4 py-1.5 truncate max-w-[200px]">Digital Logic</td>
+                                        <td class="px-4 py-1.5 font-data-mono text-data-mono">LIB-2011</td>
+                                        <td class="px-4 py-1.5">May 5, 2024</td>
+                                        <td class="px-4 py-1.5 text-right font-bold text-error">15</td>
+                                        <td class="px-4 py-1.5 text-right font-semibold">৳ 150.00</td>
+                                        <td class="px-4 py-1.5 text-center">
+                                            <div class="flex items-center justify-center gap-1">
+                                                <button class="p-1 hover:bg-white rounded text-primary material-symbols-outlined text-[18px]">mail</button>
+                                                <button class="p-1 hover:bg-white rounded text-outline material-symbols-outlined text-[18px]">more_vert</button>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                
+                                    <tr class="severity-medium h-[36px] hover:brightness-[0.98] transition-all">
+                                        <td class="px-4 py-1.5 font-data-mono text-data-mono">GEN-112</td>
+                                        <td class="px-4 py-1.5 font-semibold">Kamal Uddin</td>
+                                        <td class="px-4 py-1.5">BBA</td>
+                                        <td class="px-4 py-1.5 truncate max-w-[200px]">Marketing 101</td>
+                                        <td class="px-4 py-1.5 font-data-mono text-data-mono">LIB-2012</td>
+                                        <td class="px-4 py-1.5">May 1, 2024</td>
+                                        <td class="px-4 py-1.5 text-right font-bold text-error">23</td>
+                                        <td class="px-4 py-1.5 text-right font-semibold">৳ 230.00</td>
+                                        <td class="px-4 py-1.5 text-center">
+                                            <div class="flex items-center justify-center gap-1">
+                                                <button class="p-1 hover:bg-white rounded text-primary material-symbols-outlined text-[18px]">mail</button>
+                                                <button class="p-1 hover:bg-white rounded text-outline material-symbols-outlined text-[18px]">more_vert</button>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                
+                                    <tr class="severity-medium h-[36px] hover:brightness-[0.98] transition-all">
+                                        <td class="px-4 py-1.5 font-data-mono text-data-mono">GEN-113</td>
+                                        <td class="px-4 py-1.5 font-semibold">Tanvir Ahmed</td>
+                                        <td class="px-4 py-1.5">Pharmacy</td>
+                                        <td class="px-4 py-1.5 truncate max-w-[200px]">Anatomy Basics</td>
+                                        <td class="px-4 py-1.5 font-data-mono text-data-mono">LIB-2013</td>
+                                        <td class="px-4 py-1.5">May 10, 2024</td>
+                                        <td class="px-4 py-1.5 text-right font-bold text-error">10</td>
+                                        <td class="px-4 py-1.5 text-right font-semibold">৳ 100.00</td>
+                                        <td class="px-4 py-1.5 text-center">
+                                            <div class="flex items-center justify-center gap-1">
+                                                <button class="p-1 hover:bg-white rounded text-primary material-symbols-outlined text-[18px]">mail</button>
+                                                <button class="p-1 hover:bg-white rounded text-outline material-symbols-outlined text-[18px]">more_vert</button>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                
+                                    <tr class="severity-medium h-[36px] hover:brightness-[0.98] transition-all">
+                                        <td class="px-4 py-1.5 font-data-mono text-data-mono">GEN-114</td>
+                                        <td class="px-4 py-1.5 font-semibold">Salma Begum</td>
+                                        <td class="px-4 py-1.5">EEE</td>
+                                        <td class="px-4 py-1.5 truncate max-w-[200px]">Circuit Theory</td>
+                                        <td class="px-4 py-1.5 font-data-mono text-data-mono">LIB-2014</td>
+                                        <td class="px-4 py-1.5">May 2, 2024</td>
+                                        <td class="px-4 py-1.5 text-right font-bold text-error">18</td>
+                                        <td class="px-4 py-1.5 text-right font-semibold">৳ 180.00</td>
+                                        <td class="px-4 py-1.5 text-center">
+                                            <div class="flex items-center justify-center gap-1">
+                                                <button class="p-1 hover:bg-white rounded text-primary material-symbols-outlined text-[18px]">mail</button>
+                                                <button class="p-1 hover:bg-white rounded text-outline material-symbols-outlined text-[18px]">more_vert</button>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                
+</tbody>
+</table>
+</div>
+<!-- Pagination / Status -->
+<div class="p-3 border-t border-outline-variant flex items-center justify-between bg-surface">
+<p class="text-body-sm text-on-surface-variant">Showing 1-20 of 142 overdue records</p>
+<div class="flex items-center gap-1">
+<button class="p-1 rounded hover:bg-surface-container-high material-symbols-outlined text-[20px] disabled:opacity-30" disabled="">chevron_left</button>
+<button class="w-8 h-8 rounded bg-primary text-white text-body-sm font-bold">1</button>
+<button class="w-8 h-8 rounded hover:bg-surface-container-high text-body-sm">2</button>
+<button class="w-8 h-8 rounded hover:bg-surface-container-high text-body-sm">3</button>
+<button class="p-1 rounded hover:bg-surface-container-high material-symbols-outlined text-[20px]">chevron_right</button>
+</div>
+</div>
+</section>
+</main>
+<!-- Footer (Shared Component Blueprint) -->
+<footer class="ml-[240px] fixed bottom-0 left-0 right-0 h-[48px] bg-surface-container-lowest border-t border-outline-variant flex justify-between items-center px-gutter w-auto z-40">
+<p class="font-body-sm text-body-sm text-on-secondary-container">© 2024 La librería - Library Management System</p>
+<div class="flex items-center gap-6">
+<a class="text-on-secondary-container hover:underline font-body-sm" href="#">Privacy Policy</a>
+<a class="text-on-secondary-container hover:underline font-body-sm" href="#">Support</a>
+<div class="flex items-center gap-2">
+<div class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></div>
+<span class="text-on-secondary-container font-body-sm">System Status: Online</span>
+</div>
+</div>
+</footer>
+<script>
+        // Simple micro-interaction for rows
+        document.querySelectorAll('tbody tr').forEach(row => {
+            row.addEventListener('click', () => {
+                // Potential row selection logic
+            });
+        });
+
+        // Command shortcut hint
+        window.addEventListener('keydown', (e) => {
+            if ((e.metaKey || e.ctrlKey) && e.key === 'f') {
+                e.preventDefault();
+                document.querySelector('input[type="text"]').focus();
+            }
+        });
+    </script>
+
+
+</body></html>

@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>WUB Library - Login</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&amp;family=JetBrains+Mono:wght@500&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "surface-variant": "#e1e2ed",
+                    "surface-container-lowest": "#ffffff",
+                    "inverse-on-surface": "#f0f0fb",
+                    "surface-dim": "#d9d9e5",
+                    "surface": "#faf8ff",
+                    "primary-fixed-dim": "#b4c5ff",
+                    "secondary-fixed": "#d3e4fe",
+                    "on-secondary-container": "#54647a",
+                    "tertiary": "#943700",
+                    "surface-container": "#ededf9",
+                    "surface-container-highest": "#e1e2ed",
+                    "primary-container": "#2563eb",
+                    "on-primary-fixed": "#00174b",
+                    "on-secondary-fixed-variant": "#38485d",
+                    "error-container": "#ffdad6",
+                    "on-primary-fixed-variant": "#003ea8",
+                    "on-error-container": "#93000a",
+                    "secondary-container": "#d0e1fb",
+                    "tertiary-container": "#bc4800",
+                    "surface-bright": "#faf8ff",
+                    "inverse-primary": "#b4c5ff",
+                    "on-surface-variant": "#434655",
+                    "on-surface": "#191b23",
+                    "on-tertiary": "#ffffff",
+                    "on-error": "#ffffff",
+                    "on-background": "#191b23",
+                    "background": "#faf8ff",
+                    "on-secondary-fixed": "#0b1c30",
+                    "outline": "#737686",
+                    "surface-container-low": "#f3f3fe",
+                    "outline-variant": "#c3c6d7",
+                    "tertiary-fixed-dim": "#ffb596",
+                    "on-tertiary-fixed-variant": "#7d2d00",
+                    "secondary-fixed-dim": "#b7c8e1",
+                    "primary": "#004ac6",
+                    "surface-tint": "#0053db",
+                    "on-tertiary-fixed": "#360f00",
+                    "primary-fixed": "#dbe1ff",
+                    "on-secondary": "#ffffff",
+                    "surface-container-high": "#e7e7f3",
+                    "on-primary-container": "#eeefff",
+                    "inverse-surface": "#2e3039",
+                    "error": "#ba1a1a",
+                    "tertiary-fixed": "#ffdbcd",
+                    "on-primary": "#ffffff",
+                    "on-tertiary-container": "#ffede6",
+                    "secondary": "#505f76"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.25rem",
+                    "lg": "0.5rem",
+                    "xl": "0.75rem",
+                    "full": "9999px"
+            },
+            "spacing": {
+                    "stack-lg": "1.5rem",
+                    "margin-desktop": "2rem",
+                    "stack-sm": "0.5rem",
+                    "gutter": "1.5rem",
+                    "margin-mobile": "1rem",
+                    "stack-md": "1rem",
+                    "container-max": "1440px"
+            },
+            "fontFamily": {
+                    "body-sm": ["Inter"],
+                    "label-md": ["Inter"],
+                    "headline-lg": ["Inter"],
+                    "data-mono": ["JetBrains Mono"],
+                    "body-md": ["Inter"],
+                    "headline-md": ["Inter"],
+                    "headline-xl": ["Inter"],
+                    "body-lg": ["Inter"]
+            },
+            "fontSize": {
+                    "body-sm": ["13px", {"lineHeight": "18px", "fontWeight": "400"}],
+                    "label-md": ["12px", {"lineHeight": "16px", "fontWeight": "600"}],
+                    "headline-lg": ["24px", {"lineHeight": "32px", "letterSpacing": "-0.01em", "fontWeight": "600"}],
+                    "data-mono": ["13px", {"lineHeight": "16px", "fontWeight": "500"}],
+                    "body-md": ["14px", {"lineHeight": "20px", "fontWeight": "400"}],
+                    "headline-md": ["20px", {"lineHeight": "28px", "fontWeight": "600"}],
+                    "headline-xl": ["30px", {"lineHeight": "38px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                    "body-lg": ["16px", {"lineHeight": "24px", "fontWeight": "400"}]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        body { font-family: 'Inter', sans-serif; background-color: #faf8ff; }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .login-gradient {
+            background: linear-gradient(135deg, #004ac6 0%, #003ea8 100%);
+        }
+        .mesh-texture {
+            background-image: radial-gradient(at 0% 0%, rgba(255,255,255,0.1) 0, transparent 50%), 
+                              radial-gradient(at 100% 100%, rgba(0,0,0,0.1) 0, transparent 50%);
+        }
+    </style>
+</head>
+<body class="antialiased text-on-surface">
+<main class="flex min-h-screen">
+<!-- Left Side: Branding (40%) -->
+<section class="hidden lg:flex lg:w-[40%] login-gradient relative overflow-hidden flex-col justify-between p-margin-desktop text-on-primary">
+<!-- Background Decoration -->
+<div class="absolute inset-0 mesh-texture opacity-30 pointer-events-none"></div>
+<div class="absolute -bottom-24 -left-24 w-96 h-96 bg-white/5 rounded-full blur-3xl"></div>
+<div class="relative z-10">
+<div class="flex items-center gap-stack-sm mb-stack-lg">
+<div class="w-12 h-12 bg-white flex items-center justify-center rounded-xl shadow-lg">
+<span class="material-symbols-outlined text-primary text-3xl" data-weight="fill">menu_book</span>
+</div>
+<h1 class="font-headline-lg text-headline-lg font-extrabold tracking-tight">La librería</h1>
+</div>
+<div class="mt-20">
+<h2 class="font-headline-xl text-headline-xl mb-4">Smart Library Management System</h2>
+<p class="font-body-lg text-body-lg opacity-80 max-w-md">
+                        Access our comprehensive digital catalog, manage circulations, and track academic resources with precision and ease.
+                    </p>
+</div>
+</div>
+<div class="relative z-10">
+<p class="font-label-md text-label-md uppercase tracking-widest opacity-60">World University of Bangladesh</p>
+<div class="mt-stack-sm h-1 w-12 bg-white/30 rounded-full"></div>
+</div>
+</section>
+<!-- Right Side: Login Form (60%) -->
+<section class="w-full lg:w-[60%] flex items-center justify-center bg-surface p-gutter sm:p-margin-desktop">
+<div class="w-full max-w-md">
+<!-- Mobile Logo (only visible on small screens) -->
+<div class="lg:hidden flex flex-col items-center mb-10">
+<div class="w-16 h-16 bg-primary flex items-center justify-center rounded-2xl shadow-xl mb-4">
+<span class="material-symbols-outlined text-white text-4xl" data-weight="fill">menu_book</span>
+</div>
+<h1 class="font-headline-lg text-headline-lg text-primary font-black">La librería</h1>
+<p class="font-label-md text-label-md text-on-surface-variant">Smart Library Management System</p>
+</div>
+<!-- Sign In Card -->
+<div class="bg-surface-container-lowest p-8 rounded-xl border border-outline-variant shadow-sm transition-all duration-300">
+<header class="mb-8">
+<h2 class="font-headline-lg text-headline-lg text-on-surface mb-2">Sign in</h2>
+<p class="font-body-md text-body-md text-on-surface-variant">Welcome back. Please enter your credentials to access the admin portal.</p>
+</header>
+<form class="space-y-stack-lg" id="loginForm">
+<!-- Username -->
+<div class="space-y-2">
+<label class="block font-label-md text-label-md text-on-surface-variant" for="username">Username</label>
+<div class="relative group">
+<span class="absolute left-3 top-1/2 -translate-y-1/2 material-symbols-outlined text-outline text-xl group-focus-within:text-primary transition-colors">person</span>
+<input class="w-full pl-10 pr-4 py-3 bg-white border border-outline-variant rounded-lg font-body-md text-body-md focus:outline-none focus:ring-4 focus:ring-primary-fixed focus:border-primary transition-all placeholder:text-outline-variant" id="username" placeholder="Enter your ID or email" required="" type="text"/>
+</div>
+</div>
+<!-- Password -->
+<div class="space-y-2">
+<div class="flex justify-between items-center">
+<label class="block font-label-md text-label-md text-on-surface-variant" for="password">Password</label>
+<a class="font-label-md text-label-md text-primary hover:underline transition-all" href="#">Forgot password?</a>
+</div>
+<div class="relative group">
+<span class="absolute left-3 top-1/2 -translate-y-1/2 material-symbols-outlined text-outline text-xl group-focus-within:text-primary transition-colors">lock</span>
+<input class="w-full pl-10 pr-12 py-3 bg-white border border-outline-variant rounded-lg font-body-md text-body-md focus:outline-none focus:ring-4 focus:ring-primary-fixed focus:border-primary transition-all placeholder:text-outline-variant" id="password" placeholder="••••••••" required="" type="password"/>
+<button class="absolute right-3 top-1/2 -translate-y-1/2 p-1 text-outline hover:text-on-surface-variant transition-colors" onclick="togglePassword()" type="button">
+<span class="material-symbols-outlined text-xl" id="passwordIcon">visibility</span>
+</button>
+</div>
+</div>
+<!-- Remember Me -->
+<div class="flex items-center gap-2">
+<input class="w-4 h-4 text-primary border-outline-variant rounded focus:ring-primary-fixed focus:ring-offset-0 cursor-pointer" id="remember" type="checkbox"/>
+<label class="font-body-sm text-body-sm text-on-surface-variant cursor-pointer select-none" for="remember">Remember me for 30 days</label>
+</div>
+<!-- Submit Button -->
+<button class="w-full py-3.5 bg-primary text-on-primary font-headline-md text-headline-md rounded-lg shadow-lg shadow-primary/20 hover:bg-primary-container active:scale-[0.98] transition-all duration-150 flex items-center justify-center gap-2" type="submit">
+                            Sign in
+                            <span class="material-symbols-outlined text-xl">arrow_forward</span>
+</button>
+</form>
+<div class="mt-8 pt-6 border-t border-outline-variant flex flex-col items-center gap-4">
+<p class="font-body-sm text-body-sm text-on-surface-variant text-center">
+                            Having trouble? <a class="text-primary font-medium hover:underline" href="#">Contact System Administrator</a>
+</p>
+</div>
+</div>
+<!-- Footer Support Links -->
+<footer class="mt-10 flex flex-wrap justify-center gap-gutter text-on-surface-variant/60 font-label-md text-label-md">
+<a class="hover:text-primary transition-colors" href="#">Privacy Policy</a>
+<a class="hover:text-primary transition-colors" href="#">Support</a>
+<a class="hover:text-primary transition-colors" href="#">System Status</a>
+</footer>
+<p class="mt-6 text-center font-body-sm text-body-sm text-on-surface-variant/40">
+                    © 2024 World University of Bangladesh - Library Management System
+                </p>
+</div>
+</section>
+</main>
+<!-- Illustrative Background Image Injection for the Left Panel (Visual Context) -->
+<div data-alt="A modern, high-tech library interior with tall wooden bookshelves filled with thousands of books, combined with sleek glass partitions and digital touchscreens. The lighting is bright and professional, utilizing soft white tones and deep blue accents consistent with a corporate university aesthetic. The atmosphere is academic, quiet, and technologically advanced, with a wide-angle perspective." src="placeholder" style="display:none"></div>
+<script>
+        function togglePassword() {
+            const passwordInput = document.getElementById('password');
+            const passwordIcon = document.getElementById('passwordIcon');
+            if (passwordInput.type === 'password') {
+                passwordInput.type = 'text';
+                passwordIcon.innerText = 'visibility_off';
+            } else {
+                passwordInput.type = 'password';
+                passwordIcon.innerText = 'visibility';
+            }
+        }
+
+        document.getElementById('loginForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const btn = e.target.querySelector('button');
+            const originalContent = btn.innerHTML;
+            
+            // Interaction feedback
+            btn.innerHTML = '<span class="material-symbols-outlined animate-spin">sync</span> Signing in...';
+            btn.disabled = true;
+            btn.classList.add('opacity-80');
+            
+            setTimeout(() => {
+                btn.innerHTML = '<span class="material-symbols-outlined">check_circle</span> Success';
+                btn.classList.replace('bg-primary', 'bg-green-600');
+                // Normally would redirect here
+                console.log('Login attempt recorded');
+            }, 1200);
+        });
+    </script>
+</body></html>

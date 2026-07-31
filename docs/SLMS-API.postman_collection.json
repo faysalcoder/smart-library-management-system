@@ -1,0 +1,831 @@
+{
+  "info": {
+    "name": "SLMS API — Smart Library Management System",
+    "description": "RESTful API for the Smart Library Management System (World University of Bangladesh).\n\n## Getting started\n\n1. Start the backend: `php artisan serve` (http://localhost:8000)\n2. Run **Auth → Login** — the token is captured into the `token` variable automatically by a test script, so every other request is authenticated with no manual copying.\n3. Run any other request.\n\n## Variables\n\n| Variable | Default | Purpose |\n|---|---|---|\n| `base_url` | http://localhost:8000/api | API root |\n| `token` | *(set by Login)* | Sanctum bearer token |\n| `card_uid` | WUB-4018 | Demo student card |\n| `barcode` | ACC-00001 | Demo book barcode |\n\n## Response envelope\n\nEvery response uses the same shape:\n\n```json\n{ \"ok\": true, \"data\": {}, \"message\": null, \"errors\": {} }\n```\n\n## Status codes\n\n- `409` = business-rule violation (loan limit, copy already issued)\n- `422` = validation failure\n- `403` = authenticated but lacking the permission",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "auth": {
+    "type": "bearer",
+    "bearer": [{ "key": "token", "value": "{{token}}", "type": "string" }]
+  },
+  "variable": [
+    { "key": "base_url", "value": "http://localhost:8000/api" },
+    { "key": "token", "value": "" },
+    { "key": "card_uid", "value": "WUB-4018" },
+    { "key": "barcode", "value": "ACC-00001" },
+    { "key": "book_id", "value": "1" },
+    { "key": "student_id", "value": "1" },
+    { "key": "circulation_id", "value": "1" },
+    { "key": "fine_id", "value": "1" }
+  ],
+  "event": [
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          "// Shared assertions for every request in the collection.",
+          "pm.test('Response uses the standard envelope', function () {",
+          "    const body = pm.response.json();",
+          "    pm.expect(body).to.have.property('ok');",
+          "    pm.expect(body).to.have.property('data');",
+          "    pm.expect(body).to.have.property('message');",
+          "    pm.expect(body).to.have.property('errors');",
+          "});"
+        ]
+      }
+    }
+  ],
+  "item": [
+    {
+      "name": "Auth (FR-01)",
+      "item": [
+        {
+          "name": "Login",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Login succeeds', () => pm.response.to.have.status(200));",
+                  "const body = pm.response.json();",
+                  "if (body.ok && body.data.token) {",
+                  "    pm.collectionVariables.set('token', body.data.token);",
+                  "    console.log('Token captured for ' + body.data.user.username);",
+                  "}"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "auth": { "type": "noauth" },
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"username\": \"librarian\",\n  \"password\": \"Password123\"\n}"
+            },
+            "url": { "raw": "{{base_url}}/auth/login", "host": ["{{base_url}}"], "path": ["auth", "login"] },
+            "description": "FR-01. Demo accounts: admin / librarian / student / management — all with password `Password123`.\n\nRate limited to 5 attempts per minute; the account locks after 5 consecutive failures."
+          }
+        },
+        {
+          "name": "Me (rehydrate session)",
+          "request": {
+            "method": "GET",
+            "url": { "raw": "{{base_url}}/auth/me", "host": ["{{base_url}}"], "path": ["auth", "me"] },
+            "description": "Returns the signed-in user with role and permission codes. Used by the SPA on page refresh."
+          }
+        },
+        {
+          "name": "Change password",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"current_password\": \"Password123\",\n  \"password\": \"NewPassword123\",\n  \"password_confirmation\": \"NewPassword123\"\n}"
+            },
+            "url": { "raw": "{{base_url}}/auth/change-password", "host": ["{{base_url}}"], "path": ["auth", "change-password"] },
+            "description": "Invalidates every other token for this account on success."
+          }
+        },
+        {
+          "name": "Logout",
+          "request": {
+            "method": "POST",
+            "url": { "raw": "{{base_url}}/auth/logout", "host": ["{{base_url}}"], "path": ["auth", "logout"] }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Dashboard & Notifications",
+      "item": [
+        {
+          "name": "Dashboard (role-dispatched)",
+          "request": {
+            "method": "GET",
+            "url": { "raw": "{{base_url}}/dashboard", "host": ["{{base_url}}"], "path": ["dashboard"] },
+            "description": "Returns a staff payload or a student payload depending on the signed-in role."
+          }
+        },
+        {
+          "name": "Notifications (§3.3)",
+          "request": {
+            "method": "GET",
+            "url": { "raw": "{{base_url}}/notifications", "host": ["{{base_url}}"], "path": ["notifications"] },
+            "description": "Derived fine / due-date / overdue notifications. Nothing is stored — items disappear once the underlying condition is resolved."
+          }
+        },
+        {
+          "name": "Public settings",
+          "request": {
+            "method": "GET",
+            "url": { "raw": "{{base_url}}/settings/public", "host": ["{{base_url}}"], "path": ["settings", "public"] },
+            "description": "Loan period, fine rate, currency symbol — the policy values the client needs to render accurate hints."
+          }
+        }
+      ]
+    },
+    {
+      "name": "Catalog — Search (FR-02)",
+      "item": [
+        {
+          "name": "Search books",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{base_url}}/books?q=database&available_only=true&sort=relevance&page=1&per_page=12",
+              "host": ["{{base_url}}"],
+              "path": ["books"],
+              "query": [
+                { "key": "q", "value": "database", "description": "Matches title, author, ISBN or publisher" },
+                { "key": "available_only", "value": "true" },
+                { "key": "category_id", "value": "", "disabled": true },
+                { "key": "author", "value": "", "disabled": true },
+                { "key": "year_from", "value": "", "disabled": true },
+                { "key": "year_to", "value": "", "disabled": true },
+                { "key": "sort", "value": "relevance", "description": "relevance | title | newest | popular" },
+                { "key": "page", "value": "1" },
+                { "key": "per_page", "value": "12" }
+              ]
+            },
+            "description": "FR-02. Results are cached for 60 s and paginated. Performance target: under 1.5 s."
+          }
+        },
+        {
+          "name": "Typeahead suggestions",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{base_url}}/books/suggest?q=data",
+              "host": ["{{base_url}}"],
+              "path": ["books", "suggest"],
+              "query": [{ "key": "q", "value": "data" }]
+            }
+          }
+        },
+        {
+          "name": "Book detail + related suggestions",
+          "request": {
+            "method": "GET",
+            "url": { "raw": "{{base_url}}/books/{{book_id}}", "host": ["{{base_url}}"], "path": ["books", "{{book_id}}"] },
+            "description": "Returns `{ book, related }`. The `related` array implements §3.5.1 — \"alternative available books or related suggestions\" — and leads with available titles."
+          }
+        },
+        {
+          "name": "Categories",
+          "request": {
+            "method": "GET",
+            "url": { "raw": "{{base_url}}/categories", "host": ["{{base_url}}"], "path": ["categories"] }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Catalog — Management (FR-06)",
+      "item": [
+        {
+          "name": "Create book (+ copies)",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"isbn\": \"978-1-000-00000-1\",\n  \"title\": \"Introduction to Information Retrieval\",\n  \"author_id\": 1,\n  \"publisher_id\": 1,\n  \"publication_year\": 2008,\n  \"edition\": \"1st\",\n  \"category_id\": 1,\n  \"shelf_no\": \"A-20\",\n  \"language\": \"English\",\n  \"initial_copies\": 3\n}"
+            },
+            "url": { "raw": "{{base_url}}/books", "host": ["{{base_url}}"], "path": ["books"] },
+            "description": "Accession numbers and barcodes are generated automatically from a locked sequence counter (ADR-17)."
+          }
+        },
+        {
+          "name": "Update book",
+          "request": {
+            "method": "PUT",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"shelf_no\": \"A-21\"\n}" },
+            "url": { "raw": "{{base_url}}/books/{{book_id}}", "host": ["{{base_url}}"], "path": ["books", "{{book_id}}"] }
+          }
+        },
+        {
+          "name": "Add copies",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"quantity\": 2\n}" },
+            "url": { "raw": "{{base_url}}/books/{{book_id}}/copies", "host": ["{{base_url}}"], "path": ["books", "{{book_id}}", "copies"] }
+          }
+        },
+        {
+          "name": "Delete book (BR-10 — expect 409 if copies exist)",
+          "request": {
+            "method": "DELETE",
+            "url": { "raw": "{{base_url}}/books/{{book_id}}", "host": ["{{base_url}}"], "path": ["books", "{{book_id}}"] },
+            "description": "BR-10: a title with active copies cannot be deleted. Expect **409 Conflict** with an explanatory message."
+          }
+        },
+        {
+          "name": "Create category",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"name\": \"Information Science\",\n  \"code\": \"IS\",\n  \"description\": \"Library and information science\"\n}" },
+            "url": { "raw": "{{base_url}}/categories", "host": ["{{base_url}}"], "path": ["categories"] }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Authors & Publishers (DFD L-0 modules)",
+      "description": "DFD Level-0 shows \"Author Management\" and \"Publisher Management\" as first-class modules of the system, and DFD Level-1 shows \"List of Authors\" as a data store. They are therefore entities with their own CRUD, not text columns on `books`.",
+      "item": [
+        {
+          "name": "List authors",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{base_url}}/authors?page=1&per_page=25",
+              "host": ["{{base_url}}"],
+              "path": ["authors"],
+              "query": [
+                { "key": "q", "value": "", "disabled": true },
+                { "key": "page", "value": "1" },
+                { "key": "per_page", "value": "25" }
+              ]
+            }
+          }
+        },
+        {
+          "name": "All authors (for form selects)",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{base_url}}/authors?all=true",
+              "host": ["{{base_url}}"],
+              "path": ["authors"],
+              "query": [{ "key": "all", "value": "true" }]
+            },
+            "description": "Unpaginated list used to populate the author dropdown on the book form."
+          }
+        },
+        {
+          "name": "Author detail + their books",
+          "request": {
+            "method": "GET",
+            "url": { "raw": "{{base_url}}/authors/1", "host": ["{{base_url}}"], "path": ["authors", "1"] }
+          }
+        },
+        {
+          "name": "Create author",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"name\": \"Andrew S. Tanenbaum\",\n  \"nationality\": \"Dutch-American\",\n  \"biography\": \"Author of Modern Operating Systems and Computer Networks.\"\n}" },
+            "url": { "raw": "{{base_url}}/authors", "host": ["{{base_url}}"], "path": ["authors"] }
+          }
+        },
+        {
+          "name": "Update author",
+          "request": {
+            "method": "PUT",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"nationality\": \"American\"\n}" },
+            "url": { "raw": "{{base_url}}/authors/1", "host": ["{{base_url}}"], "path": ["authors", "1"] }
+          }
+        },
+        {
+          "name": "Delete author (expect 409 if books exist)",
+          "request": {
+            "method": "DELETE",
+            "url": { "raw": "{{base_url}}/authors/1", "host": ["{{base_url}}"], "path": ["authors", "1"] },
+            "description": "An author with attributed books cannot be deleted — expect **409 Conflict** naming the count."
+          }
+        },
+        {
+          "name": "List publishers",
+          "request": {
+            "method": "GET",
+            "url": { "raw": "{{base_url}}/publishers", "host": ["{{base_url}}"], "path": ["publishers"] }
+          }
+        },
+        {
+          "name": "All publishers (for form selects)",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{base_url}}/publishers?all=true",
+              "host": ["{{base_url}}"],
+              "path": ["publishers"],
+              "query": [{ "key": "all", "value": "true" }]
+            }
+          }
+        },
+        {
+          "name": "Create publisher",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"name\": \"Cambridge University Press\",\n  \"address\": \"Cambridge, United Kingdom\",\n  \"contact_email\": \"orders@cambridge.org\",\n  \"website\": \"https://www.cambridge.org\"\n}" },
+            "url": { "raw": "{{base_url}}/publishers", "host": ["{{base_url}}"], "path": ["publishers"] }
+          }
+        },
+        {
+          "name": "Delete publisher (expect 409 if books exist)",
+          "request": {
+            "method": "DELETE",
+            "url": { "raw": "{{base_url}}/publishers/1", "host": ["{{base_url}}"], "path": ["publishers", "1"] }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Members (FR-07, FR-10)",
+      "item": [
+        {
+          "name": "List students",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{base_url}}/students?q=&page=1&per_page=25",
+              "host": ["{{base_url}}"],
+              "path": ["students"],
+              "query": [
+                { "key": "q", "value": "" },
+                { "key": "department", "value": "", "disabled": true },
+                { "key": "membership_status", "value": "", "disabled": true },
+                { "key": "page", "value": "1" },
+                { "key": "per_page", "value": "25" }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Student profile (loans + fines)",
+          "request": {
+            "method": "GET",
+            "url": { "raw": "{{base_url}}/students/{{student_id}}", "host": ["{{base_url}}"], "path": ["students", "{{student_id}}"] }
+          }
+        },
+        {
+          "name": "Register student",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"student_no\": \"4999\",\n  \"full_name\": \"Test Student\",\n  \"department\": \"Computer Science & Engineering\",\n  \"batch\": \"68A\",\n  \"email\": \"test.4999@wub.edu.bd\",\n  \"phone\": \"01711-004999\",\n  \"card_uid\": \"WUB-4999\"\n}"
+            },
+            "url": { "raw": "{{base_url}}/students", "host": ["{{base_url}}"], "path": ["students"] }
+          }
+        },
+        {
+          "name": "Bind ID card (FR-10)",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"card_uid\": \"WUB-4999\"\n}" },
+            "url": { "raw": "{{base_url}}/students/{{student_id}}/bind-card", "host": ["{{base_url}}"], "path": ["students", "{{student_id}}", "bind-card"] }
+          }
+        },
+        {
+          "name": "Set membership status",
+          "request": {
+            "method": "PATCH",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"membership_status\": \"suspended\"\n}" },
+            "url": { "raw": "{{base_url}}/students/{{student_id}}/membership", "host": ["{{base_url}}"], "path": ["students", "{{student_id}}", "membership"] },
+            "description": "Refused with 409 if the student still has books on loan."
+          }
+        }
+      ]
+    },
+    {
+      "name": "Circulation (FR-03, FR-04, FR-05, FR-10)",
+      "item": [
+        {
+          "name": "1. Verify student card (FR-10)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "const body = pm.response.json();",
+                  "if (body.ok) {",
+                  "    pm.test('Eligibility is reported', function () {",
+                  "        pm.expect(body.data.eligibility).to.have.property('eligible');",
+                  "        pm.expect(body.data.eligibility).to.have.property('reasons');",
+                  "    });",
+                  "}"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"card_uid\": \"{{card_uid}}\"\n}" },
+            "url": { "raw": "{{base_url}}/circulation/verify-card", "host": ["{{base_url}}"], "path": ["circulation", "verify-card"] },
+            "description": "Step 1 of the Issue flow. Resolves the scanned card and reports eligibility (BR-01, BR-02, BR-03) WITHOUT changing anything.\n\nThe student number alone (e.g. `4018`) also works, for manual entry when no scanner is present."
+          }
+        },
+        {
+          "name": "2. Look up book barcode",
+          "request": {
+            "method": "GET",
+            "url": { "raw": "{{base_url}}/copies/lookup/{{barcode}}", "host": ["{{base_url}}"], "path": ["copies", "lookup", "{{barcode}}"] },
+            "description": "Step 2 of the Issue flow. Returns 404 with a plain-language message if the barcode is unknown."
+          }
+        },
+        {
+          "name": "3. Issue book (FR-03)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "const body = pm.response.json();",
+                  "if (body.ok && body.data) {",
+                  "    pm.collectionVariables.set('circulation_id', body.data.circulation_id);",
+                  "}",
+                  "pm.test('Issue returns 201 or a 409 business-rule refusal', function () {",
+                  "    pm.expect(pm.response.code).to.be.oneOf([201, 409]);",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"card_uid\": \"{{card_uid}}\",\n  \"barcode\": \"{{barcode}}\"\n}" },
+            "url": { "raw": "{{base_url}}/circulation/issue", "host": ["{{base_url}}"], "path": ["circulation", "issue"] },
+            "description": "Enforces BR-01…BR-05 in a single transaction with a row-level lock on the copy (ADR-12).\n\nExpect **409** when: membership inactive, loan limit reached, outstanding fine over the threshold, or the copy is already issued."
+          }
+        },
+        {
+          "name": "4. Return lookup (preview the fine)",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"barcode\": \"{{barcode}}\"\n}" },
+            "url": { "raw": "{{base_url}}/circulation/return/lookup", "host": ["{{base_url}}"], "path": ["circulation", "return", "lookup"] },
+            "description": "Finds the open loan and computes the fine that WOULD be charged, without committing anything. Drives the Return screen's outcome panel."
+          }
+        },
+        {
+          "name": "5. Return book (FR-04 + FR-05)",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"barcode\": \"{{barcode}}\"\n}" },
+            "url": { "raw": "{{base_url}}/circulation/return", "host": ["{{base_url}}"], "path": ["circulation", "return"] },
+            "description": "BR-06, BR-07, BR-08. Closes the loan, restores availability, and assesses an overdue fine if applicable."
+          }
+        },
+        {
+          "name": "Renew loan (BR-14)",
+          "request": {
+            "method": "POST",
+            "url": { "raw": "{{base_url}}/circulation/{{circulation_id}}/renew", "host": ["{{base_url}}"], "path": ["circulation", "{{circulation_id}}", "renew"] },
+            "description": "Refused with 409 if already renewed the maximum number of times, or if the loan is overdue."
+          }
+        },
+        {
+          "name": "Circulation history",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{base_url}}/circulation?page=1&per_page=25",
+              "host": ["{{base_url}}"],
+              "path": ["circulation"],
+              "query": [
+                { "key": "q", "value": "", "disabled": true },
+                { "key": "status", "value": "", "disabled": true },
+                { "key": "overdue_only", "value": "false", "disabled": true },
+                { "key": "page", "value": "1" },
+                { "key": "per_page", "value": "25" }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Overdue monitor",
+          "request": {
+            "method": "GET",
+            "url": { "raw": "{{base_url}}/circulation/overdue", "host": ["{{base_url}}"], "path": ["circulation", "overdue"] }
+          }
+        },
+        {
+          "name": "My loans (student role)",
+          "request": {
+            "method": "GET",
+            "url": { "raw": "{{base_url}}/my/loans", "host": ["{{base_url}}"], "path": ["my", "loans"] },
+            "description": "Sign in as `student` first — a librarian token returns 403 here."
+          }
+        }
+      ]
+    },
+    {
+      "name": "Fines (FR-05)",
+      "item": [
+        {
+          "name": "List fines",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{base_url}}/fines?page=1&per_page=25",
+              "host": ["{{base_url}}"],
+              "path": ["fines"],
+              "query": [
+                { "key": "status", "value": "", "disabled": true },
+                { "key": "outstanding_only", "value": "true", "disabled": true },
+                { "key": "page", "value": "1" },
+                { "key": "per_page", "value": "25" }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Collect payment",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"amount\": 20.00\n}" },
+            "url": { "raw": "{{base_url}}/fines/{{fine_id}}/collect", "host": ["{{base_url}}"], "path": ["fines", "{{fine_id}}", "collect"] },
+            "description": "Partial payments are supported. Paying more than the balance is refused with 422."
+          }
+        },
+        {
+          "name": "Waive fine (BR-09 — admin only)",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"reason\": \"Book returned during the library closure period.\"\n}" },
+            "url": { "raw": "{{base_url}}/fines/{{fine_id}}/waive", "host": ["{{base_url}}"], "path": ["fines", "{{fine_id}}", "waive"] },
+            "description": "BR-09. A librarian token gets **403**; the reason field is mandatory."
+          }
+        },
+        {
+          "name": "My fines (student role)",
+          "request": {
+            "method": "GET",
+            "url": { "raw": "{{base_url}}/my/fines", "host": ["{{base_url}}"], "path": ["my", "fines"] }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Reports (FR-08)",
+      "item": [
+        {
+          "name": "Report catalogue",
+          "request": {
+            "method": "GET",
+            "url": { "raw": "{{base_url}}/reports", "host": ["{{base_url}}"], "path": ["reports"] }
+          }
+        },
+        {
+          "name": "Circulation summary",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{base_url}}/reports/circulation?from=&to=",
+              "host": ["{{base_url}}"],
+              "path": ["reports", "circulation"],
+              "query": [
+                { "key": "from", "value": "" },
+                { "key": "to", "value": "" }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Overdue books",
+          "request": {
+            "method": "GET",
+            "url": { "raw": "{{base_url}}/reports/overdue", "host": ["{{base_url}}"], "path": ["reports", "overdue"] }
+          }
+        },
+        {
+          "name": "Fine collection",
+          "request": {
+            "method": "GET",
+            "url": { "raw": "{{base_url}}/reports/fines", "host": ["{{base_url}}"], "path": ["reports", "fines"] }
+          }
+        },
+        {
+          "name": "Book inventory",
+          "request": {
+            "method": "GET",
+            "url": { "raw": "{{base_url}}/reports/inventory", "host": ["{{base_url}}"], "path": ["reports", "inventory"] }
+          }
+        },
+        {
+          "name": "Most borrowed",
+          "request": {
+            "method": "GET",
+            "url": { "raw": "{{base_url}}/reports/popular?limit=20", "host": ["{{base_url}}"], "path": ["reports", "popular"], "query": [{ "key": "limit", "value": "20" }] }
+          }
+        },
+        {
+          "name": "Student activity",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{base_url}}/reports/student-activity?student_id={{student_id}}",
+              "host": ["{{base_url}}"],
+              "path": ["reports", "student-activity"],
+              "query": [{ "key": "student_id", "value": "{{student_id}}" }]
+            }
+          }
+        },
+        {
+          "name": "Department usage",
+          "request": {
+            "method": "GET",
+            "url": { "raw": "{{base_url}}/reports/department", "host": ["{{base_url}}"], "path": ["reports", "department"] }
+          }
+        },
+        {
+          "name": "Daily circulation",
+          "request": {
+            "method": "GET",
+            "url": { "raw": "{{base_url}}/reports/daily", "host": ["{{base_url}}"], "path": ["reports", "daily"] }
+          }
+        },
+        {
+          "name": "Export report as CSV",
+          "request": {
+            "method": "GET",
+            "url": { "raw": "{{base_url}}/reports/overdue/export", "host": ["{{base_url}}"], "path": ["reports", "overdue", "export"] },
+            "description": "Streams a UTF-8 CSV with a BOM so Excel renders the ৳ symbol correctly. Logged as REPORT_EXPORTED."
+          }
+        }
+      ]
+    },
+    {
+      "name": "Administration (FR-09)",
+      "item": [
+        {
+          "name": "List users",
+          "request": {
+            "method": "GET",
+            "url": { "raw": "{{base_url}}/admin/users", "host": ["{{base_url}}"], "path": ["admin", "users"] },
+            "description": "Sign in as `admin` first."
+          }
+        },
+        {
+          "name": "Create user",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"username\": \"librarian2\",\n  \"email\": \"librarian2@wub.edu.bd\",\n  \"full_name\": \"Second Librarian\",\n  \"password\": \"Password123\",\n  \"password_confirmation\": \"Password123\",\n  \"role_id\": 2\n}"
+            },
+            "url": { "raw": "{{base_url}}/admin/users", "host": ["{{base_url}}"], "path": ["admin", "users"] }
+          }
+        },
+        {
+          "name": "Set user status (BR-13)",
+          "request": {
+            "method": "PATCH",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"status\": \"inactive\"\n}" },
+            "url": { "raw": "{{base_url}}/admin/users/2/status", "host": ["{{base_url}}"], "path": ["admin", "users", "2", "status"] },
+            "description": "BR-13: disabling the last active administrator is refused with 409."
+          }
+        },
+        {
+          "name": "Reset password",
+          "request": {
+            "method": "POST",
+            "url": { "raw": "{{base_url}}/admin/users/2/reset-password", "host": ["{{base_url}}"], "path": ["admin", "users", "2", "reset-password"] },
+            "description": "Returns a one-time temporary password and signs the user out everywhere."
+          }
+        },
+        {
+          "name": "Role & permission matrix",
+          "request": {
+            "method": "GET",
+            "url": { "raw": "{{base_url}}/admin/roles", "host": ["{{base_url}}"], "path": ["admin", "roles"] }
+          }
+        },
+        {
+          "name": "Get settings",
+          "request": {
+            "method": "GET",
+            "url": { "raw": "{{base_url}}/admin/settings", "host": ["{{base_url}}"], "path": ["admin", "settings"] }
+          }
+        },
+        {
+          "name": "Update settings",
+          "request": {
+            "method": "PUT",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"settings\": {\n    \"loan_period_days\": 14,\n    \"fine_rate_per_day\": 5.00,\n    \"max_books_per_student\": 3\n  }\n}"
+            },
+            "url": { "raw": "{{base_url}}/admin/settings", "host": ["{{base_url}}"], "path": ["admin", "settings"] },
+            "description": "Fine changes apply to NEW fines only — existing fines keep their snapshot rate (ADR-08)."
+          }
+        },
+        {
+          "name": "Audit log",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{base_url}}/admin/logs?page=1&per_page=50",
+              "host": ["{{base_url}}"],
+              "path": ["admin", "logs"],
+              "query": [
+                { "key": "action", "value": "", "disabled": true },
+                { "key": "q", "value": "", "disabled": true },
+                { "key": "from", "value": "", "disabled": true },
+                { "key": "to", "value": "", "disabled": true },
+                { "key": "page", "value": "1" },
+                { "key": "per_page", "value": "50" }
+              ]
+            },
+            "description": "Append-only. There is deliberately no write endpoint for this resource."
+          }
+        }
+      ]
+    },
+    {
+      "name": "Backup & Recovery (§1.4, §2.10)",
+      "item": [
+        {
+          "name": "List backups",
+          "request": {
+            "method": "GET",
+            "url": { "raw": "{{base_url}}/admin/backups", "host": ["{{base_url}}"], "path": ["admin", "backups"] }
+          }
+        },
+        {
+          "name": "Create backup",
+          "request": {
+            "method": "POST",
+            "url": { "raw": "{{base_url}}/admin/backups", "host": ["{{base_url}}"], "path": ["admin", "backups"] },
+            "description": "Produces a full logical SQL dump in pure PHP — no dependency on `mysqldump` being present on PATH."
+          }
+        },
+        {
+          "name": "Download backup",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{base_url}}/admin/backups/slms-backup-20260731-020000.sql/download",
+              "host": ["{{base_url}}"],
+              "path": ["admin", "backups", "slms-backup-20260731-020000.sql", "download"]
+            },
+            "description": "Replace the filename with one returned by **List backups**."
+          }
+        },
+        {
+          "name": "Restore backup (DESTRUCTIVE)",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"confirm\": \"RESTORE\"\n}" },
+            "url": {
+              "raw": "{{base_url}}/admin/backups/slms-backup-20260731-020000.sql/restore",
+              "host": ["{{base_url}}"],
+              "path": ["admin", "backups", "slms-backup-20260731-020000.sql", "restore"]
+            },
+            "description": "⚠️ Drops and rebuilds every table. Requires the literal confirmation string `RESTORE`, and everyone is signed out afterwards."
+          }
+        },
+        {
+          "name": "Delete backup",
+          "request": {
+            "method": "DELETE",
+            "url": {
+              "raw": "{{base_url}}/admin/backups/slms-backup-20260731-020000.sql",
+              "host": ["{{base_url}}"],
+              "path": ["admin", "backups", "slms-backup-20260731-020000.sql"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Health",
+      "item": [
+        {
+          "name": "Health check",
+          "request": {
+            "auth": { "type": "noauth" },
+            "method": "GET",
+            "url": { "raw": "{{base_url}}/health", "host": ["{{base_url}}"], "path": ["health"] }
+          }
+        }
+      ]
+    }
+  ]
+}

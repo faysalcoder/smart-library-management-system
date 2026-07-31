@@ -1,0 +1,355 @@
+<!DOCTYPE html><html class="light" lang="en" style=""><head>
+<meta charset="utf-8">
+<meta content="width=device-width, initial-scale=1.0" name="viewport">
+<title class="">Issue Book - La librería</title>
+<!-- Material Symbols -->
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<!-- Google Fonts -->
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&amp;family=JetBrains+Mono:wght@500&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<!-- Tailwind CSS -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "on-secondary-container": "#54647a",
+                        "surface": "#faf8ff",
+                        "secondary": "#505f76",
+                        "on-error-container": "#93000a",
+                        "on-tertiary-fixed": "#360f00",
+                        "tertiary": "#943700",
+                        "surface-container-lowest": "#ffffff",
+                        "on-secondary-fixed": "#0b1c30",
+                        "surface-container-low": "#f3f3fe",
+                        "secondary-fixed-dim": "#b7c8e1",
+                        "on-background": "#191b23",
+                        "outline": "#737686",
+                        "primary-container": "#2563eb",
+                        "tertiary-fixed": "#ffdbcd",
+                        "surface-dim": "#d9d9e5",
+                        "on-surface": "#191b23",
+                        "tertiary-container": "#bc4800",
+                        "surface-container-highest": "#e1e2ed",
+                        "surface-container-high": "#e7e7f3",
+                        "surface-tint": "#0053db",
+                        "on-primary": "#ffffff",
+                        "primary-fixed-dim": "#b4c5ff",
+                        "inverse-on-surface": "#f0f0fb",
+                        "inverse-primary": "#b4c5ff",
+                        "tertiary-fixed-dim": "#ffb596",
+                        "on-primary-container": "#eeefff",
+                        "on-secondary": "#ffffff",
+                        "on-primary-fixed-variant": "#003ea8",
+                        "secondary-container": "#d0e1fb",
+                        "error": "#ba1a1a",
+                        "on-tertiary": "#ffffff",
+                        "background": "#faf8ff",
+                        "primary-fixed": "#dbe1ff",
+                        "on-surface-variant": "#434655",
+                        "on-tertiary-fixed-variant": "#7d2d00",
+                        "error-container": "#ffdad6",
+                        "surface-variant": "#e1e2ed",
+                        "primary": "#004ac6",
+                        "on-error": "#ffffff",
+                        "outline-variant": "#c3c6d7",
+                        "on-secondary-fixed-variant": "#38485d",
+                        "inverse-surface": "#2e3039",
+                        "on-tertiary-container": "#ffede6",
+                        "on-primary-fixed": "#00174b",
+                        "secondary-fixed": "#d3e4fe",
+                        "surface-bright": "#faf8ff",
+                        "surface-container": "#ededf9"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "container-max": "1440px",
+                        "stack-sm": "0.5rem",
+                        "gutter": "1.5rem",
+                        "margin-mobile": "1rem",
+                        "stack-md": "1rem",
+                        "margin-desktop": "2rem",
+                        "stack-lg": "1.5rem"
+                    },
+                    "fontFamily": {
+                        "body-lg": ["Inter"],
+                        "body-md": ["Inter"],
+                        "body-sm": ["Inter"],
+                        "headline-xl": ["Inter"],
+                        "label-md": ["Inter"],
+                        "headline-md": ["Inter"],
+                        "headline-lg": ["Inter"],
+                        "data-mono": ["JetBrains Mono"]
+                    },
+                    "fontSize": {
+                        "body-lg": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                        "body-md": ["14px", {"lineHeight": "20px", "fontWeight": "400"}],
+                        "body-sm": ["13px", {"lineHeight": "18px", "fontWeight": "400"}],
+                        "headline-xl": ["30px", {"lineHeight": "38px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                        "label-md": ["12px", {"lineHeight": "16px", "fontWeight": "600"}],
+                        "headline-md": ["20px", {"lineHeight": "28px", "fontWeight": "600"}],
+                        "headline-lg": ["24px", {"lineHeight": "32px", "letterSpacing": "-0.01em", "fontWeight": "600"}],
+                        "data-mono": ["13px", {"lineHeight": "16px", "fontWeight": "500"}]
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+        .scanner-glow {
+            position: relative;
+            overflow: hidden;
+        }
+        .scanner-glow::after {
+            content: "";
+            position: absolute;
+            top: -100%;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(180deg, transparent 0%, rgba(37, 99, 235, 0.1) 50%, transparent 100%);
+            animation: scan 3s infinite linear;
+        }
+        @keyframes scan {
+            0% { top: -100%; }
+            100% { top: 100%; }
+        }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .filled-icon {
+            font-variation-settings: 'FILL' 1;
+        }
+    </style>
+</head>
+<body class="bg-surface text-on-surface font-body-md min-h-screen">
+<!-- SideNavBar (Predicted & Implemented) -->
+<aside class="w-[240px] h-screen fixed left-0 top-0 bg-surface border-r border-outline-variant flex flex-col p-stack-md gap-stack-sm z-50">
+<div class="flex items-center gap-3 px-2 mb-6"><div class="w-10 h-10 rounded-lg overflow-hidden flex items-center justify-center"><img src="https://lh3.googleusercontent.com/aida/AP1WRLtE2FtoxwJscQGVG7MSvVellS3ohqmPxnAIQIfFIJL-V1y02_I5t6ksB6lcVxACL7eJ5dPOipZuHH1jpl1Rss4CcI6Nf1av6kz2HMYU3t59exbWPcofS3HsplyAveIaSVFepMsWZWMvV0aZSQRDeGv2-eMx5NlnDIWZOo5RHERygy7Us2JjnoUXRCpYJItBZmrkZLceYc_L6jGszT7MEyNGIXt2ghiY3SSITV6NatnSQ2ApgZGnv1HhejFW" alt="La librería logo" class="w-full h-full object-cover"></div><div class=""><h1 class="font-headline-md text-headline-md font-bold text-primary">La librería</h1><p class="text-[10px] uppercase tracking-widest text-on-surface-variant font-bold">SLMS Admin</p></div></div>
+<nav class="space-y-1">
+<a class="flex items-center gap-3 p-3 text-on-surface-variant hover:bg-surface-container-low rounded-lg transition-colors group" href="#">
+<span class="material-symbols-outlined">dashboard</span>
+<span class="font-body-md">Overview</span>
+</a>
+<a class="flex items-center gap-3 p-3 bg-secondary-container text-on-secondary-container rounded-lg font-bold" href="#">
+<span class="material-symbols-outlined filled-icon">menu_book</span>
+<span class="font-body-md">Books</span>
+</a>
+<a class="flex items-center gap-3 p-3 text-on-surface-variant hover:bg-surface-container-low rounded-lg transition-colors" href="#">
+<span class="material-symbols-outlined">group</span>
+<span class="font-body-md">Members</span>
+</a>
+<a class="flex items-center gap-3 p-3 text-on-surface-variant hover:bg-surface-container-low rounded-lg transition-colors" href="#">
+<span class="material-symbols-outlined">admin_panel_settings</span>
+<span class="font-body-md">Management</span>
+</a>
+<a class="flex items-center gap-3 p-3 text-on-surface-variant hover:bg-surface-container-low rounded-lg transition-colors" href="#">
+<span class="material-symbols-outlined">settings</span>
+<span class="font-body-md">Settings</span>
+</a>
+</nav>
+<div class="mt-auto pt-6 border-t border-outline-variant">
+<div class="p-3 bg-surface-container-lowest rounded-xl flex items-center gap-3">
+<div class="w-10 h-10 rounded-full bg-surface-container-highest overflow-hidden">
+<img class="w-full h-full object-cover" data-alt="Professional headshot of a librarian named Rafiq Hasan, wearing a formal light blue shirt against a neutral grey studio background, captured with clean studio lighting and a shallow depth of field for a corporate institutional aesthetic." src="https://lh3.googleusercontent.com/aida-public/AB6AXuB7bD5o0xEmSlxqCSmai9Fm8NUwj-Mm0Yu3nuQNBlI1gE-EhQSrpGcig-4f9nukvWwVnutPaosTtXyfJP7jBZvx2k3EzXXh_T9Qr9WEhOBkDE7_vWFFx8Gsu70n10LfJlpygrQ_uVvAC5wlDmEeWEwle0R0K9VxL2y1dAADrFGLjNkfC-ekeagljfiAXbQy1LTK_Y-Y85nslk8hR2-ufWbGJnDr27ZGlEEVHM3z25HGDM5BR6afxvZuCQ">
+</div>
+<div class="flex-1 min-w-0">
+<p class="font-label-md text-on-surface truncate">Rafiq Hasan</p>
+<p class="text-[10px] text-on-surface-variant truncate">Admin Librarian</p>
+</div>
+<button class="text-on-surface-variant hover:text-error transition-colors">
+<span class="material-symbols-outlined">logout</span>
+</button>
+</div>
+</div>
+</aside>
+<!-- TopNavBar (Predicted & Implemented) -->
+<header class="h-[64px] fixed top-0 right-0 left-[240px] z-40 bg-white border-b border-outline-variant flex justify-between items-center px-gutter w-full">
+<div class="flex items-center flex-1 max-w-xl">
+<div class="relative w-full">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-on-surface-variant">search</span>
+<input class="w-full pl-10 pr-12 py-2 bg-surface-container-low border-none rounded-lg font-body-md focus:ring-2 focus:ring-primary/20" placeholder="Type here to search anything" type="text">
+<kbd class="absolute right-3 top-1/2 -translate-y-1/2 font-data-mono text-[10px] bg-surface-container-highest px-1.5 py-0.5 rounded border border-outline-variant text-on-surface-variant">⌘F</kbd>
+</div>
+</div>
+<div class="flex items-center gap-4">
+<button class="hover:bg-surface-container-low rounded-full p-2 transition-all">
+<span class="material-symbols-outlined">notifications</span>
+</button>
+<button class="hover:bg-surface-container-low rounded-full p-2 transition-all">
+<span class="material-symbols-outlined">qr_code_scanner</span>
+</button>
+<button class="hover:bg-surface-container-low rounded-full p-2 transition-all">
+<span class="material-symbols-outlined">help_outline</span>
+</button>
+<div class="h-6 w-[1px] bg-outline-variant mx-2"></div>
+<button class="bg-primary text-on-primary px-4 py-2 rounded-lg font-label-md flex items-center gap-2 hover:opacity-90 active:scale-95 transition-all">
+<span class="material-symbols-outlined text-[20px]">person_add</span>
+                Add Member
+            </button>
+</div>
+</header>
+<!-- Content Canvas -->
+<main class="ml-[240px] pt-[64px] min-h-screen bg-background">
+<div class="max-w-[720px] mx-auto px-gutter py-stack-lg">
+<!-- Page Header -->
+<div class="mb-stack-lg">
+<div class="flex items-center gap-2 text-primary mb-2">
+<span class="material-symbols-outlined text-[18px]">arrow_back</span>
+<span class="font-label-md">Back to Circulation</span>
+</div>
+<h2 class="font-headline-xl text-headline-xl text-on-surface">Issue Book</h2>
+<div class="flex items-center gap-3 mt-1">
+<span class="text-on-surface-variant font-body-sm">Today: Oct 24, 2023</span>
+<span class="w-1 h-1 bg-outline-variant rounded-full"></span>
+<span class="text-on-surface-variant font-body-sm">Issued by: <span class="font-semibold text-on-surface">Rafiq Hasan</span></span>
+</div>
+</div>
+<!-- Step 1: Scan Student (Success State) -->
+<section class="bg-white border border-outline-variant rounded-xl overflow-hidden shadow-sm mb-stack-md">
+<div class="p-stack-md flex items-center justify-between border-b border-surface-container">
+<div class="flex items-center gap-3">
+<div class="w-8 h-8 rounded-full bg-green-100 text-green-700 flex items-center justify-center">
+<span class="material-symbols-outlined text-[20px] font-bold">check</span>
+</div>
+<h3 class="font-headline-md text-headline-md">1. Scan Student ID Card</h3>
+</div>
+<button class="text-primary font-label-md hover:underline">Change</button>
+</div>
+<div class="p-stack-md bg-surface-container-lowest grid grid-cols-12 gap-stack-md">
+<div class="col-span-3">
+<div class="aspect-square bg-surface-container-high rounded-lg overflow-hidden border border-outline-variant">
+<img class="w-full h-full object-cover" data-alt="Close up portrait of a young female university student named Sowmika Islam Suchi, with a friendly expression, wearing a modest dark blue hijab. The image has high-key lighting, a crisp professional look, and a soft blurred background of a modern academic hallway, maintaining the university's corporate visual identity." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCQOY43igU3PA6VfpC63WlU4z7BCmD_-h34R9tvS1T2Tc9_u7dD7XgSSnEXprSxQytBEi9xgbaMd7xoXfnFngCdkFAqiDfnGxvETfaA0igAKBXm7SmEtofVt9maDQQ2dgwG4gwygvqXBwDZzPS3e8Lb8-wSFHGSgl6K8wKNMwH6r4JJWR7597Lb0PJ_NS8eNLrmHN0sS3NVrUODhXowq3euTGmh5_ApAvuDiw2kvz5m7PvueB1ZM-nNwQ">
+</div>
+</div>
+<div class="col-span-9 flex flex-col justify-between">
+<div class="grid grid-cols-2 gap-y-3">
+<div>
+<p class="text-on-surface-variant text-[11px] uppercase font-bold tracking-wider">Student Name</p>
+<p class="font-headline-md text-on-surface">Sowmika Islam Suchi</p>
+</div>
+<div class="text-right">
+<p class="text-on-surface-variant text-[11px] uppercase font-bold tracking-wider">Student ID</p>
+<p class="font-data-mono text-headline-md text-primary tracking-tighter">4018</p>
+</div>
+<div>
+<p class="text-on-surface-variant text-[11px] uppercase font-bold tracking-wider">Department</p>
+<p class="font-body-lg text-on-surface">Computer Science &amp; Engineering</p>
+</div>
+<div class="text-right">
+<p class="text-on-surface-variant text-[11px] uppercase font-bold tracking-wider">Batch</p>
+<p class="font-body-lg text-on-surface">66A</p>
+</div>
+</div>
+<div class="mt-4 flex items-center gap-3">
+<div class="px-3 py-1 bg-green-100 text-green-700 rounded-full font-label-md flex items-center gap-1.5">
+<span class="material-symbols-outlined text-[16px] filled-icon">verified</span>
+                                ELIGIBLE
+                            </div>
+<span class="text-on-surface-variant text-body-sm italic">Member since Feb 2022 • 0 Overdue Items</span>
+</div>
+</div>
+</div>
+</section>
+<!-- Step 2: Scan Book Barcode (Active State) -->
+<section class="bg-white border-2 border-dashed border-primary rounded-xl overflow-hidden scanner-glow">
+<div class="p-stack-md flex items-center gap-3 border-b border-surface-container bg-primary-container/5">
+<div class="w-8 h-8 rounded-full bg-primary text-on-primary flex items-center justify-center font-bold">
+                        2
+                    </div>
+<h3 class="font-headline-md text-headline-md text-on-surface">Scan Book Barcode</h3>
+<div class="ml-auto">
+<span class="flex h-2 w-2">
+<span class="animate-ping absolute inline-flex h-2 w-2 rounded-full bg-primary opacity-75"></span>
+<span class="relative inline-flex rounded-full h-2 w-2 bg-primary"></span>
+</span>
+</div>
+</div>
+<div class="p-10 flex flex-col items-center justify-center text-center">
+<div class="w-24 h-24 mb-6 text-primary/20">
+<span class="material-symbols-outlined text-[96px]">barcode_scanner</span>
+</div>
+<h4 class="font-headline-md text-on-surface mb-2">Waiting for input...</h4>
+<p class="text-on-surface-variant max-w-[400px] mb-8">
+                        Scan the book barcode using the handheld scanner or type the ISBN/Accession number manually below and press Enter.
+                    </p>
+<div class="w-full max-w-md relative">
+<input autofocus="" class="w-full px-4 py-3 bg-surface border border-outline-variant rounded-lg font-data-mono text-lg focus:ring-4 focus:ring-primary/10 focus:border-primary text-center tracking-[0.2em]" placeholder="000-000-000" type="text">
+<div class="mt-4 flex justify-center gap-4">
+<span class="text-[11px] font-label-md text-on-surface-variant flex items-center gap-1.5">
+<span class="material-symbols-outlined text-[14px]">keyboard</span>
+                                MANUAL ENTRY
+                            </span>
+<span class="text-[11px] font-label-md text-on-surface-variant flex items-center gap-1.5">
+<span class="material-symbols-outlined text-[14px]">flash_on</span>
+                                AUTO-SCAN ENABLED
+                            </span>
+</div>
+</div>
+</div>
+</section>
+<!-- Summary Placeholder (Inactive) -->
+<section class="mt-stack-md opacity-40 grayscale pointer-events-none">
+<div class="bg-surface-container-low border border-outline-variant rounded-xl p-stack-md">
+<div class="flex items-center gap-3 text-on-surface-variant">
+<span class="material-symbols-outlined">summarize</span>
+<h3 class="font-headline-md">Loan Summary</h3>
+</div>
+</div>
+</section>
+<!-- Action Bar -->
+<div class="mt-stack-lg flex flex-col gap-3">
+<button class="w-full h-[48px] bg-primary/40 text-on-primary rounded-lg font-headline-md flex items-center justify-center gap-2 cursor-not-allowed" disabled="">
+<span class="material-symbols-outlined">check_circle</span>
+                    Confirm Issue
+                </button>
+<p class="text-center text-on-surface-variant text-body-sm">
+                    Press <span class="font-data-mono font-bold bg-surface-container-high px-1.5 py-0.5 rounded border border-outline-variant">Enter ↵</span> to complete transaction after scanning
+                </p>
+</div>
+</div>
+</main>
+<!-- Footer (Predicted & Implemented) -->
+<footer class="ml-[240px] p-stack-md bg-surface-container-lowest border-t border-outline-variant flex justify-between items-center w-full relative z-40">
+<p class="font-body-sm text-secondary">© 2024 La librería</p>
+<div class="flex gap-stack-md">
+<a class="font-body-sm text-on-secondary-container hover:underline" href="#">Privacy Policy</a>
+<a class="font-body-sm text-on-secondary-container hover:underline" href="#">Support</a>
+<a class="font-body-sm text-on-secondary-container hover:underline flex items-center gap-1" href="#">
+<span class="w-2 h-2 bg-green-500 rounded-full animate-pulse"></span>
+                System Status
+            </a>
+</div>
+</footer>
+<script>
+        // Micro-interaction for barcode input simulation
+        const barcodeInput = document.querySelector('input[type="text"]');
+        if(barcodeInput) {
+            barcodeInput.addEventListener('input', (e) => {
+                // In a real app, this would trigger the 'Confirm' button activation
+                // after reaching a certain length or validation
+                console.log("Scanning... ", e.target.value);
+            });
+        }
+
+        // Handle active navigation state visually
+        document.querySelectorAll('nav a').forEach(link => {
+            link.addEventListener('click', function() {
+                document.querySelectorAll('nav a').forEach(l => {
+                    l.classList.remove('bg-secondary-container', 'text-on-secondary-container', 'font-bold');
+                    l.classList.add('text-on-surface-variant');
+                });
+                this.classList.add('bg-secondary-container', 'text-on-secondary-container', 'font-bold');
+            });
+        });
+    </script>
+
+
+</body></html>
