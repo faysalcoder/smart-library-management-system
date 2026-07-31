@@ -1,7 +1,14 @@
 # Smart Library Management System (SLMS)
 
 **World University of Bangladesh — Central Library**
-React SPA frontend + Laravel RESTful API backend + MySQL
+React SPA frontend + Laravel REST API backend + PostgreSQL (Supabase)
+
+**🌐 Live:** frontend [slms-frontend-ashy.vercel.app](https://slms-frontend-ashy.vercel.app) ·
+backend [slms-backend-production.up.railway.app](https://slms-backend-production.up.railway.app) ·
+source [github.com/faysalcoder/smart-library-management-system](https://github.com/faysalcoder/smart-library-management-system)
+
+Demo login: `admin` / `librarian` / `student` / `management`, password `Password123` (see
+[§Demo accounts](#demo-accounts)).
 
 ---
 
@@ -15,127 +22,131 @@ role-based administration.
 | Layer | Technology | Why |
 |-------|-----------|-----|
 | **Frontend** | React 18 + TypeScript + Vite + Tailwind | SPA per requirement; design tokens generated from the Stitch design system |
-| **Backend** | PHP 8.2 + Laravel 11 + Sanctum | RESTful API per requirement; PHP + MySQL named in report §1.8 |
-| **Database** | MySQL 8.0 | Explicitly mandated in report §1.8 |
-| **Auth** | Sanctum bearer tokens + RBAC | Stateless API, four roles, 19 granular permissions |
+| **Backend** | PHP 8.2 + Laravel 12 + Sanctum | RESTful API per requirement; PHP named in report §1.8 |
+| **Database** | PostgreSQL 17 (Supabase) | Managed Postgres; the backend targets `pgsql` by default (see [§Database](#database-postgresql-via-supabase)) |
+| **Auth** | Sanctum bearer tokens + RBAC | Stateless API, four roles, 21 granular permissions |
+| **Hosting** | Railway (backend) + Vercel (frontend) | See [§Deploying](#deploying) |
 
 ### Repository layout
 
 ```
 library management/
-├── backend/              Laravel 11 REST API
-│   ├── app/
-│   │   ├── Http/         Controllers · Requests · Resources · Middleware
-│   │   ├── Models/       11 Eloquent models
-│   │   ├── Services/     ALL business rules live here (BR-01 … BR-15)
-│   │   ├── Repositories/ Data-access contracts + Eloquent implementations
-│   │   ├── Support/      Status / Roles / Permissions / AuditAction vocabularies
-│   │   └── Console/      Nightly overdue sweep + counter reconciliation
-│   ├── database/         Migrations (7) · Seeders (5)
-│   └── routes/api.php    Full RESTful route table
+├── package.json          Root: `npm run dev` / `npm run deploy` (see below)
+├── scripts/               dev/deploy orchestration
 │
-├── frontend/             React SPA
+├── backend/               Laravel 12 REST API
+│   ├── app/
+│   │   ├── Http/          Controllers · Requests · Resources · Middleware
+│   │   ├── Models/        13 Eloquent models
+│   │   ├── Services/      ALL business rules live here (BR-01 … BR-15)
+│   │   ├── Repositories/  Data-access contracts + Eloquent implementations
+│   │   ├── Support/       Status / Roles / Permissions / AuditAction vocabularies
+│   │   └── Console/       Nightly overdue sweep, backup, counter reconciliation
+│   ├── database/          Migrations (8) · Seeders (5)
+│   ├── nixpacks.toml      Railway build/start config
+│   └── routes/api.php     Full RESTful route table
+│
+├── frontend/               React SPA
+│   ├── vercel.json         SPA rewrite config
 │   └── src/
-│       ├── components/   UI kit + app shell + toasts
-│       ├── pages/        20 screens (student · librarian · admin)
-│       ├── lib/          API client · service layer · formatters
-│       ├── store/        Auth state (Zustand)
-│       └── types/        Shared TypeScript contracts
+│       ├── components/     UI kit + app shell + toasts
+│       ├── pages/          22 screens (student · librarian · admin)
+│       ├── lib/            API client · service layer · formatters
+│       ├── store/          Auth state (Zustand)
+│       └── types/          Shared TypeScript contracts
 │
 ├── stitch_la_librer_a_slms/   Original Stitch design exports
 ├── SYSTEM_ARCHITECTURE.md     Software Architecture Document (MVC + layers)
 ├── DEVELOPMENT_PLAN.md        Design-first delivery plan
-└── DESIGN_PROMPT.txt          UI/UX design brief
+├── DESIGN_PROMPT.txt          UI/UX design brief
+└── REQUIREMENTS_TRACEABILITY.md  Cross-match against the source report + DFDs
 ```
 
 ---
 
 ## Prerequisites
 
-The frontend runs on this machine already (Node 24 is installed). **The backend needs
-software that is not currently installed here:**
+| Requirement | Version | Notes |
+|-------------|---------|-------|
+| Node.js | 18+ | Runs both the frontend and the root dev/deploy scripts |
+| PHP | 8.2+ | [XAMPP](https://www.apachefriends.org/) is the easiest route on Windows — it bundles a signed PHP build, which matters if your machine has Application Control / Smart App Control enabled (a bare downloaded `php.exe` gets blocked; XAMPP's installer doesn't) |
+| Composer | 2.x | Install via [getcomposer.org](https://getcomposer.org/download/) using the PHP above |
 
-| Requirement | Version | Status on this machine |
-|-------------|---------|------------------------|
-| Node.js | 18+ | ✅ v24.16.0 installed |
-| PHP | 8.2+ | ❌ **not installed** |
-| Composer | 2.x | ❌ **not installed** |
-| MySQL | 8.0+ | ❌ **not installed** |
+You do **not** need a local database — the backend talks to Supabase (hosted Postgres) both
+locally and in production, so there is nothing to install or run for the database.
 
-### Installing the backend prerequisites (Windows)
-
-**Easiest route — XAMPP** (bundles PHP + MySQL + phpMyAdmin):
-
-1. Download XAMPP with PHP 8.2+ from <https://www.apachefriends.org/>
-2. Install, then start **Apache** and **MySQL** from the XAMPP control panel
-3. Add PHP to your PATH: `C:\xampp\php`
-4. Install Composer from <https://getcomposer.org/download/>
-
-**Verify:**
-
-```powershell
-php --version        # expect 8.2 or higher
-composer --version
-mysql --version
-```
-
-Make sure these PHP extensions are enabled in `php.ini` (XAMPP enables most by default):
-`pdo_mysql`, `mbstring`, `openssl`, `tokenizer`, `xml`, `ctype`, `json`, `fileinfo`, `bcmath`.
+Required PHP extensions (XAMPP enables most by default — check `php.ini`):
+`pdo_pgsql`, `pgsql`, `mbstring`, `openssl`, `tokenizer`, `xml`, `ctype`, `json`, `fileinfo`,
+`bcmath`, `intl`, `zip`.
 
 ---
 
 ## Setup
 
-### 1. Database
+### 1. Database (PostgreSQL via Supabase)
 
-Create the schema (via phpMyAdmin, or the CLI):
-
-```sql
-CREATE DATABASE slms_db CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
-```
+Create a free project at [supabase.com/dashboard](https://supabase.com/dashboard), then go to
+**Project Settings → Database → Connection string → "Session pooler"** tab (not "Direct
+connection" — that hostname is IPv6-only on most networks and will fail to resolve; not
+"Transaction pooler" either, since its connection-pooling mode breaks prepared statements
+Laravel relies on). Copy the host, username (looks like `postgres.xxxxxxxxxxxxxxxxxxxx`), and
+password from there.
 
 ### 2. Backend
 
 ```powershell
-cd "backend"
-
+cd backend
 composer install
 copy .env.example .env
 php artisan key:generate
 ```
 
-Edit `.env` if your MySQL credentials differ from the defaults
-(`root` with an empty password, which is the XAMPP default):
+Edit `.env` with the Supabase values from step 1:
 
 ```ini
-DB_DATABASE=slms_db
-DB_USERNAME=root
-DB_PASSWORD=
+DB_CONNECTION=pgsql
+DB_HOST=aws-<region>.pooler.supabase.com
+DB_PORT=5432
+DB_DATABASE=postgres
+DB_USERNAME=postgres.xxxxxxxxxxxxxxxxxxxx
+DB_PASSWORD=<your Supabase database password>
+DB_SSLMODE=require
 ```
 
 Then create the tables and load the demo data:
 
 ```powershell
 php artisan migrate --seed
-php artisan serve          # http://localhost:8000
 ```
 
 ### 3. Frontend
 
-In a second terminal:
-
 ```powershell
-cd "frontend"
-
+cd frontend
 npm install
 copy .env.example .env
-npm run dev                # http://localhost:5173
 ```
 
-The Vite dev server proxies `/api` to `http://localhost:8000`, so the browser stays on a
-single origin during development and there are no CORS surprises.
+### 4. Run everything
+
+From the **repository root** (not inside `backend/` or `frontend/`):
+
+```powershell
+npm install       # one-time: installs `concurrently`
+npm run dev
+```
+
+This starts the Laravel API on **http://localhost:8000** and the Vite dev server on
+**http://localhost:5173** together, in one terminal, labeled `BACKEND` / `FRONTEND`. Ctrl+C
+stops both. The Vite dev server proxies `/api` to the backend, so the browser stays on a
+single origin and there are no CORS surprises locally.
 
 Open **<http://localhost:5173>**.
+
+> `npm run dev` resolves PHP itself (checking PATH, then `C:\xampp\php\php.exe` and other
+> common install locations) rather than assuming `php` is on PATH — useful right after
+> installing PHP, since a Windows PATH update only takes effect in *new* terminal windows,
+> not ones already open.
 
 ---
 
@@ -175,6 +186,45 @@ calculates any fine, and commits on confirm.
 
 To see the overdue path, use a barcode from one of the seeded overdue loans (visible on
 **Overdue Monitor**).
+
+---
+
+## Deploying
+
+From the **repository root**:
+
+```powershell
+npm run deploy
+```
+
+One command does all of the following:
+
+1. `git add -A`, then writes a commit message **generated from the actual staged diff** —
+   grouped by top-level area (`backend`, `frontend`, `docs`, …) with an added/modified/deleted
+   breakdown, e.g.:
+   ```
+   Update backend, frontend (7 files)
+
+   - backend: 2 modified
+   - frontend: 4 modified, 1 added
+   ```
+   If there is nothing to commit, this step is skipped (not forced as an empty commit).
+2. `git push`
+3. Redeploys the backend to Railway (`railway up --service slms-backend`)
+4. Rebuilds the frontend with the production API URL baked in, then redeploys it to Vercel
+
+Useful flags (append after `--`, e.g. `npm run deploy -- --skip-backend`):
+
+| Flag | Effect |
+|------|--------|
+| `--message "text"` | Use this exact commit message instead of generating one |
+| `--skip-backend` | Don't touch Railway |
+| `--skip-frontend` | Don't touch Vercel |
+| `--no-push` | Commit locally only, skip `git push` and both redeploys |
+
+The script lives at [scripts/deploy.js](scripts/deploy.js) and needs `npx @railway/cli` and
+`npx vercel` to already be authenticated once (`npx @railway/cli login`, `npx vercel login`) —
+both open a one-time browser login and then stay signed in on this machine.
 
 ---
 
@@ -333,15 +383,18 @@ The interface follows `DESIGN_PROMPT.txt`:
 | Check | Result |
 |-------|--------|
 | Frontend TypeScript (`tsc --noEmit`) | ✅ passes |
-| Frontend production build | ✅ 431 KB JS → **123 KB gzipped** |
-| Backend structural check (88 PHP files, namespaces + imports) | ✅ passes |
+| Frontend production build | ✅ ~465 KB JS → **~131 KB gzipped** |
+| Backend runtime (migrations + seeders against live Supabase) | ✅ verified — all 8 migrations + 5 seeders run clean |
+| Backend live on Railway | ✅ [slms-backend-production.up.railway.app/api/health](https://slms-backend-production.up.railway.app/api/health) |
+| Frontend live on Vercel | ✅ [slms-frontend-ashy.vercel.app](https://slms-frontend-ashy.vercel.app) |
+| Cross-origin login (Vercel → Railway → Supabase), full round trip | ✅ verified |
 | Postman collection JSON | ✅ valid |
-| Requirements coverage vs. the PDF | ✅ **77 / 77** — see [REQUIREMENTS_TRACEABILITY.md](REQUIREMENTS_TRACEABILITY.md) |
-| Backend runtime execution | ⚠️ **not verified — PHP, Composer and MySQL are not installed on this machine** |
+| Requirements coverage vs. the PDF + its DFD diagrams | ✅ **103 / 103** — see [REQUIREMENTS_TRACEABILITY.md](REQUIREMENTS_TRACEABILITY.md) |
 
-The backend has been written against the Laravel 11 API and statically verified, but it
-has not been executed. Run `composer install && php artisan migrate --seed` once PHP and
-MySQL are available; that is the first point at which any runtime issue would surface.
+Originally written and statically verified before PHP/Postgres were available locally; the
+backend has since been run for real against a live Supabase database (both from this machine
+and from Railway) and the full stack has been exercised end-to-end in production, not just
+type-checked.
 
 ---
 

@@ -40,7 +40,15 @@ function section(title) {
  */
 function run(label, command, cmdArgs, cwd) {
   console.log(`\x1b[90m$ ${command} ${cmdArgs.join(' ')}\x1b[0m`);
-  const result = spawnSync(command, cmdArgs, { cwd, stdio: 'inherit', shell: true });
+  // Windows resolves `npx` to `npx.cmd`, which Node can only launch through a
+  // shell — POSIX needs no shell at all here. Every arg below is a hardcoded
+  // constant (never user input), so there is nothing for `shell: true` to
+  // unsafely interpolate despite Node's generic deprecation warning about it.
+  const result = spawnSync(command, cmdArgs, {
+    cwd,
+    stdio: 'inherit',
+    shell: process.platform === 'win32',
+  });
   if (result.status !== 0) {
     throw new Error(`${label} failed (exit ${result.status}).`);
   }
