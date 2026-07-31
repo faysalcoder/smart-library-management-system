@@ -9,4 +9,7 @@ desktop.ini
 .idea/
 
 # Backend and frontend have their own .gitignore for vendor/, node_modules/,
-# .env, build output, etc. — this file only covers repo-wide clutter.
+# .env, build output, etc. — this file only covers repo-wide clutter, plus the
+# root's own node_modules (concurrently, used by `npm run dev`).
+/node_modules
+
