@@ -4,8 +4,8 @@
 React SPA frontend + Laravel REST API backend + PostgreSQL (Supabase)
 
 **🌐 Live:** frontend [slms-frontend-ashy.vercel.app](https://slms-frontend-ashy.vercel.app) ·
-backend hosted on Render (see the Render dashboard for the current URL — the free-tier Railway
-trial this project originally used has expired) ·
+backend [slms-backend-h3h1.onrender.com](https://slms-backend-h3h1.onrender.com) (migrated
+from Railway after its free trial expired) ·
 source [github.com/faysalcoder/smart-library-management-system](https://github.com/faysalcoder/smart-library-management-system)
 
 Demo login: `admin` / `librarian` / `student` / `management`, password `Password123` (see
@@ -414,7 +414,7 @@ The interface follows `DESIGN_PROMPT.txt`:
 | Frontend TypeScript (`tsc --noEmit`) | ✅ passes |
 | Frontend production build | ✅ ~465 KB JS → **~131 KB gzipped** |
 | Backend runtime (migrations + seeders against live Supabase) | ✅ verified — all 8 migrations + 5 seeders run clean |
-| Backend live on Render | See the Render dashboard for the current URL (migrated off Railway after its free trial expired) |
+| Backend live on Render | ✅ [slms-backend-h3h1.onrender.com/api/health](https://slms-backend-h3h1.onrender.com/api/health) |
 | Frontend live on Vercel | ✅ [slms-frontend-ashy.vercel.app](https://slms-frontend-ashy.vercel.app) |
 | Cross-origin login (Vercel → backend → Supabase), full round trip | ✅ verified |
 | Postman collection JSON | ✅ valid |
