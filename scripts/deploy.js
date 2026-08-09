@@ -2,8 +2,15 @@
 /**
  * One-command deploy: stage everything, write a commit message describing
  * what actually changed (derived from the real diff, not a placeholder),
- * commit, push to GitHub, then redeploy the backend (Railway) and frontend
- * (Vercel) so the live URLs match what was just pushed.
+ * commit, push to GitHub, then redeploy the frontend (Vercel) so its bundle
+ * matches what was just pushed.
+ *
+ * The backend (Render) needs no explicit redeploy step here: Render's
+ * GitHub integration watches `main` and redeploys automatically on every
+ * push, which the "Pushing to GitHub" step below already triggers. If a
+ * RENDER_DEPLOY_HOOK_URL env var is set (Render dashboard -> service ->
+ * Settings -> Deploy Hook), this script also curls it explicitly so a
+ * deploy is kicked off even when a build was already in flight.
  *
  * Usage: npm run deploy
  *        npm run deploy -- --message "custom message"   (skip auto-generation)
@@ -155,15 +162,19 @@ function main() {
   }
 
   if (!flag('skip-backend')) {
-    section('Redeploying backend (Railway)');
-    run(
-      'railway up',
-      'npx',
-      ['--yes', '@railway/cli', 'up', '--service', 'slms-backend', '--detach'],
-      BACKEND
-    );
+    section('Redeploying backend (Render)');
+    const hookUrl = process.env.RENDER_DEPLOY_HOOK_URL;
+    if (hookUrl) {
+      run('render deploy hook', 'curl', ['-fsS', '-X', 'POST', hookUrl], BACKEND);
+      console.log('Deploy hook triggered.');
+    } else {
+      console.log(
+        'No RENDER_DEPLOY_HOOK_URL set — relying on Render\'s GitHub auto-deploy from the push above.\n' +
+        '(Set RENDER_DEPLOY_HOOK_URL to force an explicit trigger every run.)'
+      );
+    }
   } else {
-    console.log('\n(--skip-backend given — leaving Railway as-is)');
+    console.log('\n(--skip-backend given — leaving Render as-is)');
   }
 
   if (!flag('skip-frontend')) {
@@ -178,7 +189,7 @@ function main() {
   }
 
   section('Done');
-  console.log('Backend : https://slms-backend-production.up.railway.app');
+  console.log(`Backend : ${process.env.RENDER_BACKEND_URL ?? '(see Render dashboard for the live URL)'}`);
   console.log('Frontend: https://slms-frontend-ashy.vercel.app');
 }
 

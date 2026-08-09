@@ -4,7 +4,8 @@
 React SPA frontend + Laravel REST API backend + PostgreSQL (Supabase)
 
 **🌐 Live:** frontend [slms-frontend-ashy.vercel.app](https://slms-frontend-ashy.vercel.app) ·
-backend [slms-backend-production.up.railway.app](https://slms-backend-production.up.railway.app) ·
+backend hosted on Render (see the Render dashboard for the current URL — the free-tier Railway
+trial this project originally used has expired) ·
 source [github.com/faysalcoder/smart-library-management-system](https://github.com/faysalcoder/smart-library-management-system)
 
 Demo login: `admin` / `librarian` / `student` / `management`, password `Password123` (see
@@ -25,7 +26,7 @@ role-based administration.
 | **Backend** | PHP 8.2 + Laravel 12 + Sanctum | RESTful API per requirement; PHP named in report §1.8 |
 | **Database** | PostgreSQL 17 (Supabase) | Managed Postgres; the backend targets `pgsql` by default (see [§Database](#database-postgresql-via-supabase)) |
 | **Auth** | Sanctum bearer tokens + RBAC | Stateless API, four roles, 21 granular permissions |
-| **Hosting** | Railway (backend) + Vercel (frontend) | See [§Deploying](#deploying) |
+| **Hosting** | Render (backend, Docker) + Vercel (frontend) | See [§Deploying](#deploying) |
 
 ### Repository layout
 
@@ -43,7 +44,7 @@ library management/
 │   │   ├── Support/       Status / Roles / Permissions / AuditAction vocabularies
 │   │   └── Console/       Nightly overdue sweep, backup, counter reconciliation
 │   ├── database/          Migrations (8) · Seeders (5)
-│   ├── nixpacks.toml      Railway build/start config
+│   ├── Dockerfile         Render build/start config (nixpacks.toml kept for reference)
 │   └── routes/api.php     Full RESTful route table
 │
 ├── frontend/               React SPA
@@ -191,6 +192,32 @@ To see the overdue path, use a barcode from one of the seeded overdue loans (vis
 
 ## Deploying
 
+### Deploying the backend to Render
+
+One-time setup (a few minutes, done once from Render's dashboard — there is no CLI-only path
+for the initial GitHub connection, same as the first-time setup Railway and Vercel both needed):
+
+1. Create a free account at [render.com](https://render.com) (no credit card required).
+2. **New → Blueprint**, connect this GitHub repository. Render reads [render.yaml](render.yaml)
+   at the repo root and provisions a `slms-backend` Docker web service from
+   [backend/Dockerfile](backend/Dockerfile).
+3. When prompted for the secrets marked `sync: false` in `render.yaml`, fill in:
+   `APP_KEY`, `APP_URL` (set to the Render URL Render shows you, e.g.
+   `https://slms-backend.onrender.com`), `DB_HOST`, `DB_USERNAME`, `DB_PASSWORD` (the Supabase
+   session-pooler credentials — see [§Database](#database-postgresql-via-supabase)),
+   `SUPABASE_URL`, `SUPABASE_SERVICE_ROLE_KEY`, `FRONTEND_URL` and `CORS_ALLOWED_ORIGINS` (both
+   the Vercel frontend URL).
+4. Deploy. Render builds the Docker image, runs migrations automatically on container start
+   (see the `CMD` in `backend/Dockerfile`), and gives you the live URL.
+5. Update `VITE_API_URL` in `frontend/.env.production` and in the Vercel project's environment
+   variables (as a **non-sensitive** value — see the Defect Log in the SDLC report for why) to
+   point at that URL, then run `npm run deploy` to rebuild and redeploy the frontend against it.
+
+Render's free web services spin down after 15 minutes of inactivity — the first request after
+a quiet period takes 30–50 seconds to wake back up. That's expected, not a bug.
+
+### Local + Vercel
+
 From the **repository root**:
 
 ```powershell
@@ -209,22 +236,24 @@ One command does all of the following:
    - frontend: 4 modified, 1 added
    ```
    If there is nothing to commit, this step is skipped (not forced as an empty commit).
-2. `git push`
-3. Redeploys the backend to Railway (`railway up --service slms-backend`)
-4. Rebuilds the frontend with the production API URL baked in, then redeploys it to Vercel
+2. `git push` — Render's GitHub integration watches `main` and redeploys the backend
+   automatically from this push (no CLI step needed); if `RENDER_DEPLOY_HOOK_URL` is set, the
+   script also curls it to trigger the deploy explicitly
+3. Rebuilds the frontend with the production API URL baked in, then redeploys it to Vercel
 
 Useful flags (append after `--`, e.g. `npm run deploy -- --skip-backend`):
 
 | Flag | Effect |
 |------|--------|
 | `--message "text"` | Use this exact commit message instead of generating one |
-| `--skip-backend` | Don't touch Railway |
+| `--skip-backend` | Don't trigger the Render deploy hook |
 | `--skip-frontend` | Don't touch Vercel |
 | `--no-push` | Commit locally only, skip `git push` and both redeploys |
 
-The script lives at [scripts/deploy.js](scripts/deploy.js) and needs `npx @railway/cli` and
-`npx vercel` to already be authenticated once (`npx @railway/cli login`, `npx vercel login`) —
-both open a one-time browser login and then stay signed in on this machine.
+The script lives at [scripts/deploy.js](scripts/deploy.js) and needs `npx vercel` to already be
+authenticated once (`npx vercel login`, a one-time browser login that then stays signed in on
+this machine). The backend needs no CLI login at all — Render deploys via the GitHub connection
+made once in its dashboard (see [§Deploying the backend to Render](#deploying-the-backend-to-render)).
 
 ---
 
@@ -385,16 +414,16 @@ The interface follows `DESIGN_PROMPT.txt`:
 | Frontend TypeScript (`tsc --noEmit`) | ✅ passes |
 | Frontend production build | ✅ ~465 KB JS → **~131 KB gzipped** |
 | Backend runtime (migrations + seeders against live Supabase) | ✅ verified — all 8 migrations + 5 seeders run clean |
-| Backend live on Railway | ✅ [slms-backend-production.up.railway.app/api/health](https://slms-backend-production.up.railway.app/api/health) |
+| Backend live on Render | See the Render dashboard for the current URL (migrated off Railway after its free trial expired) |
 | Frontend live on Vercel | ✅ [slms-frontend-ashy.vercel.app](https://slms-frontend-ashy.vercel.app) |
-| Cross-origin login (Vercel → Railway → Supabase), full round trip | ✅ verified |
+| Cross-origin login (Vercel → backend → Supabase), full round trip | ✅ verified |
 | Postman collection JSON | ✅ valid |
 | Requirements coverage vs. the PDF + its DFD diagrams | ✅ **103 / 103** — see [REQUIREMENTS_TRACEABILITY.md](REQUIREMENTS_TRACEABILITY.md) |
 
 Originally written and statically verified before PHP/Postgres were available locally; the
-backend has since been run for real against a live Supabase database (both from this machine
-and from Railway) and the full stack has been exercised end-to-end in production, not just
-type-checked.
+backend has since been run for real against a live Supabase database (from this machine, from
+Railway, and now from Render) and the full stack has been exercised end-to-end in production,
+not just type-checked.
 
 ---
 
