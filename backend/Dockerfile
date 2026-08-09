@@ -17,6 +17,7 @@ FROM php:8.2-cli
 # so it's deliberately left out here.
 RUN apt-get update && apt-get install -y --no-install-recommends \
         libpq-dev \
+        libonig-dev \
         unzip \
         git \
     && docker-php-ext-install pdo pdo_pgsql mbstring bcmath \
