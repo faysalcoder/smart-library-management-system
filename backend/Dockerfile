@@ -11,12 +11,15 @@
 
 FROM php:8.2-cli
 
-RUN apt-get update && apt-get install -y \
+# Only `pdo_pgsql` is actually required (see composer.json's "ext-pdo_pgsql") —
+# the plain `pgsql` extension isn't used by Eloquent and is known to fail to
+# build on current Debian base images without extra pkg-config configuration,
+# so it's deliberately left out here.
+RUN apt-get update && apt-get install -y --no-install-recommends \
         libpq-dev \
-        libzip-dev \
         unzip \
         git \
-    && docker-php-ext-install pdo pdo_pgsql pgsql mbstring bcmath \
+    && docker-php-ext-install pdo pdo_pgsql mbstring bcmath \
     && rm -rf /var/lib/apt/lists/*
 
 COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
