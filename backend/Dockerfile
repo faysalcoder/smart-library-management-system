@@ -36,4 +36,13 @@ RUN composer dump-autoload --optimize \
 
 EXPOSE 10000
 
-CMD php artisan migrate --force --no-interaction && php artisan serve --host=0.0.0.0 --port=${PORT:-10000}
+# config:cache and route:cache collapse config/*.php and routes/*.php into a
+# single opcache-friendly file each, cutting per-request bootstrap time —
+# safe here because nothing outside config/ calls env() directly (verified).
+# These must run at container start, not at image build time: the real
+# env vars (APP_KEY, DB_*, SUPABASE_*) only exist once Render injects them
+# into the running container, not during `docker build`.
+CMD php artisan config:cache \
+    && php artisan route:cache \
+    && php artisan migrate --force --no-interaction \
+    && php artisan serve --host=0.0.0.0 --port=${PORT:-10000}

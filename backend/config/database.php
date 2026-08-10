@@ -25,6 +25,15 @@ return [
             // both require TLS; 'prefer' works for both without needing a
             // bundled CA certificate.
             'sslmode' => env('DB_SSLMODE', 'prefer'),
+            // The app server and the Supabase pooler are in different regions
+            // (Render's default region is Oregon; the Supabase project is
+            // ap-south-1), so a fresh TLS + Supavisor auth handshake costs
+            // several seconds. `php artisan serve` handles requests
+            // sequentially in a single long-lived process, so a persistent
+            // PDO connection is reused across requests instead of being
+            // renegotiated on every one — this is what the session pooler
+            // (port 5432, not the transaction pooler on 6543) is designed for.
+            'options' => [PDO::ATTR_PERSISTENT => true],
         ],
 
         'mysql' => [
