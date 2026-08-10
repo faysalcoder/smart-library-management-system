@@ -9,6 +9,12 @@ services:
   - type: web
     name: slms-backend
     runtime: docker
+    # Singapore is Render's closest region to the Supabase project's
+    # ap-south-1 (Mumbai) home — every DB round trip was measured taking
+    # 7-18s on the default Oregon region, which is on the other side of
+    # the planet from the database. Region is set at creation only; it
+    # can't be changed on an already-running service.
+    region: singapore
     dockerfilePath: ./backend/Dockerfile
     dockerContext: ./backend
     plan: free
